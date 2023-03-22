@@ -13,6 +13,13 @@ class Player(pygame.sprite.Sprite):
         
         self.attacking = False
         
+        #----------
+        self.atk = 5
+        self.deffend = 2
+        self.hp = 10
+        self.maxHp = 10
+        #-----------
+        
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.width = TILESIZE

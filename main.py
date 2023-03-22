@@ -21,7 +21,7 @@ class Game:
   
 		self.camera = Camera(self,0,0)
   
-		self.font = pygame.font.Font('arial.ttf',20)
+		self.font = pygame.font.Font('arial.ttf',16)
 		self.character_spritesheet = Spritesheet(f"{IMG_DIR}character.png")
 		self.terrain_spritesheet = Spritesheet(f"{IMG_DIR}terrain.png")
 		self.enemy_spritesheet = Spritesheet(f"{IMG_DIR}enemy.png")
@@ -88,9 +88,17 @@ class Game:
 		self.screen.fill(BLACK)
 		self.all_sprites.draw(self.screen)
 		self.clock.tick(FPS)
-		text = self.font.render(f'{self.player.x}, {self.player.y}', True, WHITE)
-		text_rect = text.get_rect(center=(100,20))
-		self.screen.blit(text, text_rect)
+  
+		postion_text = self.font.render(f'x: {self.player.x}, y: {self.player.y}', True, WHITE)
+		Hp_text = self.font.render(f'HP: {self.player.hp}/{self.player.maxHp}', True, WHITE)
+		Atk_text = self.font.render(f'ATK: {self.player.atk}', True, WHITE)
+		def_text = self.font.render(f'DEF: {self.player.deffend}', True, WHITE)
+  
+		self.screen.blit(postion_text, (10 , 5))
+		self.screen.blit(Hp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*3))
+		self.screen.blit(Atk_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*2))
+		self.screen.blit(def_text, (10, WIN_HEIGHT - (FONTSIZE + 5)))
+  
 		pygame.display.update()
 
 	def main(self):
