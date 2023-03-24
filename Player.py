@@ -99,6 +99,12 @@ class Player(pygame.sprite.Sprite):
     def magicAttack(self):
         self.magicTime = self.magicReduce
         MagicAttack(self)
+    def attacked(self, level):
+        self.hp -= level*2
+        if self.hp <= 0:
+            self.kill()
+            self.running = True
+            
         
     def collide_blocks(self, direction):
         if direction == 'x':

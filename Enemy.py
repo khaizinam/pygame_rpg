@@ -180,7 +180,7 @@ class Enemy(pygame.sprite.Sprite):
 class BrawEnemy(Enemy):
     def __init__(self, game, x, y, level = 1):
         super().__init__(game,x,y,level)
-        self.speed = 5
+        self.speed = 2
         self.distance = 300
     
     def movement(self):
