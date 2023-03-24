@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
         
         self.game = game
         self._layer = PLAYER_LAYER
-        self.groups = self.game.all_sprites
+        self.groups = self.game.all_sprites, self.game.playerSprite
         pygame.sprite.Sprite.__init__(self, self.groups)
         
         self.attacking = False
@@ -59,7 +59,7 @@ class Player(pygame.sprite.Sprite):
             self.magicTime -= 1
         self.movement()
         self.animate()
-        
+        #self.collide_enemy()
         self.x += self.x_change
         self.rect.x += self.x_change
         self.collide_blocks('x')
