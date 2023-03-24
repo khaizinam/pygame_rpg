@@ -24,7 +24,7 @@ class Block(pygame.sprite.Sprite):
         self.collideAttack()
     
     def collideAttack(self):
-        hits = pygame.sprite.spritecollide(self, self.game.attacks, True)
+        hits = pygame.sprite.spritecollide(self, self.game.magic_attacks, True)
         
 class Wall(pygame.sprite.Sprite):
     def __init__(self, game , x, y):
@@ -47,7 +47,8 @@ class Wall(pygame.sprite.Sprite):
         self.collideAttack()
     
     def collideAttack(self):
-        hits = pygame.sprite.spritecollide(self, self.game.attacks, True)
+        hits = pygame.sprite.spritecollide(self, self.game.magic_attacks, True)
+        
 class Grass(pygame.sprite.Sprite):
     def __init__(self, game, id, x, y):
         self.game = game
@@ -65,3 +66,20 @@ class Grass(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+        
+class HeartItem(pygame.sprite.Sprite):
+    def __init__(self, game):
+        self.game = game
+        self.x = WIN_WIDTH - 30
+        self.y = WIN_HEIGHT -  40
+        self.width = 26
+        self.height = 32
+        self._layer = 5
+        self.groups = self.game.icons
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.image = self.game.heart_spritesheet.get_sprite(0,0, self.width, self.height)
+        
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+    def update(self ): pass
