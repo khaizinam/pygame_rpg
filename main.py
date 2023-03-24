@@ -21,16 +21,21 @@ class Game:
   
 		self.camera = Camera(self,0,0)
   
-		self.font = pygame.font.Font('arial.ttf',20)
+		self.font = pygame.font.Font('arial.ttf',16)
 		self.character_spritesheet = Spritesheet(f"{IMG_DIR}character.png")
 		self.terrain_spritesheet = Spritesheet(f"{IMG_DIR}terrain.png")
 		self.enemy_spritesheet = Spritesheet(f"{IMG_DIR}enemy.png")
 		self.intro_background = pygame.image.load(f"{IMG_DIR}introbackground.png")
 		self.go_background = pygame.image.load(f"{IMG_DIR}gameover.png")
 		self.attack_spritesheet = Spritesheet(f"{IMG_DIR}attack.png")
+		self.explosion0_sprite = Spritesheet(f"{IMG_DIR}explosion0.png")
+		self.explosion1_sprite = Spritesheet(f"{IMG_DIR}explosion1.png")
+		self.heart_spritesheet = Spritesheet(f"{IMG_DIR}LifePot.png")
+		self.magic_attack = Spritesheet(f"{IMG_DIR}magic.png")
  
 	def createTilemap(self):
-		self.player = Player(self, 40 , 15)
+		self.player = Player(self, 11 , 35)
+		HeartItem(self)
 		for i, row in enumerate(tilemap):
 			for j,column in enumerate(row):
 				Grass(self, 2,j, i)
@@ -41,7 +46,9 @@ class Game:
 				if column == "G":
 					Grass(self,0, j , i)
 				if column == "E":
-					Enemy(self, j , i)
+					BeeEnemy(self, j , i)
+				if column == "R":
+					RangeEnemy(self, j , i)
      
 					
 		deltax  = self.player.x - WIN_WIDTH/2
@@ -59,8 +66,18 @@ class Game:
 		self.blocks = pygame.sprite.LayeredUpdates()
     
 		self.enemies = pygame.sprite.LayeredUpdates()
+
+		self.items = pygame.sprite.LayeredUpdates()
+  
+		self.icons = pygame.sprite.LayeredUpdates()
   
 		self.attacks = pygame.sprite.LayeredUpdates()
+
+		self.playerSprite = pygame.sprite.LayeredUpdates()
+
+  
+		self.magic_attacks = pygame.sprite.LayeredUpdates()
+  
 		self.createTilemap()
 
   
@@ -70,27 +87,31 @@ class Game:
 			if event.type == pygame.QUIT:
 				self.playing = False
 				self.running = False
-			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_SPACE:
-					if self.player.facing == 'up':
-						Attack(self, self.player.x, self.player.y - TILESIZE)
-					if self.player.facing == 'down':
-						Attack(self, self.player.x, self.player.y + TILESIZE)
-					if self.player.facing == 'left':
-						Attack(self, self.player.x - TILESIZE, self.player.y )
-					if self.player.facing == 'right':
-						Attack(self, self.player.x + TILESIZE, self.player.y )
+		keys = pygame.key.get_pressed()
+		if keys[pygame.K_c]:
+			self.player.usePotion()
+   
 	def update(self):
 		self.all_sprites.update()
 		self.camera.update()
+		self.icons.update()
 
 	def draw(self):
 		self.screen.fill(BLACK)
 		self.all_sprites.draw(self.screen)
+		self.icons.draw(self.screen)
 		self.clock.tick(FPS)
-		text = self.font.render(f'{self.player.x}, {self.player.y}', True, WHITE)
-		text_rect = text.get_rect(center=(100,20))
-		self.screen.blit(text, text_rect)
+  
+		postion_text = self.font.render(f'x: {self.player.x}, y: {self.player.y}', True, WHITE)
+		Hp_text = self.font.render(f'HP: {self.player.hp}/{self.player.maxHp}', True, WHITE)
+		Atk_text = self.font.render(f'ATK: {self.player.atk}', True, WHITE)
+		exp_text = self.font.render(f'Exp: {self.player.curentExp}/{self.player.nextExp}', True, WHITE)
+		pot_text = self.font.render(f'{self.player.potion}', True, WHITE)
+		self.screen.blit(postion_text, (10 , 5))
+		self.screen.blit(Hp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*3))
+		self.screen.blit(Atk_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*2))
+		self.screen.blit(exp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)))
+		self.screen.blit(pot_text, (WIN_WIDTH - 50, WIN_HEIGHT - 25))
 		pygame.display.update()
 
 	def main(self):

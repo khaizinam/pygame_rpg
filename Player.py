@@ -1,6 +1,7 @@
 import pygame
 from config import *
 from Sprite import *
+from Utils import *
 import math
 
 class Player(pygame.sprite.Sprite):
@@ -8,10 +9,26 @@ class Player(pygame.sprite.Sprite):
         
         self.game = game
         self._layer = PLAYER_LAYER
-        self.groups = self.game.all_sprites
+        self.groups = self.game.all_sprites, self.game.playerSprite
         pygame.sprite.Sprite.__init__(self, self.groups)
         
         self.attacking = False
+        self.velx = 0
+        self.vely = 0
+        #----------
+        self.potion = 3
+        self.TimeNextPotion = FPS * 3
+        self.potionReduce = 0
+        self.level = 1
+        self.atk = 5
+        self.hp = 10
+        self.maxHp = 10
+        self.curentExp = 0
+        self.nextExp = self.level * 20
+        self.magicRange = 15
+        self.magicReduce = 16
+        self.magicTime = 0
+        #-----------
         
         self.x = x * TILESIZE
         self.y = y * TILESIZE
@@ -40,10 +57,13 @@ class Player(pygame.sprite.Sprite):
         self.right_animations = self.animation.moveRight()
         
     def update(self):
+        if self.potionReduce > 0:
+            self.potionReduce -= 1
+        if self.magicTime > 0 : 
+            self.magicTime -= 1
         self.movement()
         self.animate()
-        self.collide_enemy()
-        
+        #self.collide_enemy()
         self.x += self.x_change
         self.rect.x += self.x_change
         self.collide_blocks('x')
@@ -51,49 +71,67 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.y_change
         self.collide_blocks('y')
         
+        self.velx = 0
+        self.vely = 0
         self.x_change = 0
         self.y_change = 0
-        
+    
+    def usePotion(self):
+        if self.hp < self.maxHp and self.potion > 0 and  self.potionReduce == 0:
+            self.potionReduce = self.TimeNextPotion
+            self.potion -= 1
+            self.hp = self.maxHp 
     def movement(self):
         keys = pygame.key.get_pressed()
-        if self.attacking == False :
-            if keys[pygame.K_LEFT]:
-                self.x_change -= PLAYER_SPEED
-                self.facing = 'left'
-            elif keys[pygame.K_RIGHT]:
-                self.x_change += PLAYER_SPEED
-                self.facing = 'right'
-            elif keys[pygame.K_UP]:
-                self.y_change -= PLAYER_SPEED
-                self.facing = 'up'
-            elif keys[pygame.K_DOWN]:
-                self.y_change += PLAYER_SPEED
-                self.facing = 'down'
-    
-    def collide_enemy(self):
-        hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
-        if hits:
+        if keys[pygame.K_LEFT]:
+            self.velx = -1
+            self.facing = 'left'
+        elif keys[pygame.K_RIGHT]:
+            self.velx = 1
+            self.facing = 'right'
+        elif keys[pygame.K_UP]:
+            self.vely = -1
+            self.facing = 'up'
+        elif keys[pygame.K_DOWN]:
+            self.vely = 1
+            self.facing = 'down'
+        if keys[pygame.K_z]:
+            if self.attacking == False :
+                self.meleeAttack()
+        if keys[pygame.K_x]:
+            if self.attacking == False and self.magicTime == 0:
+                self.magicAttack()
+        self.x_change += self.velx * PLAYER_SPEED
+        self.y_change += self.vely * PLAYER_SPEED
+    def meleeAttack(self):
+        MeleeAttack(self)
+    def magicAttack(self):
+        self.magicTime = self.magicReduce
+        MagicAttack(self)
+    def attacked(self, level):
+        self.hp -= level*2
+        if self.hp <= 0:
             self.kill()
             self.game.playing = False
+            
         
     def collide_blocks(self, direction):
-    
         if direction == 'x':
             hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
             if hits:
-                if self.x_change > 0:
-                    self.x = hits[0].x - self.rect.width
-                if self.x_change < 0:
-                    self.x = hits[0].x + hits[0].rect.width
-                    
-        
-        if direction == 'y':
+                for hit in hits:
+                    if self.x_change > 0:
+                        self.x = hit.x - self.rect.width
+                    if self.x_change < 0:
+                        self.x = hit.x + hit.rect.width 
+        if direction == 'y': 
             hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
             if hits:
-                if self.y_change > 0 and self.x_change == 0:
-                    self.y = hits[0].y - self.rect.height
-                if self.y_change < 0 and self.x_change == 0:
-                    self.y = hits[0].y + hits[0].rect.height
+                for hit in hits:
+                    if self.y_change > 0 :
+                        self.y = hit.y - self.rect.height
+                    if self.y_change < 0 :
+                        self.y = hit.y + hit.rect.height
     
     def animate(self):
         
