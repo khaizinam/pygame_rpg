@@ -1,25 +1,25 @@
 import pygame
 from config import *
+from Utils import *
 import math
 import random
 
-class EnemyAttack(pygame.sprite.Sprite):
+class MagicEnemyAttack(pygame.sprite.Sprite):
     
     def __init__(self, game,enemy, layer = ENEMY_LAYER):
         #game res
         self.game = game
         
-        
         self._layer = layer
-        self.groups = self.game.all_sprites, self.game.attacks
+        self.groups = self.game.all_sprites, self.game.magic_attacks
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.enemy = enemy
 
         #game setting
         self.distance = 40
-        self.frame = 8
-        self.width = 32
-        self.height = 32
+        self.frame = 6
+        self.width = 16
+        self.height = 16
         self.delayFrame = 5
 
         #game logic
@@ -37,13 +37,12 @@ class EnemyAttack(pygame.sprite.Sprite):
         
         
         self.image = self.game.attack_spritesheet.get_sprite(0, 0, self.width, self.height)
-        
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
         
 
-        self.explosion_animations = [self.game.explosion0_sprite.get_sprite(15, 20, self.width, self.height),
+        self.explosion_animations = [self.game.explosion0_sprite.get_sprite(0, 0, self.width, self.height),
                                      self.game.explosion1_sprite.get_sprite(15, 20, self.width, self.height)]
 
         
@@ -83,6 +82,7 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, game, x, y, level = 1):
         self.attackedTime = 0
         self.level = level
+        self.exp = level*2
         self.hp = level*10
         self.atk = None
         self.game = game
@@ -176,19 +176,84 @@ class Enemy(pygame.sprite.Sprite):
             self.attackedTime = FPS
             self.game.player.attacked(self.level)
     
-
-class BrawEnemy(Enemy):
+class BeeEnemy(Enemy):
     def __init__(self, game, x, y, level = 1):
-        super().__init__(game,x,y,level)
-        self.speed = 2
-        self.distance = 300
+        self.attackedTime = 0
+        self.exp = level*2
+        self.level = level
+        self.hp = level*10
+        self.atk = None
+        self.game = game
+        self._layer = ENEMY_LAYER
+        self.groups = self.game.all_sprites, self.game.enemies
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = 16 #24
+        self.height = 30
+        
+        self.attackDuration = 0
+        self.hp = 10
+        self.x_change = 0
+        self.y_change = 0
+        
+        self.facing = 'left'
+        self.animation_loop = 1
+        self.movement_loop = 0
+        self.max_travel = 30
+
+        self.bee_spritesheet = Spritesheet("./img/bee.png")
+        self.image = self.bee_spritesheet.get_sprite(0, 0, self.width, self.height )
+        
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+        
+        self.speed = 1
+        self.posx = x
+        self.posy = y
+        self.distance = 150
+        
+        self.left_animations = [self.bee_spritesheet.get_sprite(10, 34, 16, self.height),
+                           self.bee_spritesheet.get_sprite(42, 34, 16, self.height),
+                           self.bee_spritesheet.get_sprite(74, 34, 16, self.height)]
+
+        self.right_animations = [self.bee_spritesheet.get_sprite(7, 98, 16, self.height),
+                            self.bee_spritesheet.get_sprite(40, 98, 16, self.height),
+                            self.bee_spritesheet.get_sprite(72, 98, 16, self.height)]
     
+        # self.up_animations = [self.game.bee_spritesheet.get_sprite(4, 1, 24, self.height),
+        #                    self.game.bee_spritesheet.get_sprite(37, 1, 24, self.height),
+        #                    self.game.bee_spritesheet.get_sprite(70, 1, 24, self.height)]
+        
+        # self.up_animations = [self.game.bee_spritesheet.get_sprite(4, 65, 24, self.height),
+        #                    self.game.bee_spritesheet.get_sprite(37, 65, 24, self.height),
+        #                    self.game.bee_spritesheet.get_sprite(70, 65, 24, self.height)]
+    def animate(self):
+        if self.facing == 'left':
+            self.image = self.left_animations[math.floor(self.animation_loop)]
+            self.animation_loop += 0.1
+            if self.animation_loop >= 3:
+                self.animation_loop = 1
+                    
+        elif self.facing == 'right':
+            self.image = self.right_animations[math.floor(self.animation_loop)]
+            self.animation_loop += 0.1
+            if self.animation_loop >= 3:
+                self.animation_loop = 1
+        
+                    
     def movement(self):
         if pygame.math.Vector2(self.x, self.y).distance_to((self.game.player.x, self.game.player.y)) < self.distance and self.attackedTime <= 0:
             vectorX = self.game.player.x - self.x
             vectorY = self.game.player.y - self.y
             vectorX, vectorY = vectorX/(math.sqrt(vectorX*vectorX+vectorY*vectorY))*self.speed, vectorY/(math.sqrt(vectorX*vectorX+vectorY*vectorY))*self.speed
             self.x_change = vectorX
+            if self.x_change > 0:
+                self.facing = 'right'
+            elif self.x_change < 0:
+                self.facing = 'left' 
             self.y_change = vectorY
         return
 
@@ -203,12 +268,12 @@ class RangeEnemy(Enemy):
             self.atk = None
             self.attackedTime = FPS
         else:
-            self.atk = EnemyAttack(self.game,self,ENEMY_LAYER)
+            self.atk = MagicEnemyAttack(self.game,self,ENEMY_LAYER)
         
         
     def update(self):
         super().update()
         if self.attackDuration == 0:
             dist = pygame.math.Vector2(self.x, self.y).distance_to((self.game.player.x, self.game.player.y))
-            if dist < 300:
+            if dist < 150:
                 self.attack()

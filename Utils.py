@@ -59,15 +59,15 @@ class MeleeAttack(pygame.sprite.Sprite):
         self.y_change = 0
         if self.player.facing == 'up':
             x = self.player.x 
-            y = self.player.y - TILESIZE
+            y = self.player.y - TILESIZE - 5
         if self.player.facing == 'down':
             x = self.player.x
-            y =self.player.y + TILESIZE
+            y = self.player.y + TILESIZE + 5
         if self.player.facing == 'left':
-            x = self.player.x - TILESIZE
+            x = self.player.x - TILESIZE - 5
             y =self.player.y
         if self.player.facing == 'right':
-            x = self.player.x + TILESIZE
+            x = self.player.x + TILESIZE + 5
             y = self.player.y
             
         self.x = x
@@ -76,36 +76,36 @@ class MeleeAttack(pygame.sprite.Sprite):
         self.height = TILESIZE
         
         self.animation_loop = 0
-        
-        self.image = self.game.attack_spritesheet.get_sprite(0, 0, self.width, self.height)
+        self.spritesheet = Spritesheet("./img/attack.png")
+        self.image = self.spritesheet.get_sprite(0, 0, self.width, self.height)
         
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
         
-        self.right_animations = [self.game.attack_spritesheet.get_sprite(0, 64, self.width, self.height),
-                            self.game.attack_spritesheet.get_sprite(32, 64, self.width, self.height),
-                            self.game.attack_spritesheet.get_sprite(64, 64, self.width, self.height),
-                            self.game.attack_spritesheet.get_sprite(96, 64, self.width, self.height),
-                            self.game.attack_spritesheet.get_sprite(128, 64, self.width, self.height)]
+        self.right_animations = [self.spritesheet.get_sprite(0, 64, self.width, self.height),
+                            self.spritesheet.get_sprite(32, 64, self.width, self.height),
+                            self.spritesheet.get_sprite(64, 64, self.width, self.height),
+                            self.spritesheet.get_sprite(96, 64, self.width, self.height),
+                            self.spritesheet.get_sprite(128, 64, self.width, self.height)]
 
-        self.down_animations = [self.game.attack_spritesheet.get_sprite(0, 32, self.width, self.height),
-                            self.game.attack_spritesheet.get_sprite(32, 32, self.width, self.height),
-                            self.game.attack_spritesheet.get_sprite(64, 32, self.width, self.height),
-                            self.game.attack_spritesheet.get_sprite(96, 32, self.width, self.height),
-                            self.game.attack_spritesheet.get_sprite(128, 32, self.width, self.height)]
+        self.down_animations = [self.spritesheet.get_sprite(0, 32, self.width, self.height),
+                            self.spritesheet.get_sprite(32, 32, self.width, self.height),
+                            self.spritesheet.get_sprite(64, 32, self.width, self.height),
+                            self.spritesheet.get_sprite(96, 32, self.width, self.height),
+                            self.spritesheet.get_sprite(128, 32, self.width, self.height)]
 
-        self.left_animations = [self.game.attack_spritesheet.get_sprite(0, 96, self.width, self.height),
-                            self.game.attack_spritesheet.get_sprite(32, 96, self.width, self.height),
-                            self.game.attack_spritesheet.get_sprite(64, 96, self.width, self.height),
-                            self.game.attack_spritesheet.get_sprite(96, 96, self.width, self.height),
-                            self.game.attack_spritesheet.get_sprite(128, 96, self.width, self.height)]
+        self.left_animations = [self.spritesheet.get_sprite(0, 96, self.width, self.height),
+                            self.spritesheet.get_sprite(32, 96, self.width, self.height),
+                            self.spritesheet.get_sprite(64, 96, self.width, self.height),
+                            self.spritesheet.get_sprite(96, 96, self.width, self.height),
+                            self.spritesheet.get_sprite(128, 96, self.width, self.height)]
 
-        self.up_animations = [self.game.attack_spritesheet.get_sprite(0, 0, self.width, self.height),
-                            self.game.attack_spritesheet.get_sprite(32, 0, self.width, self.height),
-                            self.game.attack_spritesheet.get_sprite(64, 0, self.width, self.height),
-                            self.game.attack_spritesheet.get_sprite(96, 0, self.width, self.height),
-                            self.game.attack_spritesheet.get_sprite(128, 0, self.width, self.height)]
+        self.up_animations = [self.spritesheet.get_sprite(0, 0, self.width, self.height),
+                            self.spritesheet.get_sprite(32, 0, self.width, self.height),
+                            self.spritesheet.get_sprite(64, 0, self.width, self.height),
+                            self.spritesheet.get_sprite(96, 0, self.width, self.height),
+                            self.spritesheet.get_sprite(128, 0, self.width, self.height)]
         
     def update(self):
         self.animate()
@@ -114,9 +114,13 @@ class MeleeAttack(pygame.sprite.Sprite):
     def collide(self):
         hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
         if hits:
-            hits[0].hp = hits[0].hp - math.floor(self.damge / 5) 
-            if hits[0].hp <= 0:
-                hits[0].kill()
+            enemy = hits[0]
+            enemy.x_change = 0
+            enemy.y_chamge = 0
+            enemy.hp = enemy.hp - math.floor(self.damge / 5) 
+            if enemy.hp <= 0:
+                self.player.curentExp += enemy.exp
+                enemy.kill()
      
     def animate(self):
         direction = self.game.player.facing
@@ -195,7 +199,6 @@ class MagicAttack(pygame.sprite.Sprite):
         self.animation_loop = 0
         
         self.image = self.game.attack_spritesheet.get_sprite(0, 0, self.width, self.height)
-        
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
@@ -237,6 +240,7 @@ class MagicAttack(pygame.sprite.Sprite):
             hits[0].hp = hits[0].hp - self.damge
             if hits[0].hp <= 0:
                 hits[0].kill()
+                self.player.curentExp += hits[0].exp
             self.kill()
      
     def animate(self):

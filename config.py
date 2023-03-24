@@ -46,7 +46,7 @@ tilemap = [
     '..........                                                                                ..........',
     '..........BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB    ..........',
     '..........BBBBBBBBBBBBBBB                       B                                    B    ..........',
-    '..........              B                       B                                    B    ..........',
+    '..........     R        B                       B                                    B    ..........',
     '..........              B            B          B                                    B    ..........',
     '..........BBB    BBB    B            B          B                                    B    ..........',
     '..........         B    B            B     BBBBBBBBBBBBBBBBBBBBBBBBBBBB              B    ..........',

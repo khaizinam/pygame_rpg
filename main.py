@@ -46,7 +46,7 @@ class Game:
 				if column == "G":
 					Grass(self,0, j , i)
 				if column == "E":
-					BrawEnemy(self, j , i)
+					BeeEnemy(self, j , i)
 				if column == "R":
 					RangeEnemy(self, j , i)
      
@@ -87,6 +87,10 @@ class Game:
 			if event.type == pygame.QUIT:
 				self.playing = False
 				self.running = False
+		keys = pygame.key.get_pressed()
+		if keys[pygame.K_c]:
+			self.player.usePotion()
+   
 	def update(self):
 		self.all_sprites.update()
 		self.camera.update()
@@ -102,11 +106,12 @@ class Game:
 		Hp_text = self.font.render(f'HP: {self.player.hp}/{self.player.maxHp}', True, WHITE)
 		Atk_text = self.font.render(f'ATK: {self.player.atk}', True, WHITE)
 		exp_text = self.font.render(f'Exp: {self.player.curentExp}/{self.player.nextExp}', True, WHITE)
+		pot_text = self.font.render(f'{self.player.potion}', True, WHITE)
 		self.screen.blit(postion_text, (10 , 5))
 		self.screen.blit(Hp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*3))
 		self.screen.blit(Atk_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*2))
 		self.screen.blit(exp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)))
-  
+		self.screen.blit(pot_text, (WIN_WIDTH - 50, WIN_HEIGHT - 25))
 		pygame.display.update()
 
 	def main(self):

@@ -16,7 +16,9 @@ class Player(pygame.sprite.Sprite):
         self.velx = 0
         self.vely = 0
         #----------
-        self.potion = 0
+        self.potion = 3
+        self.TimeNextPotion = FPS * 3
+        self.potionReduce = 0
         self.level = 1
         self.atk = 5
         self.hp = 10
@@ -55,6 +57,8 @@ class Player(pygame.sprite.Sprite):
         self.right_animations = self.animation.moveRight()
         
     def update(self):
+        if self.potionReduce > 0:
+            self.potionReduce -= 1
         if self.magicTime > 0 : 
             self.magicTime -= 1
         self.movement()
@@ -71,7 +75,12 @@ class Player(pygame.sprite.Sprite):
         self.vely = 0
         self.x_change = 0
         self.y_change = 0
-        
+    
+    def usePotion(self):
+        if self.hp < self.maxHp and self.potion > 0 and  self.potionReduce == 0:
+            self.potionReduce = self.TimeNextPotion
+            self.potion -= 1
+            self.hp = self.maxHp 
     def movement(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
@@ -103,7 +112,7 @@ class Player(pygame.sprite.Sprite):
         self.hp -= level*2
         if self.hp <= 0:
             self.kill()
-            self.running = True
+            self.game.playing = False
             
         
     def collide_blocks(self, direction):
