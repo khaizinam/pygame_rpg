@@ -15,7 +15,7 @@ class Enemy(pygame.sprite.Sprite):
         self.y = y * TILESIZE
         self.width = TILESIZE
         self.height = TILESIZE
-        
+        self.hp = 10
         self.x_change = 0
         self.y_change = 0
         

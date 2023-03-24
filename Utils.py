@@ -112,7 +112,11 @@ class MeleeAttack(pygame.sprite.Sprite):
         self.collide()
     
     def collide(self):
-        hits = pygame.sprite.spritecollide(self, self.game.enemies, True)
+        hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
+        if hits:
+            hits[0].hp = hits[0].hp - math.floor(self.damge / 5) 
+            if hits[0].hp <= 0:
+                hits[0].kill()
      
     def animate(self):
         direction = self.game.player.facing
@@ -227,8 +231,13 @@ class MagicAttack(pygame.sprite.Sprite):
         self.animate()
         self.collide()
     
-    def collide(self):pass
-        #hits = pygame.sprite.spritecollide(self, self.game.blocks, True)
+    def collide(self):
+        hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
+        if hits:
+            hits[0].hp = hits[0].hp - self.damge
+            if hits[0].hp <= 0:
+                hits[0].kill()
+            self.kill()
      
     def animate(self):
         #self.image = self.game.magic_attack.get_sprite(0, 0, self.width, self.height)

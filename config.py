@@ -13,7 +13,7 @@ GROUND_LAYER = 1
 MAP_HEIGHT = 30 * 32
 MAP_WIDTH = 80 *32
 
-BULLET_SPD = 12
+BULLET_SPD = 16
 PLAYER_SPEED = 6
 ENEMY_SPEED = 2
 FONTSIZE = 16
@@ -51,7 +51,7 @@ tilemap = [
     '..........BBB    BBB    B            B          B                                    B    ..........',
     '..........         B    B            B     BBBBBBBBBBBBBBBBBBBBBBBBBBBB              B    ..........',
     '..........         B    B            B                                               B    ..........',
-    '..........         B    BBBBBBBBBB   B                                               B    ..........',
+    '..........     E   B    BBBBBBBBBB   B                                               B    ..........',
     '..........         BGGGGGGGGGGGGGG   B                                                    ..........',
     '..........         BGGGGGGGGGGGGGG   B                                                    ..........',
     '....................................................................................................',

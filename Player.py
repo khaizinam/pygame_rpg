@@ -23,7 +23,7 @@ class Player(pygame.sprite.Sprite):
         self.maxHp = 10
         self.curentExp = 0
         self.nextExp = self.level * 20
-        self.magicRange = 20
+        self.magicRange = 15
         self.magicReduce = 16
         self.magicTime = 0
         #-----------
