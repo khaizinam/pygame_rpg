@@ -8,12 +8,13 @@ class Player(pygame.sprite.Sprite):
         
         self.game = game
         self._layer = PLAYER_LAYER
-        self.groups = self.game.all_sprites
+        self.groups = self.game.all_sprites, self.game.playerSprite
         pygame.sprite.Sprite.__init__(self, self.groups)
         
         self.attacking = False
         
         #----------
+        self.imume = 0
         self.atk = 5
         self.deffend = 2
         self.hp = 10
@@ -49,8 +50,7 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.movement()
         self.animate()
-        self.collide_enemy()
-        
+        #self.collide_enemy()
         self.x += self.x_change
         self.rect.x += self.x_change
         self.collide_blocks('x')
@@ -77,9 +77,10 @@ class Player(pygame.sprite.Sprite):
                 self.y_change += PLAYER_SPEED
                 self.facing = 'down'
     
-    def collide_enemy(self):
-        hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
-        if hits:
+    def attacked(self,damage):
+        self.hp = self.hp - damage
+        if self.hp <= 0:
+            self.hp = 0
             self.kill()
             self.game.playing = False
         

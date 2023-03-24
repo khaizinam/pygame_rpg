@@ -28,6 +28,8 @@ class Game:
 		self.intro_background = pygame.image.load(f"{IMG_DIR}introbackground.png")
 		self.go_background = pygame.image.load(f"{IMG_DIR}gameover.png")
 		self.attack_spritesheet = Spritesheet(f"{IMG_DIR}attack.png")
+		self.explosion0_sprite = Spritesheet(f"{IMG_DIR}explosion0.png")
+		self.explosion1_sprite = Spritesheet(f"{IMG_DIR}explosion1.png")
  
 	def createTilemap(self):
 		self.player = Player(self, 40 , 15)
@@ -41,7 +43,9 @@ class Game:
 				if column == "G":
 					Grass(self,0, j , i)
 				if column == "E":
-					Enemy(self, j , i)
+					BrawEnemy(self, j , i)
+				if column == "R":
+					RangeEnemy(self, j , i)
      
 					
 		deltax  = self.player.x - WIN_WIDTH/2
@@ -61,6 +65,9 @@ class Game:
 		self.enemies = pygame.sprite.LayeredUpdates()
   
 		self.attacks = pygame.sprite.LayeredUpdates()
+
+		self.playerSprite = pygame.sprite.LayeredUpdates()
+
 		self.createTilemap()
 
   
