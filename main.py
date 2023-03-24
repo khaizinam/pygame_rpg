@@ -28,12 +28,12 @@ class Game:
 		self.intro_background = pygame.image.load(f"{IMG_DIR}introbackground.png")
 		self.go_background = pygame.image.load(f"{IMG_DIR}gameover.png")
 		self.attack_spritesheet = Spritesheet(f"{IMG_DIR}attack.png")
-		self.heart_spritesheet = Spritesheet(f"{IMG_DIR}potions.png")
+		self.heart_spritesheet = Spritesheet(f"{IMG_DIR}LifePot.png")
 		self.magic_attack = Spritesheet(f"{IMG_DIR}magic.png")
  
 	def createTilemap(self):
 		self.player = Player(self, 11 , 35)
-		HeartItem(self, 40, 13)
+		HeartItem(self)
 		for i, row in enumerate(tilemap):
 			for j,column in enumerate(row):
 				Grass(self, 2,j, i)
@@ -64,8 +64,11 @@ class Game:
 		self.enemies = pygame.sprite.LayeredUpdates()
 
 		self.items = pygame.sprite.LayeredUpdates()
-
+  
+		self.icons = pygame.sprite.LayeredUpdates()
+  
 		self.attacks = pygame.sprite.LayeredUpdates()
+  
 		self.magic_attacks = pygame.sprite.LayeredUpdates()
   
 		self.createTilemap()
@@ -80,22 +83,21 @@ class Game:
 	def update(self):
 		self.all_sprites.update()
 		self.camera.update()
+		self.icons.update()
 
 	def draw(self):
 		self.screen.fill(BLACK)
 		self.all_sprites.draw(self.screen)
+		self.icons.draw(self.screen)
 		self.clock.tick(FPS)
   
 		postion_text = self.font.render(f'x: {self.player.x}, y: {self.player.y}', True, WHITE)
 		Hp_text = self.font.render(f'HP: {self.player.hp}/{self.player.maxHp}', True, WHITE)
 		Atk_text = self.font.render(f'ATK: {self.player.atk}', True, WHITE)
-		def_text = self.font.render(f'DEF: {self.player.deffend}', True, WHITE)
-		exp_text = self.font.render(f'DEF: {self.player.curentExp}/{self.player.nextExp}', True, WHITE)
-  
+		exp_text = self.font.render(f'Exp: {self.player.curentExp}/{self.player.nextExp}', True, WHITE)
 		self.screen.blit(postion_text, (10 , 5))
-		self.screen.blit(Hp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*4))
-		self.screen.blit(Atk_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*3))
-		self.screen.blit(def_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*2))
+		self.screen.blit(Hp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*3))
+		self.screen.blit(Atk_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*2))
 		self.screen.blit(exp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)))
   
 		pygame.display.update()

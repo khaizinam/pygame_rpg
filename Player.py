@@ -19,7 +19,6 @@ class Player(pygame.sprite.Sprite):
         self.potion = 0
         self.level = 1
         self.atk = 5
-        self.deffend = 2
         self.hp = 10
         self.maxHp = 10
         self.curentExp = 0
@@ -60,7 +59,6 @@ class Player(pygame.sprite.Sprite):
             self.magicTime -= 1
         self.movement()
         self.animate()
-        self.collide_enemy()
         
         self.x += self.x_change
         self.rect.x += self.x_change
@@ -96,24 +94,11 @@ class Player(pygame.sprite.Sprite):
                 self.magicAttack()
         self.x_change += self.velx * PLAYER_SPEED
         self.y_change += self.vely * PLAYER_SPEED
-                # if self.player.facing == 'up':
-                #     Attack(self, self.player.x, self.player.y - TILESIZE)
-                # if self.player.facing == 'down':
-                #     Attack(self, self.player.x, self.player.y + TILESIZE)
-                # if self.player.facing == 'left':
-                #     Attack(self, self.player.x - TILESIZE, self.player.y )
-                # if self.player.facing == 'right':
-                #     Attack(self, self.player.x + TILESIZE, self.player.y )
     def meleeAttack(self):
         MeleeAttack(self)
     def magicAttack(self):
         self.magicTime = self.magicReduce
         MagicAttack(self)
-    def collide_enemy(self):
-        hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
-        if hits:
-            self.kill()
-            self.game.playing = False
         
     def collide_blocks(self, direction):
         if direction == 'x':
@@ -123,10 +108,8 @@ class Player(pygame.sprite.Sprite):
                     if self.x_change > 0:
                         self.x = hit.x - self.rect.width
                     if self.x_change < 0:
-                        self.x = hit.x + hit.rect.width
-                    
-        
-        if direction == 'y':
+                        self.x = hit.x + hit.rect.width 
+        if direction == 'y': 
             hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
             if hits:
                 for hit in hits:
