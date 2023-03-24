@@ -187,7 +187,7 @@ class BeeEnemy(Enemy):
         self._layer = ENEMY_LAYER
         self.groups = self.game.all_sprites, self.game.enemies
         pygame.sprite.Sprite.__init__(self, self.groups)
-        
+        self.stand = False
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.width = 16 #24
@@ -211,8 +211,8 @@ class BeeEnemy(Enemy):
         self.rect.y = self.y
         
         self.speed = 1
-        self.posx = x
-        self.posy = y
+        self.posx = self.x
+        self.posy = self.y
         self.distance = 150
         
         self.left_animations = [self.bee_spritesheet.get_sprite(10, 34, 16, self.height),
@@ -243,18 +243,27 @@ class BeeEnemy(Enemy):
             if self.animation_loop >= 3:
                 self.animation_loop = 1
         
-                    
+    def moveto(self,x,y): 
+        vectorX = x - self.x
+        vectorY = y - self.y 
+        vectorX = vectorX/(math.sqrt(vectorX*vectorX+vectorY*vectorY))*self.speed
+        vectorY = vectorY/(math.sqrt(vectorX*vectorX+vectorY*vectorY))*self.speed
+        self.x_change = vectorX
+        self.y_change = vectorY
+    def distanceTo(self, x, y):
+        return pygame.math.Vector2(self.x, self.y).distance_to((x, y))
     def movement(self):
-        if pygame.math.Vector2(self.x, self.y).distance_to((self.game.player.x, self.game.player.y)) < self.distance and self.attackedTime <= 0:
-            vectorX = self.game.player.x - self.x
-            vectorY = self.game.player.y - self.y
-            vectorX, vectorY = vectorX/(math.sqrt(vectorX*vectorX+vectorY*vectorY))*self.speed, vectorY/(math.sqrt(vectorX*vectorX+vectorY*vectorY))*self.speed
-            self.x_change = vectorX
-            if self.x_change > 0:
-                self.facing = 'right'
-            elif self.x_change < 0:
-                self.facing = 'left' 
-            self.y_change = vectorY
+        if self.distanceTo(self.game.player.x, self.game.player.y) <= self.distance and self.attackedTime <= 0:
+            self.stand = False
+            self.moveto(self.game.player.x, self.game.player.y) 
+        if self.distanceTo(self.game.player.x, self.game.player.y) > self.distance and self.stand == False:
+            self.moveto(self.posx, self.posy)
+        if self.x >=  self.posx - 10 and self.x <=  self.posx + 10 and self.y >= self.posy - 10 and self.y <= self.posy + 10 and self.stand == False:
+            self.stand = True
+        if self.x_change > 0:
+            self.facing = 'right'
+        elif self.x_change < 0:
+            self.facing = 'left'
         return
 
 
