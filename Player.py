@@ -106,10 +106,10 @@ class Player(pygame.sprite.Sprite):
         elif keys[pygame.K_DOWN]:
             self.vely = 1
             self.facing = 'down'
-        if keys[pygame.K_z]:
+        if keys[pygame.K_j]:
             if self.attacking == False :
                 self.meleeAttack()
-        if keys[pygame.K_x]:
+        if keys[pygame.K_k]:
             if self.attacking == False and self.magicTime == 0:
                 self.magicAttack()
         self.x_change += self.velx * PLAYER_SPEED

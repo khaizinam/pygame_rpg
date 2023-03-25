@@ -80,7 +80,7 @@ class Game:
 				self.playing = False
 				self.running = False
 		keys = pygame.key.get_pressed()
-		if keys[pygame.K_c]:
+		if keys[pygame.K_l]:
 			self.player.usePotion()
    
 	def update(self):
