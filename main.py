@@ -1,12 +1,4 @@
-import pygame
-from sprites import *
-from config import *
-from Utils import *
-from Ground import *
-from Player import *
-from Camera import *
-from Enemy import *
-from Sprite import *
+from importPack import *
 
 import sys
 IMG_DIR = './img/'
@@ -34,7 +26,6 @@ class Game:
 		self.magic_attack = Spritesheet(f"{IMG_DIR}magic.png")
  
 	def createTilemap(self):
-		self.player = Player(self, 11 , 35)
 		HeartItem(self)
 		for i, row in enumerate(tilemap):
 			for j,column in enumerate(row):
@@ -45,40 +36,66 @@ class Game:
 					Wall(self, j , i)
 				if column == "G":
 					Grass(self,0, j , i)
-				if column == "E":
-					BeeEnemy(self, j , i)
-				if column == "R":
-					RangeEnemy(self, j , i)
      
-					
+
+	def initEntity(self):
+		self.player = Player(self, 60 , 860)
+		self.playerhpbar = PlayerHealthBar(self, self.player)
 		deltax  = self.player.x - WIN_WIDTH/2
 		deltay = self.player.y - WIN_HEIGHT /2
 		for sprite in self.all_sprites:
 			sprite.rect.x -= deltax
 			sprite.rect.y -= deltay
-
+		self.minionList = [
+      		CreateMinion('bee', self, 276, 884, 1, FPS*30),
+			CreateMinion('bat', self, 270, 776, 1, FPS*30),
+			CreateMinion('bee', self, 448, 854, 2, FPS*30),
+			CreateMinion('mage', self, 372, 660, 1, FPS*30),
+			CreateMinion('bat', self, 448, 764, 1, FPS*30),
+			CreateMinion('bat', self, 354, 776, 1, FPS*30),
+			CreateMinion('mage', self, 668, 880, 1, FPS*30),
+			CreateMinion('bat', self, 648, 668, 2, FPS*60),
+			CreateMinion('bat', self, 688, 668, 2, FPS*60),
+			CreateMinion('bat', self, 648, 730, 2, FPS*60),
+			CreateMinion('bat', self, 688, 730, 3, FPS*60),
+			CreateMinion('bee', self, 890, 658, 3, FPS*60),
+			CreateMinion('mage', self, 1088, 688, 2, FPS*60),
+   			CreateMinion('bat', self, 1064, 820, 3, FPS*60),
+			CreateMinion('bat', self, 1142, 820, 3, FPS*60),
+			CreateMinion('bat', self, 1064, 874, 3, FPS*60),
+			CreateMinion('bat', self, 1142, 874, 3, FPS*60),
+			CreateMinion('bee', self, 1460, 844, 4, FPS*60),
+			CreateMinion('bee', self, 1610, 808, 3, FPS*60),
+			CreateMinion('bee', self, 1610, 886, 3, FPS*60),
+			CreateMinion('mage', self, 2132, 766, 2, FPS*60),
+			CreateMinion('mage', self, 2132, 862, 2, FPS*60),
+   			CreateMinion('mage', self, 1664, 688, 3, FPS*60),
+      		CreateMinion('mage', self, 2216, 365, 3, FPS*60),
+			CreateMinion('bat', self, 2300, 290, 4, FPS*60),
+			CreateMinion('bat', self, 2468, 290, 4, FPS*60),
+			CreateMinion('bat', self, 2414, 290, 4, FPS*60),
+			CreateMinion('bee', self, 2414, 236, 5, FPS*60),
+        ]
+		for minion in self.minionList:
+			minion.create()
 
 	def new(self):
 		self.playing = True
-  
+
 		self.all_sprites = pygame.sprite.LayeredUpdates()
-
 		self.blocks = pygame.sprite.LayeredUpdates()
-    
 		self.enemies = pygame.sprite.LayeredUpdates()
-
 		self.items = pygame.sprite.LayeredUpdates()
-  
 		self.icons = pygame.sprite.LayeredUpdates()
-  
+		self.health_bar = pygame.sprite.LayeredUpdates()
 		self.attacks = pygame.sprite.LayeredUpdates()
-
 		self.playerSprite = pygame.sprite.LayeredUpdates()
 
   
 		self.magic_attacks = pygame.sprite.LayeredUpdates()
-  
+
 		self.createTilemap()
+		self.initEntity()
 
   
 
@@ -88,13 +105,15 @@ class Game:
 				self.playing = False
 				self.running = False
 		keys = pygame.key.get_pressed()
-		if keys[pygame.K_c]:
+		if keys[pygame.K_l]:
 			self.player.usePotion()
    
 	def update(self):
 		self.all_sprites.update()
-		self.camera.update()
 		self.icons.update()
+		for minion in self.minionList:
+			minion.update()
+		self.camera.update()
 
 	def draw(self):
 		self.screen.fill(BLACK)
@@ -108,7 +127,7 @@ class Game:
 		exp_text = self.font.render(f'Exp: {self.player.curentExp}/{self.player.nextExp}', True, WHITE)
 		pot_text = self.font.render(f'{self.player.potion}', True, WHITE)
 		self.screen.blit(postion_text, (10 , 5))
-		self.screen.blit(Hp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*3))
+		self.screen.blit(Hp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*4))
 		self.screen.blit(Atk_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*2))
 		self.screen.blit(exp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)))
 		self.screen.blit(pot_text, (WIN_WIDTH - 50, WIN_HEIGHT - 25))
