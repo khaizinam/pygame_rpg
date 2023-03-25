@@ -31,8 +31,8 @@ class Player(pygame.sprite.Sprite):
         self.magicTime = 0
         #-----------
         
-        self.x = x * TILESIZE
-        self.y = y * TILESIZE
+        self.x = x
+        self.y = y
         self.width = TILESIZE
         self.height = TILESIZE
         

@@ -20,6 +20,7 @@ class CreateMinion:
         elif self.enemyType == 'mage':
             self.minion = MageEnemy(self.game,self.x, self.y, self.level)
         self.bar = HealthBar(self.game, self.minion)
+        self.lvl = lvlBar(self.game, self.minion)
             
     def update(self):
         if self.minion.hp <= 0 and self.isdead == False:
@@ -32,6 +33,7 @@ class CreateMinion:
                 self.isdead = False
                 self.minion.respawn()
                 self.bar.reset()
+
                 
 
 

@@ -111,7 +111,7 @@ class Enemy(pygame.sprite.Sprite):
         self.facing = random.choice(['left', 'right'])
         self.animation_loop = 1
         self.movement_loop = 0
-        self.max_travel = 30
+        self.max_travel = 20
         self.image = self.game.enemy_spritesheet.get_sprite(3, 2, self.width, self.height )
         
         self.rect = self.image.get_rect()

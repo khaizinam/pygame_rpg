@@ -39,17 +39,19 @@ class Game:
      
 
 	def initEntity(self):
-		self.player = Player(self, 11 , 35)
+		self.player = Player(self, 60 , 860)
 		deltax  = self.player.x - WIN_WIDTH/2
 		deltay = self.player.y - WIN_HEIGHT /2
 		for sprite in self.all_sprites:
 			sprite.rect.x -= deltax
 			sprite.rect.y -= deltay
 		self.minionList = [
-      		CreateMinion('bee',self,400,1000,1, FPS*10),
-			CreateMinion('bat',self,500,1000,1, FPS*10),
-			CreateMinion('bee',self,688,1000,2, FPS*10),
-			CreateMinion('mage',self,600,898,1, FPS*20),
+      		CreateMinion('bee', self, 276, 884, 1, FPS*30),
+			CreateMinion('bat', self, 270, 776, 1, FPS*30),
+			CreateMinion('bee', self, 448, 854, 2, FPS*30),
+			CreateMinion('mage', self, 372, 660, 1, FPS*30),
+			CreateMinion('bat', self, 448, 764, 1, FPS*30),
+			CreateMinion('bat', self, 354, 776, 1, FPS*30),
         ]
 		for minion in self.minionList:
 			minion.create()
