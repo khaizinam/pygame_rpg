@@ -52,7 +52,7 @@ class MagicEnemyAttack(pygame.sprite.Sprite):
     
     def collide(self):
         hits = pygame.sprite.spritecollide(self, self.game.playerSprite, False)
-        if hits and self.isAttack == 0 and self.enemy.stunByAttackCount == 0:
+        if hits and self.isAttack == 0:
             self.isAttack = 1
             self.game.player.attacked(self.enemy.damge)
             self.animation_loop = self.distance
@@ -125,28 +125,50 @@ class Enemy(pygame.sprite.Sprite):
         self.right_animations = [self.game.character_spritesheet.get_sprite(3, 66, self.width, self.height),
                             self.game.character_spritesheet.get_sprite(35, 66, self.width, self.height),
                             self.game.character_spritesheet.get_sprite(68, 66, self.width, self.height)]
-        
+    
     def update(self):
         if self.dead == False:
             self.movement()
             self.animate()
             self.collide_player()
+            # time next attack after player attack
             if self.stunByAttackCount > 0 : 
                 self.stunByAttackCount -= 1
                 self.x_change = 0 
                 self.y_change = 0
+            # move
             self.x += self.x_change
-            self.y += self.y_change
             self.rect.x += self.x_change
+            self.collide_blocks('x')
+            self.y += self.y_change
             self.rect.y += self.y_change
+            self.collide_blocks('x')
             self.x_change = 0
             self.y_change = 0
+            # time next perform attack
             self.attackedTime -= 1
             if self.attackedTime <= 0:
                 self.attackedTime = 0
             self.attackDuration -= 1
             if self.attackDuration <= 0:
-                self.attackDuration = 0    
+                self.attackDuration = 0   
+    def collide_blocks(self, direction):
+        if direction == 'x':
+            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+            if hits:
+                for hit in hits:
+                    if self.x_change > 0:
+                        self.x = hit.x - self.rect.width
+                    if self.x_change < 0:
+                        self.x = hit.x + hit.rect.width 
+        if direction == 'y': 
+            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+            if hits:
+                for hit in hits:
+                    if self.y_change > 0 :
+                        self.y = hit.y - self.rect.height
+                    if self.y_change < 0 :
+                        self.y = hit.y + hit.rect.height
     def respawn(self):
         self.x = self.respawnX 
         self.y = self.respawnY 
@@ -415,7 +437,7 @@ class MageEnemy(Enemy):
         if self.atk:
             self.atk = None
             self.attackedTime = FPS
-        else:
+        elif self.stunByAttackCount == 0:
             self.atk = MagicEnemyAttack(self.game,self,ENEMY_LAYER)
         
         

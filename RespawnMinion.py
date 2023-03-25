@@ -33,6 +33,7 @@ class CreateMinion:
                 self.isdead = False
                 self.minion.respawn()
                 self.bar.reset()
+                self.lvl.reset()
 
                 
 

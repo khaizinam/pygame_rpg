@@ -15,15 +15,15 @@ class MeleeAttack(pygame.sprite.Sprite):
         self.y_change = 0
         if self.player.facing == 'up':
             x = self.player.x 
-            y = self.player.y - TILESIZE - 5
+            y = self.player.y - TILESIZE
         if self.player.facing == 'down':
             x = self.player.x
-            y = self.player.y + TILESIZE + 5
+            y = self.player.y + TILESIZE
         if self.player.facing == 'left':
-            x = self.player.x - TILESIZE - 5
+            x = self.player.x - TILESIZE
             y =self.player.y
         if self.player.facing == 'right':
-            x = self.player.x + TILESIZE + 5
+            x = self.player.x + TILESIZE
             y = self.player.y
             
         self.x = x
