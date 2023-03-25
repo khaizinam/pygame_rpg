@@ -69,7 +69,15 @@ class MeleeAttack(pygame.sprite.Sprite):
     def collide(self):
         hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
         if hits:
-            exp = hits[0].attacked(self.damge)
+            hits[0].attacked(self.damge)
+            if self.player.facing == 'left':
+                hits[0].x -= 2
+            elif self.player.facing == 'right':
+                hits[0].x += 2
+            if self.player.facing == 'up':
+                hits[0].y -= 2
+            if self.player.facing == 'down':
+                hits[0].y += 2
      
     def animate(self):
         direction = self.game.player.facing
@@ -187,7 +195,15 @@ class MagicAttack(pygame.sprite.Sprite):
     def collide(self):
         hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
         if hits:
-            exp = hits[0].attacked(self.damge * 5)
+            hits[0].attacked(self.damge * 5)
+            if self.player.facing == 'left':
+                hits[0].x -= 4
+            elif self.player.facing == 'right':
+                hits[0].x += 4
+            if self.player.facing == 'up':
+                hits[0].y -= 4
+            if self.player.facing == 'down':
+                hits[0].y += 4
             self.kill()
             del self
      
