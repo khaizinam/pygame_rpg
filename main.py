@@ -40,6 +40,7 @@ class Game:
 
 	def initEntity(self):
 		self.player = Player(self, 60 , 860)
+		self.playerhpbar = PlayerHealthBar(self, self.player)
 		deltax  = self.player.x - WIN_WIDTH/2
 		deltay = self.player.y - WIN_HEIGHT /2
 		for sprite in self.all_sprites:
@@ -87,10 +88,10 @@ class Game:
    
 	def update(self):
 		self.all_sprites.update()
-		self.camera.update()
 		self.icons.update()
 		for minion in self.minionList:
 			minion.update()
+		self.camera.update()
 
 	def draw(self):
 		self.screen.fill(BLACK)
@@ -104,7 +105,7 @@ class Game:
 		exp_text = self.font.render(f'Exp: {self.player.curentExp}/{self.player.nextExp}', True, WHITE)
 		pot_text = self.font.render(f'{self.player.potion}', True, WHITE)
 		self.screen.blit(postion_text, (10 , 5))
-		self.screen.blit(Hp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*3))
+		self.screen.blit(Hp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*4))
 		self.screen.blit(Atk_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*2))
 		self.screen.blit(exp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)))
 		self.screen.blit(pot_text, (WIN_WIDTH - 50, WIN_HEIGHT - 25))

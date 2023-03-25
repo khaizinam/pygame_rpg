@@ -30,6 +30,34 @@ class HealthBar(pygame.sprite.Sprite):
     def reset(self):
         pygame.sprite.Sprite.__init__(self, self.groups)
 
+class PlayerHealthBar(pygame.sprite.Sprite):
+    def __init__(self, game ,o):
+        
+        self.game = game
+        self.o = o
+        self._layer = 10
+        self.groups = self.game.icons
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.image = pygame.Surface([100,10])
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.x = 10
+        self.y = WIN_HEIGHT - (16 + 5)*3
+        self.rect.x = self.x
+        self.rect.y = self.y
+    def update(self):
+        width = math.floor((self.o.hp / self.o.maxHp) * 100)
+        if width <= 0:
+            width = 1
+        self.image = pygame.Surface([width,10])
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+    def reset(self):
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
 class lvlBar(pygame.sprite.Sprite):
     def __init__(self, game ,o):
         

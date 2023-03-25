@@ -26,7 +26,7 @@ class Player(pygame.sprite.Sprite):
         self.maxHp = 10
         self.curentExp = 0
         self.nextExp = self.curentExp + self.level * 20
-        self.magicRange = 15
+        self.magicRange = 5
         self.magicReduce = 16
         self.magicTime = 0
         #-----------
@@ -85,7 +85,10 @@ class Player(pygame.sprite.Sprite):
         self.hp = self.maxHp
         self.atk += 2
         if self.magicReduce >= 6:
-            self.magicReduce -= 0.1
+            self.magicReduce -= 0.25
+        if self.magicRange <= 15:
+            self.magicRange += 0.25
+
         self.nextExp = self.curentExp + self.level * 20
     def usePotion(self):
         if self.hp < self.maxHp and self.potion > 0 and  self.potionReduce == 0:

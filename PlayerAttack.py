@@ -195,6 +195,6 @@ class MagicAttack(pygame.sprite.Sprite):
         #self.image = self.game.magic_attack.get_sprite(0, 0, self.width, self.height)
 
         self.animation_loop += 1
-        if self.animation_loop >= self.player.magicRange :
+        if self.animation_loop >= math.floor(self.player.magicRange) :
             self.kill()
             del self
