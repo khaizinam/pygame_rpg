@@ -91,7 +91,8 @@ class Enemy(pygame.sprite.Sprite):
         self.damge = 5 * level
         self.exp = level*6
         self.HPperLvl = 10
-        self.hp = 10 + level * self.HPperLvl
+        self.maxHp = 20 + level * self.HPperLvl
+        self.hp = self.maxHp
         self.atk = None
         self.game = game
         self._layer = ENEMY_LAYER
@@ -104,7 +105,6 @@ class Enemy(pygame.sprite.Sprite):
         self.height = TILESIZE
         
         self.attackDuration = 0
-        self.hp = 10
         self.x_change = 0
         self.y_change = 0
         
@@ -150,7 +150,7 @@ class Enemy(pygame.sprite.Sprite):
     def respawn(self):
         self.x = self.respawnX 
         self.y = self.respawnY 
-        self.hp = 10 + self.level * self.HPperLvl
+        self.hp = self.maxHp
         self.dead = False
         pygame.sprite.Sprite.__init__(self, self.groups)
 
@@ -225,6 +225,7 @@ class BeeEnemy(Enemy):
         self.level = level
         self.HPperLvl = 5
         self.hp = 10 + self.level * self.HPperLvl
+        self.maxHp = 10 + level * self.HPperLvl
         self.damge = 2*level
         # Respaw Minion after dead
         self.respawnX = x
@@ -320,6 +321,7 @@ class BatEnemy(Enemy):
         self.level = level
         self.HPperLvl = 4
         self.hp = 10 + self.level * self.HPperLvl
+        self.maxHp = 10 + self.level * self.HPperLvl
         # Respaw Minion after dead --
         self.respawnX = x
         self.respawnY = y

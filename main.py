@@ -58,17 +58,12 @@ class Game:
 		self.playing = True
 
 		self.all_sprites = pygame.sprite.LayeredUpdates()
-
 		self.blocks = pygame.sprite.LayeredUpdates()
-    
 		self.enemies = pygame.sprite.LayeredUpdates()
-
 		self.items = pygame.sprite.LayeredUpdates()
-  
 		self.icons = pygame.sprite.LayeredUpdates()
-  
+		self.health_bar = pygame.sprite.LayeredUpdates()
 		self.attacks = pygame.sprite.LayeredUpdates()
-
 		self.playerSprite = pygame.sprite.LayeredUpdates()
 
   

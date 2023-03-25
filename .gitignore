@@ -2,3 +2,5 @@ __pycache__/
 __pycache__
 res
 
+*.pyc
+__pycache__/Enemy.cpython-311.pyc
