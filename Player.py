@@ -126,10 +126,11 @@ class Player(pygame.sprite.Sprite):
         MagicAttack(self)
         
     def attacked(self, damge):
-        self.hp -= damge
-        if self.hp <= 0:
-            self.kill()
-            self.game.playing = False
+        pass
+        # self.hp -= damge
+        # if self.hp <= 0:
+        #     self.kill()
+        #     self.game.playing = False
             
         
     def collide_blocks(self, direction):
