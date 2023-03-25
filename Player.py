@@ -2,6 +2,7 @@ import pygame
 from config import *
 from Sprite import *
 from Utils import *
+from PlayerAttack import *
 import math
 
 class Player(pygame.sprite.Sprite):
@@ -24,7 +25,7 @@ class Player(pygame.sprite.Sprite):
         self.hp = 10
         self.maxHp = 10
         self.curentExp = 0
-        self.nextExp = self.level * 20
+        self.nextExp = self.curentExp + self.level * 20
         self.magicRange = 15
         self.magicReduce = 16
         self.magicTime = 0
@@ -61,6 +62,8 @@ class Player(pygame.sprite.Sprite):
             self.potionReduce -= 1
         if self.magicTime > 0 : 
             self.magicTime -= 1
+        if self.curentExp >= self.nextExp:
+            self.levelUp()
         self.movement()
         self.animate()
         #self.collide_enemy()
@@ -75,7 +78,15 @@ class Player(pygame.sprite.Sprite):
         self.vely = 0
         self.x_change = 0
         self.y_change = 0
-    
+        
+    def levelUp(self):
+        self.level += 1
+        self.maxHp += 5
+        self.hp = self.maxHp
+        self.atk += 2
+        if self.magicReduce >= 6:
+            self.magicReduce -= 0.1
+        self.nextExp = self.curentExp + self.level * 20
     def usePotion(self):
         if self.hp < self.maxHp and self.potion > 0 and  self.potionReduce == 0:
             self.potionReduce = self.TimeNextPotion
@@ -103,13 +114,16 @@ class Player(pygame.sprite.Sprite):
                 self.magicAttack()
         self.x_change += self.velx * PLAYER_SPEED
         self.y_change += self.vely * PLAYER_SPEED
+        
     def meleeAttack(self):
         MeleeAttack(self)
+        
     def magicAttack(self):
-        self.magicTime = self.magicReduce
+        self.magicTime = math.ceil(self.magicReduce) 
         MagicAttack(self)
-    def attacked(self, level):
-        self.hp -= level*2
+        
+    def attacked(self, damge):
+        self.hp -= damge
         if self.hp <= 0:
             self.kill()
             self.game.playing = False

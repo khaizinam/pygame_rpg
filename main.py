@@ -1,12 +1,4 @@
-import pygame
-from sprites import *
-from config import *
-from Utils import *
-from Ground import *
-from Player import *
-from Camera import *
-from Enemy import *
-from Sprite import *
+from importPack import *
 
 import sys
 IMG_DIR = './img/'
@@ -34,7 +26,6 @@ class Game:
 		self.magic_attack = Spritesheet(f"{IMG_DIR}magic.png")
  
 	def createTilemap(self):
-		self.player = Player(self, 11 , 35)
 		HeartItem(self)
 		for i, row in enumerate(tilemap):
 			for j,column in enumerate(row):
@@ -45,22 +36,27 @@ class Game:
 					Wall(self, j , i)
 				if column == "G":
 					Grass(self,0, j , i)
-				if column == "E":
-					BeeEnemy(self, j , i)
-				if column == "R":
-					RangeEnemy(self, j , i)
      
-					
+
+	def initEntity(self):
+		self.player = Player(self, 11 , 35)
 		deltax  = self.player.x - WIN_WIDTH/2
 		deltay = self.player.y - WIN_HEIGHT /2
 		for sprite in self.all_sprites:
 			sprite.rect.x -= deltax
 			sprite.rect.y -= deltay
-
+		self.minionList = [
+      		CreateMinion('bee',self,400,1000,1, FPS*10),
+			CreateMinion('bat',self,500,1000,1, FPS*10),
+			CreateMinion('bee',self,688,1000,2, FPS*10),
+			CreateMinion('mage',self,600,898,1, FPS*20),
+        ]
+		for minion in self.minionList:
+			minion.create()
 
 	def new(self):
 		self.playing = True
-  
+
 		self.all_sprites = pygame.sprite.LayeredUpdates()
 
 		self.blocks = pygame.sprite.LayeredUpdates()
@@ -77,8 +73,9 @@ class Game:
 
   
 		self.magic_attacks = pygame.sprite.LayeredUpdates()
-  
+
 		self.createTilemap()
+		self.initEntity()
 
   
 
@@ -95,6 +92,8 @@ class Game:
 		self.all_sprites.update()
 		self.camera.update()
 		self.icons.update()
+		for minion in self.minionList:
+			minion.update()
 
 	def draw(self):
 		self.screen.fill(BLACK)
