@@ -78,6 +78,8 @@ class MeleeAttack(pygame.sprite.Sprite):
                 hits[0].y -= 2
             if self.player.facing == 'down':
                 hits[0].y += 2
+        hits2 = pygame.sprite.spritecollide(self, self.game.magic_attacks, True)
+    
      
     def animate(self):
         direction = self.game.player.facing
