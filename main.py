@@ -53,6 +53,23 @@ class Game:
 			CreateMinion('mage', self, 372, 660, 1, FPS*30),
 			CreateMinion('bat', self, 448, 764, 1, FPS*30),
 			CreateMinion('bat', self, 354, 776, 1, FPS*30),
+			CreateMinion('mage', self, 668, 880, 2, FPS*30),
+			CreateMinion('bat', self, 648, 668, 2, FPS*30),
+			CreateMinion('bat', self, 688, 668, 2, FPS*30),
+			CreateMinion('bat', self, 648, 730, 2, FPS*30),
+			CreateMinion('bat', self, 688, 730, 3, FPS*30),
+			CreateMinion('bee', self, 890, 658, 3, FPS*30),
+			CreateMinion('mage', self, 1088, 688, 3, FPS*30),
+   			CreateMinion('bat', self, 1064, 820, 3, FPS*30),
+			CreateMinion('bat', self, 1142, 820, 3, FPS*30),
+			CreateMinion('bat', self, 1064, 874, 3, FPS*30),
+			CreateMinion('bat', self, 1142, 874, 3, FPS*30),
+			CreateMinion('bee', self, 1460, 844, 4, FPS*30),
+			CreateMinion('bee', self, 1610, 808, 3, FPS*30),
+			CreateMinion('bee', self, 1610, 886, 3, FPS*30),
+			CreateMinion('mage', self, 2132, 766, 3, FPS*30),
+			CreateMinion('mage', self, 2132, 862, 3, FPS*30),
+   			CreateMinion('mage', self, 1664, 688, 5, FPS*30),
         ]
 		for minion in self.minionList:
 			minion.create()

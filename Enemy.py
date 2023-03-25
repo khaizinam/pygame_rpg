@@ -153,22 +153,23 @@ class Enemy(pygame.sprite.Sprite):
             if self.attackDuration <= 0:
                 self.attackDuration = 0   
     def collide_blocks(self, direction):
-        if direction == 'x':
-            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
-            if hits:
-                for hit in hits:
-                    if self.x_change > 0:
-                        self.x = hit.x - self.rect.width
-                    if self.x_change < 0:
-                        self.x = hit.x + hit.rect.width 
-        if direction == 'y': 
-            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
-            if hits:
-                for hit in hits:
-                    if self.y_change > 0 :
-                        self.y = hit.y - self.rect.height
-                    if self.y_change < 0 :
-                        self.y = hit.y + hit.rect.height
+        pass
+        # if direction == 'x':
+        #     hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+        #     if hits:
+        #         for hit in hits:
+        #             if self.x_change > 0:
+        #                 self.x = hit.x - self.rect.width
+        #             if self.x_change < 0:
+        #                 self.x = hit.x + hit.rect.width 
+        # if direction == 'y': 
+        #     hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+        #     if hits:
+        #         for hit in hits:
+        #             if self.y_change > 0 :
+        #                 self.y = hit.y - self.rect.height
+        #             if self.y_change < 0 :
+        #                 self.y = hit.y + hit.rect.height
     def respawn(self):
         self.x = self.respawnX 
         self.y = self.respawnY 
