@@ -216,3 +216,4 @@ class MagicAttack(pygame.sprite.Sprite):
         if self.animation_loop >= math.floor(self.player.magicRange) :
             self.kill()
             del self
+            

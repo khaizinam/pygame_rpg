@@ -27,6 +27,7 @@ class Game:
  
 	def createTilemap(self):
 		HeartItem(self)
+		self.gate1 = []
 		for i, row in enumerate(tilemap):
 			for j,column in enumerate(row):
 				Grass(self, 2,j, i)
@@ -36,6 +37,8 @@ class Game:
 					Wall(self, j , i)
 				if column == "G":
 					Grass(self,0, j , i)
+				if column == "C":
+					self.gate1.append(Block(self, j , i))
      
 
 	def initEntity(self):
@@ -54,27 +57,27 @@ class Game:
 			CreateMinion('bat', self, 448, 764, 1, FPS*30),
 			CreateMinion('bat', self, 354, 776, 1, FPS*30),
 			CreateMinion('mage', self, 668, 880, 1, FPS*30),
-			CreateMinion('bat', self, 648, 668, 2, FPS*60),
-			CreateMinion('bat', self, 688, 668, 2, FPS*60),
-			CreateMinion('bat', self, 648, 730, 2, FPS*60),
-			CreateMinion('bat', self, 688, 730, 3, FPS*60),
-			CreateMinion('bee', self, 890, 658, 3, FPS*60),
-			CreateMinion('mage', self, 1088, 688, 2, FPS*60),
-   			CreateMinion('bat', self, 1064, 820, 3, FPS*60),
-			CreateMinion('bat', self, 1142, 820, 3, FPS*60),
-			CreateMinion('bat', self, 1064, 874, 3, FPS*60),
-			CreateMinion('bat', self, 1142, 874, 3, FPS*60),
-			CreateMinion('bee', self, 1460, 844, 4, FPS*60),
-			CreateMinion('bee', self, 1610, 808, 3, FPS*60),
-			CreateMinion('bee', self, 1610, 886, 3, FPS*60),
-			CreateMinion('mage', self, 2132, 766, 2, FPS*60),
-			CreateMinion('mage', self, 2132, 862, 2, FPS*60),
-   			CreateMinion('mage', self, 1664, 688, 3, FPS*60),
-      		CreateMinion('mage', self, 2216, 365, 3, FPS*60),
-			CreateMinion('bat', self, 2300, 290, 4, FPS*60),
-			CreateMinion('bat', self, 2468, 290, 4, FPS*60),
-			CreateMinion('bat', self, 2414, 290, 4, FPS*60),
-			CreateMinion('bee', self, 2414, 236, 5, FPS*60),
+			CreateMinion('bat', self, 648, 668, 2, FPS*120),
+			CreateMinion('bat', self, 688, 668, 2, FPS*120),
+			CreateMinion('bat', self, 648, 730, 2, FPS*120),
+			CreateMinion('bat', self, 688, 730, 3, FPS*120),
+			CreateMinion('bee', self, 890, 658, 3, FPS*120),
+			CreateMinion('mage', self, 1088, 688, 2, FPS*120),
+   			CreateMinion('bat', self, 1064, 820, 3, FPS*120),
+			CreateMinion('bat', self, 1142, 820, 3, FPS*120),
+			CreateMinion('bat', self, 1064, 874, 3, FPS*120),
+			CreateMinion('bat', self, 1142, 874, 3, FPS*120),
+			CreateMinion('bee', self, 1460, 844, 4, FPS*120),
+			CreateMinion('bee', self, 1610, 808, 3, FPS*120),
+			CreateMinion('bee', self, 1610, 886, 3, FPS*120),
+			CreateMinion('mage', self, 2132, 766, 2, FPS*120),
+			CreateMinion('mage', self, 2132, 862, 2, FPS*120),
+   			CreateMinion('mage', self, 1664, 688, 3, FPS*120),
+      		CreateMinion('mage', self, 2216, 365, 3, FPS*120),
+			CreateMinion('bat', self, 2300, 290, 4, FPS*120),
+			CreateMinion('bat', self, 2468, 290, 4, FPS*120),
+			CreateMinion('bat', self, 2414, 290, 4, FPS*120),
+			CreateMinion('bee', self, 2414, 236, 5, FPS*120),
         ]
 		for minion in self.minionList:
 			minion.create()
@@ -90,7 +93,6 @@ class Game:
 		self.health_bar = pygame.sprite.LayeredUpdates()
 		self.attacks = pygame.sprite.LayeredUpdates()
 		self.playerSprite = pygame.sprite.LayeredUpdates()
-
   
 		self.magic_attacks = pygame.sprite.LayeredUpdates()
 

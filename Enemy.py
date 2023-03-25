@@ -19,7 +19,7 @@ class MagicEnemyAttack(pygame.sprite.Sprite):
         self.frame = 6
         self.width = 16
         self.height = 16
-        self.delayFrame = 5
+        self.delayFrame = 3
 
         #game logic
         self.isAttack = 0
