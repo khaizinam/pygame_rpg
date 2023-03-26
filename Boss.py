@@ -200,6 +200,7 @@ class BossBullet(pygame.sprite.Sprite):
             self.d = (self.x - self.x0)**2 + (self.y - self.y0)**2
         else:
             self.kill()
+            del self
         
 
 
