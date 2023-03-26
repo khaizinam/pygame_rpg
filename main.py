@@ -17,6 +17,10 @@ class Game:
 		self.character_spritesheet = Spritesheet(f"{IMG_DIR}character.png")
 		self.terrain_spritesheet = Spritesheet(f"{IMG_DIR}terrain.png")
 		self.enemy_spritesheet = Spritesheet(f"{IMG_DIR}enemy.png")
+		self.boss1_spritesheet = Spritesheet(f"{IMG_DIR}boss1.png")
+		self.boss2_spritesheet = Spritesheet(f"{IMG_DIR}boss2.png")
+		self.boss_bullet_spritesheet = Spritesheet(f"{IMG_DIR}boss_bullet.png")
+		# self.boss3_spritesheet = Spritesheet(f"{IMG_DIR}boss1.png")
 		self.intro_background = pygame.image.load(f"{IMG_DIR}introbackground.png")
 		self.go_background = pygame.image.load(f"{IMG_DIR}gameover.png")
 		self.attack_spritesheet = Spritesheet(f"{IMG_DIR}attack.png")
@@ -43,11 +47,13 @@ class Game:
 		self.playerhpbar = PlayerHealthBar(self, self.player)
 		
 		self.createList = [
+			
 			CreateChest('potion',self,282,814,FPS*60*3),
    			CreateChest('potion',self,1354,680,FPS*60*3),
 			CreateChest('atk_spd',self,1746,260,FPS*60*3),
 			CreateChest('atk_spd',self,1746,32,FPS*60*3),
 			CreateChest('exp',self,1926,134,FPS*60*3),
+   			CreateMinion('boss', self, 1124, 122, 60, FPS*60*4),
       		CreateMinion('bee', self, 276, 884, 1, FPS*30),
 			CreateMinion('bat', self, 270, 776, 1, FPS*30),
 			CreateMinion('bee', self, 448, 854, 2, FPS*30),
