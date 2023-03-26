@@ -1,4 +1,6 @@
-import pygame, math
+import pygame, math, random
+from Enemy import Enemy, BatEnemy
+from HealthBar import HealthBar, lvlBar
 from config import *
 
 
@@ -6,13 +8,20 @@ class Boss(pygame.sprite.Sprite):
     FACING_LEFT = 1
     FACING_RIGHT = 2
 
-    def __init__(self, game, x, y, lvl):
+    IDLE = 0
+    ATTACK = 1
+
+    STAR_SHOOT = 1
+    TRIPLET_SHOOT = 2
+    SPAWN_MINION = 3
+    CHASE = 4
+    ULTIMATE = 5
+
+    def __init__(self, game, x, y, x1, x2, y1, y2, lvl):
         self.game = game
         self.level = lvl
         self.stunByAttackTime = FPS * 2
         self.stunByAttackCount = 0
-        self.posx = x
-        self.posy = y
         self.distance = 400
         self._layer = ENEMY_LAYER
         self.groups = self.game.all_sprites, self.game.enemies
@@ -27,8 +36,10 @@ class Boss(pygame.sprite.Sprite):
         self.velx = 0
         self.vely = 0
         self.tick = 0
-        self.facing = self.FACING_LEFT
-        self.stand = True
+
+        self.maxHp = 1000
+        self.hp = self.maxHp
+
         self.animation = [
             [self.game.boss1_spritesheet.get_sprite(0, 0, self.width[0], self.height[0]),
              self.game.boss1_spritesheet.get_sprite(85, 0, self.width[0], self.height[0]),
@@ -56,7 +67,8 @@ class Boss(pygame.sprite.Sprite):
         self.actionCycle = FPS * 5
         self.countDown = 0
 
-        self.speed = 1
+        self.isChasing = False
+        self.speed = 5
         self.cooldown = 200
 
     def respawn(self):
@@ -151,9 +163,9 @@ class Boss(pygame.sprite.Sprite):
 
 
 class BossBullet(pygame.sprite.Sprite):
-    ACTACK_MOVE_1 = 1
-    ACTACK_MOVE_2 = 2
-    ACTACK_MOVE_3 = 3
+    ATTACK_MOVE_1 = 1
+    ATTACK_MOVE_2 = 2
+    ATTACK_MOVE_3 = 3
 
     FACING_LEFT = 1
     FACING_RIGHT = 2
@@ -161,7 +173,7 @@ class BossBullet(pygame.sprite.Sprite):
     def __init__(self, game, host, vx, vy):
         self.game = game
         self._layer = ENEMY_LAYER
-        self.groups = self.game.all_sprites, self.game.enemies, self.game.magic_attacks
+        self.groups = self.game.all_sprites, self.game.enemies
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.width = 13 * 3
