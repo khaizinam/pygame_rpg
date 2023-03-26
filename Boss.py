@@ -2,9 +2,6 @@ import pygame, math
 from config import *
 
 class Boss(pygame.sprite.Sprite):
-    ACTACK_MOVE_1 = 1
-    ACTACK_MOVE_2 = 2
-    ACTACK_MOVE_3 = 3
 
     FACING_LEFT = 1
     FACING_RIGHT = 2
