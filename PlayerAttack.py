@@ -6,7 +6,7 @@ class MeleeAttack(pygame.sprite.Sprite):
     def __init__(self, player):
         self.game = player.game
         self.player = player
-        self.damge = player.atk
+        self.damge = math.floor(player.atk/2) 
         self.player.attacking = True
         self._layer = PLAYER_LAYER
         self.groups = self.game.all_sprites, self.game.attacks
@@ -71,14 +71,17 @@ class MeleeAttack(pygame.sprite.Sprite):
         if hits:
             hits[0].attacked(self.damge)
             if self.player.facing == 'left':
-                hits[0].x -= 2
+                hits[0].x -= 1
             elif self.player.facing == 'right':
-                hits[0].x += 2
+                hits[0].x += 1
             if self.player.facing == 'up':
-                hits[0].y -= 2
+                hits[0].y -= 1
             if self.player.facing == 'down':
-                hits[0].y += 2
-        hits2 = pygame.sprite.spritecollide(self, self.game.magic_attacks, True)
+                hits[0].y += 1
+        detroy_magic_attack_enemies = pygame.sprite.spritecollide(self, self.game.magic_attacks, True)
+        detroy_chest = pygame.sprite.spritecollide(self, self.game.items, False)
+        if detroy_chest:
+            detroy_chest[0].time_attacked -= 1
     
      
     def animate(self):
@@ -108,7 +111,7 @@ class MeleeAttack(pygame.sprite.Sprite):
             self.y = self.game.player.y
             self.image = self.right_animations[math.floor(self.animation_loop)]
 
-        self.animation_loop += 1
+        self.animation_loop += 0.5
         if self.animation_loop >= 5 :
             self.player.attacking = False
             self.kill()

@@ -73,7 +73,7 @@ class Player(pygame.sprite.Sprite):
         self.y += self.y_change
         self.rect.y += self.y_change
         self.collide_blocks('y')
-        
+          
         self.velx = 0
         self.vely = 0
         self.x_change = 0

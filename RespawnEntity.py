@@ -1,6 +1,7 @@
 from pygame import *
 from HealthBar import *
 from Enemy import *
+from Chest import *
 class CreateMinion:
     def __init__(self, enemyType, game ,x , y, level, timeRespawn):
         self.x = x
@@ -35,7 +36,29 @@ class CreateMinion:
                 self.bar.reset()
                 self.lvl.reset()
 
-                
+class CreateChest:
+    def __init__(self, typechest, game ,x , y, timeRespawn):
+        self.x = x
+        self.y = y
+        self.game = game
+        self.isdead = False
+        self.RespawnConst = timeRespawn
+        self.RespawnTime =  0
+        self.typechest = typechest
+    def create(self):
+        self.main = Chest(self.game, self.x, self.y)
+        
+            
+    def update(self):
+        if self.main.time_attacked <= 0 and self.isdead == False:
+            self.isdead = True
+            self.RespawnTime  = self.RespawnConst
+        if self.isdead:
+            self.RespawnTime -= 1
+            if self.RespawnTime <= 0:
+                self.RespawnTime = 0
+                self.isdead = False
+                self.main.reset()          
 
 
                 
