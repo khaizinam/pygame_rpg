@@ -26,7 +26,7 @@ class CreateMinion:
             self.minion = MageEnemy(self.game,self.x, self.y, self.level)
             leng = self.minion.width
         elif self.enemyType == 'boss':
-            self.minion = Boss(self.game,self.x, self.y, self.level)
+            self.minion = Boss(self.game,self.x, self.y, 608,1664, 32,448, self.level)
             leng = 122
         self.bar = HealthBar(self.game, self.minion,leng)
         self.lvl = lvlBar(self.game, self.minion)

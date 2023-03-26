@@ -1,10 +1,10 @@
 import pygame, math, random
 from Enemy import Enemy, BatEnemy
-from RespawnMinion import HealthBar, lvlBar
+from HealthBar import HealthBar, lvlBar
 from config import *
 
 class Boss(Enemy):
-
+ 
     FACING_LEFT = 1
     FACING_RIGHT = 2
 
@@ -17,13 +17,11 @@ class Boss(Enemy):
     CHASE = 4
     ULTIMATE = 5
 
-    def __init__(self, game, x1, x2, y1, y2, lvl):
+    def __init__(self, game, x, y, x1, x2, y1, y2, lvl):
         self.game = game
         self.level = lvl
         self.stunByAttackTime = FPS * 2
         self.stunByAttackCount = 0
-        self.posx = x
-        self.posy = y
         self.distance = 400
         self._layer = ENEMY_LAYER
         self.groups = self.game.all_sprites, self.game.enemies
@@ -34,13 +32,13 @@ class Boss(Enemy):
         self.heightStage = [94,110,110]
         self.width = self.widthStage[self.stage]
         self.height = self.heightStage[self.stage]
-        self.x = (x1 + x2)//2 - (self.width - TILESIZE)//2
-        self.y = (y1 + y2)//2 - self.height + TILESIZE
-        print(x1, x2, y1, y2, self.x, self.y)
+        self.posx = x - (self.width - TILESIZE)//2
+        self.posy = y - self.height + TILESIZE
+        self.x = self.posx
+        self.y = self.posy
         self.velx = 0 
         self.vely = 0
         self.tick = 0
-        self.facing = self.FACING_LEFT
 
         self.maxHp = 1000
         self.hp = self.maxHp
@@ -64,8 +62,6 @@ class Boss(Enemy):
             self.game.boss2_spritesheet.get_sprite(366, 110, self.widthStage[1], self.heightStage[1] ),]
         ]
 
-        self.info = [HealthBar(self.game, self)]
-
         self.image = self.animation[self.stage][0]
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -85,6 +81,11 @@ class Boss(Enemy):
         self.isChasing = False
         self.speed = 5
         self.cooldown = 200
+
+        self.useBulletHell = False
+        self.nBullet = 0
+        self.bulletCooldown = 5
+        self.bulletTimmer = 0
         
     def respawn(self):
         self.x = self.posx
@@ -92,14 +93,12 @@ class Boss(Enemy):
         self.hp = self.maxHp
         self.dead = False
         pygame.sprite.Sprite.__init__(self, self.groups)
-        
-        self.useBulletHell = False
-        self.nBullet = 0
-        self.bulletCooldown = 5
-        self.bulletTimmer = 0
     
     def update(self):
-        if self.awakened:
+        if not self.awakened:
+            if 608 < self.game.player.x < 1664 and 32 < self.game.player.y < 448:
+                self.awakened = True
+        else :
             self.animate()
                 
             if (self.timmer <= 0):
