@@ -1,4 +1,5 @@
 from config import *
+
 class PlayerSprite():
     def __init__(self, game,player):
         self.game = game
