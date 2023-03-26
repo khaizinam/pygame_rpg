@@ -17,8 +17,14 @@ class Boss(Enemy):
     CHASE = 4
     ULTIMATE = 5
 
-    def __init__(self, game, x1, x2, y1, y2):
+    def __init__(self, game, x1, x2, y1, y2, lvl):
         self.game = game
+        self.level = lvl
+        self.stunByAttackTime = FPS * 2
+        self.stunByAttackCount = 0
+        self.posx = x
+        self.posy = y
+        self.distance = 400
         self._layer = ENEMY_LAYER
         self.groups = self.game.all_sprites, self.game.enemies
         pygame.sprite.Sprite.__init__(self, self.groups)
@@ -78,7 +84,15 @@ class Boss(Enemy):
 
         self.isChasing = False
         self.speed = 5
-
+        self.cooldown = 200
+        
+    def respawn(self):
+        self.x = self.posx
+        self.y = self.posy
+        self.hp = self.maxHp
+        self.dead = False
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        
         self.useBulletHell = False
         self.nBullet = 0
         self.bulletCooldown = 5
@@ -121,7 +135,6 @@ class Boss(Enemy):
         if (d != 0):
             self.velx = self.speed*float(vx/d)
             self.vely = self.speed*float(vy/d)
-                
             
 
     def animate(self):
@@ -261,7 +274,7 @@ class BossBullet(pygame.sprite.Sprite):
     def __init__(self, game, host, vx, vy):
         self.game = game
         self._layer = ENEMY_LAYER
-        self.groups = self.game.all_sprites, self.game.magic_attacks
+        self.groups = self.game.all_sprites, self.game.enemies
         pygame.sprite.Sprite.__init__(self, self.groups)
         
         self.width = 13*3
@@ -315,6 +328,6 @@ class BossBullet(pygame.sprite.Sprite):
     def collide(self):
         hits = pygame.sprite.spritecollide(self, self.game.playerSprite, False)
         if hits:
-            self.game.player.attacked(1)
+            self.game.player.attacked(20)
             self.d = self.distance
 

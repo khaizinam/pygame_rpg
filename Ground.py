@@ -1,8 +1,6 @@
 import pygame
 from config import *
-import math
-import random
-
+from Utils import *
 class Block(pygame.sprite.Sprite):
     def __init__(self, game , x, y):
         
@@ -77,9 +75,11 @@ class HeartItem(pygame.sprite.Sprite):
         self._layer = 5
         self.groups = self.game.icons
         pygame.sprite.Sprite.__init__(self, self.groups)
-        self.image = self.game.heart_spritesheet.get_sprite(0,0, self.width, self.height)
+        self.spritesheet =  Spritesheet("./img/LifePot.png")
+        self.image = self.spritesheet.get_sprite(0,0, self.width, self.height)
         
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
     def update(self ): pass
+    

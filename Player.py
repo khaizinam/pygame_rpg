@@ -20,14 +20,15 @@ class Player(pygame.sprite.Sprite):
         self.potion = 3
         self.TimeNextPotion = FPS * 3
         self.potionReduce = 0
-        self.level = 1
+        self.level = 7
         self.atk = 5 + 5 * self.level
         self.maxHp = 15 + 20 * self.level
         self.hp = self.maxHp
         self.curentExp = 0
-        self.nextExp = self.curentExp + self.level * 20
-        self.magicRange = 5
-        self.magicReduce = 16
+        self.nextExp = self.level * 50
+        self.magicRange = 5 + 0.5 * self.level
+        self.magicReduce = 60 - 2 * self.level
+        if self.magicReduce <= 6: self.magicReduce = 6
         self.magicTime = 0
         #-----------
         
@@ -73,52 +74,61 @@ class Player(pygame.sprite.Sprite):
         self.y += self.y_change
         self.rect.y += self.y_change
         self.collide_blocks('y')
-        
+          
         self.velx = 0
         self.vely = 0
         self.x_change = 0
         self.y_change = 0
         
+    def magicTimeAttackUp(self, bonus):
+        if self.magicReduce >= 6:
+            self.magicReduce -= bonus
+    def magicRangeUp(self, bonus):
+        if self.magicRange <= 40:
+            self.magicRange += bonus
     def levelUp(self):
         self.level += 1
         self.maxHp += 20
         self.hp = self.maxHp
         self.atk += 5
-        if self.magicReduce >= 6:
-            self.magicReduce -= 0.5
-        if self.magicRange <= 15:
-            self.magicRange += 0.5
+        self.magicTimeAttackUp(2)
+        self.magicRangeUp(1)
 
         self.nextExp = self.curentExp + self.level * 20
+        
     def usePotion(self):
         if self.hp < self.maxHp and self.potion > 0 and  self.potionReduce == 0:
             self.potionReduce = self.TimeNextPotion
             self.potion -= 1
-            self.hp = self.maxHp 
+            self.hp += 30
+            if self.hp > self.maxHp:
+                self.hp = self.maxHp  
+            
     def movement(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            self.velx = -1
-            self.facing = 'left'
-        elif keys[pygame.K_RIGHT]:
-            self.velx = 1
-            self.facing = 'right'
-        elif keys[pygame.K_UP]:
-            self.vely = -1
-            self.facing = 'up'
-        elif keys[pygame.K_DOWN]:
-            self.vely = 1
-            self.facing = 'down'
-        if keys[pygame.K_j]:
-            if self.attacking == False :
+        if self.attacking == False:
+            if keys[pygame.K_LEFT]:
+                self.velx = -1
+                self.facing = 'left'
+            elif keys[pygame.K_RIGHT]:
+                self.velx = 1
+                self.facing = 'right'
+            elif keys[pygame.K_UP]:
+                self.vely = -1
+                self.facing = 'up'
+            elif keys[pygame.K_DOWN]:
+                self.vely = 1
+                self.facing = 'down'
+            if keys[pygame.K_j]:
                 self.meleeAttack()
-        if keys[pygame.K_k]:
-            if self.attacking == False and self.magicTime == 0:
-                self.magicAttack()
+            if keys[pygame.K_k]:
+                if self.magicTime == 0:
+                    self.magicAttack()
         self.x_change += self.velx * PLAYER_SPEED
         self.y_change += self.vely * PLAYER_SPEED
         
     def meleeAttack(self):
+        self.attacking = True
         MeleeAttack(self)
         
     def magicAttack(self):
@@ -126,11 +136,11 @@ class Player(pygame.sprite.Sprite):
         MagicAttack(self)
         
     def attacked(self, damge):
-        pass
-        # self.hp -= damge
-        # if self.hp <= 0:
-        #     self.kill()
-        #     self.game.playing = False
+        #pass
+        self.hp -= damge
+        if self.hp <= 0:
+            self.kill()
+            self.game.playing = False
             
         
     def collide_blocks(self, direction):

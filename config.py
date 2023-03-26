@@ -19,9 +19,9 @@ ENEMY_SPEED = 2
 FONTSIZE = 16
 tilemap = [
     '..................................................................................',
-    '.                 BS                                B                            .',
     '.                 B                                 B                            .',
     '.                 B                                 B                            .',
+    '.                 B                F                B                            .',
     '.                 B          GGGGGGGGGGGGG          B                            .',
     '.                 B          GGGGGGGGGGGGG          B                            .',
     '.                 B          GGGGGGGGGGGGG          B                            .',
@@ -31,7 +31,7 @@ tilemap = [
     '.                 B                                 B                            .',
     '.                 B                                 B                            .',
     '.                 B                                 B                            .',
-    '.                 B                                NB                            .',
+    '.                 B                                 B                            .',
     '.          BBBBBBBBBBBBBBBBBBBBBBB       BBBBBBBBBBBBBBBBBBBBBBBBBBBBB           .',
     '.                                                                                .',
     '.                                                                                .',
@@ -45,7 +45,7 @@ tilemap = [
     '.         B    B            B     BBBBBBBBBBBBBBBBBBBBBBBBBBBB              B    .',
     '.         B    B            B                                               B    .',
     '.         B    BBBBBBBBBBGGGB                                               B    .',
-    '.         BGGGGGGGGGGGGGGGGGB                                               C    .',
-    '.         BGGGGGGGGGGGGGGGGGB                                               C    .',
+    '.         BGGGGGGGGGGGGGGGGGB                                                    .',
+    '.         BGGGGGGGGGGGGGGGGGB                                                    .',
     '..................................................................................',
 ]
