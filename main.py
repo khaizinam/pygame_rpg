@@ -41,7 +41,7 @@ class Game:
 				if column == "G":
 					Grass(self,0, j , i)
 				if column == 'F':
-					Boss(self, j, i)
+					Boss(self, j, i, 10)
 					# BossBullet(self, j, i, 1, 0)
      
 

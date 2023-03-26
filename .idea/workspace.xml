@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8710c602-f217-48f0-9fc8-7b07ceeae320" name="Changes" comment="Menu&#10;Map build">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Boss.py" beforeDir="false" afterPath="$PROJECT_DIR$/Boss.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RespawnEntity.py" beforeDir="false" afterPath="$PROJECT_DIR$/RespawnEntity.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/gameover.png" beforeDir="false" afterPath="$PROJECT_DIR$/img/gameover.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/introbackground.png" beforeDir="false" afterPath="$PROJECT_DIR$/img/introbackground.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -85,6 +88,7 @@
   </component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="Project" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -96,7 +100,6 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -204,7 +207,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="main" />
+                        <option value="Khang2" />
                       </list>
                     </value>
                   </entry>
