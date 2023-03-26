@@ -43,19 +43,19 @@ class Game:
 					Grass(self,0, j , i)
 				if column == "C":
 					self.gate1.append(Block(self, j , i))
-				if column == 'F':
-					Boss(self, j, i)
-					# BossBullet(self, j, i, 1, 0)
      
 
 	def initEntity(self):
-		self.player = Player(self, 60 , 860)
+		self.player = Player(self, 60 , 512)
 		self.playerhpbar = PlayerHealthBar(self, self.player)
 		deltax  = self.player.x - WIN_WIDTH/2
 		deltay = self.player.y - WIN_HEIGHT /2
 		for sprite in self.all_sprites:
 			sprite.rect.x -= deltax
 			sprite.rect.y -= deltay
+		
+		self.boss = Boss(self, 608,1664, 32,448)
+		
 		self.minionList = [
       		CreateMinion('bee', self, 276, 884, 1, FPS*30),
 			CreateMinion('bat', self, 270, 776, 1, FPS*30),
@@ -122,6 +122,8 @@ class Game:
 		self.icons.update()
 		for minion in self.minionList:
 			minion.update()
+		if (608 < self.player.x < 1664 and 32 < self.player.y < 448):
+			self.boss.awakened = True
 		self.camera.update()
 
 	def draw(self):

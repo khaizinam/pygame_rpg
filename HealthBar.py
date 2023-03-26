@@ -12,15 +12,17 @@ class HealthBar(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.image = pygame.Surface([25,5])
         self.image.fill(RED)
+        self.x = self.o.x + self.o.width//2 - 16
+        self.y = self.o.y - 7
         self.rect = self.image.get_rect()
         self.rect.x = self.o.x
         self.rect.y = self.o.y - 7
     def update(self):
         if self.o.hp <= 0:
             self.kill()
-        self.x = self.o.x
-        self.y = self.o.y - 7
         width = math.floor((self.o.hp / self.o.maxHp) * 25)
+        self.y = self.o.y - 7
+        self.x = self.o.x + self.o.width//2 - 16
         if width <= 0:
             width = 1
         self.image = pygame.Surface([width,5])
