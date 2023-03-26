@@ -1,0 +1,564 @@
+Index: Enemy.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import pygame\r\nfrom config import *\r\nfrom Utils import *\r\nimport math\r\nimport random\r\n\r\nclass MagicEnemyAttack(pygame.sprite.Sprite):\r\n    \r\n    def __init__(self, game,enemy, layer = ENEMY_LAYER):\r\n        #game res\r\n        self.game = game\r\n        \r\n        self._layer = layer\r\n        self.groups = self.game.all_sprites, self.game.magic_attacks\r\n        pygame.sprite.Sprite.__init__(self, self.groups)\r\n        self.enemy = enemy\r\n\r\n        #game setting\r\n        self.distance = 40\r\n        self.frame = 6\r\n        self.width = 16\r\n        self.height = 16\r\n        self.delayFrame = 5\r\n\r\n        #game logic\r\n        self.isAttack = 0\r\n        self.x = enemy.x\r\n        self.y = enemy.y\r\n        \r\n        self.vectorX = self.game.player.x - self.x\r\n        self.vectorY = self.game.player.y - self.y\r\n        self.vectorX, self.vectorY = self.vectorX/(math.sqrt(self.vectorX*self.vectorX+self.vectorY*self.vectorY))*self.frame, self.vectorY/(math.sqrt(self.vectorX*self.vectorX+self.vectorY*self.vectorY))*self.frame\r\n        \r\n        self.animation_loop = 0\r\n\r\n        \r\n        \r\n        \r\n        self.image = self.game.attack_spritesheet.get_sprite(0, 0, self.width, self.height)\r\n        self.rect = self.image.get_rect()\r\n        self.rect.x = self.x\r\n        self.rect.y = self.y\r\n        \r\n\r\n        self.explosion_animations = [self.game.explosion0_sprite.get_sprite(0, 0, self.width, self.height),\r\n                                     self.game.explosion1_sprite.get_sprite(15, 20, self.width, self.height)]\r\n\r\n        \r\n    def update(self):\r\n        self.collide()\r\n        self.animate()\r\n        \r\n    \r\n    def collide(self):\r\n        hits = pygame.sprite.spritecollide(self, self.game.playerSprite, False)\r\n        if hits and self.isAttack == 0:\r\n            self.isAttack = 1\r\n            self.game.player.attacked(self.enemy.level)\r\n            self.animation_loop = self.distance\r\n        hits = pygame.sprite.spritecollide(self, self.game.blocks, False)\r\n        if hits:\r\n            self.animation_loop = self.distance\r\n        \r\n     \r\n    def animate(self):\r\n        \r\n        if self.animation_loop > self.distance:\r\n            self.image = self.explosion_animations[1]\r\n            self.animation_loop += 1\r\n            if self.animation_loop > self.distance + self.delayFrame:\r\n                self.kill()\r\n            return\r\n\r\n        self.x = self.x + self.vectorX\r\n        self.y = self.y + self.vectorY\r\n        self.image = self.explosion_animations[0]\r\n        \r\n        self.animation_loop += 1\r\n        \r\n\r\nclass Enemy(pygame.sprite.Sprite):\r\n    def __init__(self, game, x, y, level = 1):\r\n        self.attackedTime = 0\r\n        self.level = level\r\n        self.exp = level*2\r\n        self.hp = level*10\r\n        self.atk = None\r\n        self.game = game\r\n        self._layer = ENEMY_LAYER\r\n        self.groups = self.game.all_sprites, self.game.enemies\r\n        pygame.sprite.Sprite.__init__(self, self.groups)\r\n        \r\n        self.x = x * TILESIZE\r\n        self.y = y * TILESIZE\r\n        self.width = TILESIZE\r\n        self.height = TILESIZE\r\n        \r\n        self.attackDuration = 0\r\n        self.hp = 10\r\n        self.x_change = 0\r\n        self.y_change = 0\r\n        \r\n        self.facing = random.choice(['left', 'right'])\r\n        self.animation_loop = 1\r\n        self.movement_loop = 0\r\n        self.max_travel = random.randint(30,50)\r\n        self.image = self.game.enemy_spritesheet.get_sprite(3, 2, self.width, self.height )\r\n        \r\n        self.rect = self.image.get_rect()\r\n        self.rect.x = self.x\r\n        self.rect.y = self.y\r\n        \r\n        self.left_animations = [self.game.character_spritesheet.get_sprite(3, 3, self.width, self.height),\r\n                           self.game.character_spritesheet.get_sprite(35, 98, self.width, self.height),\r\n                           self.game.character_spritesheet.get_sprite(68, 98, self.width, self.height)]\r\n\r\n        self.right_animations = [self.game.character_spritesheet.get_sprite(3, 66, self.width, self.height),\r\n                            self.game.character_spritesheet.get_sprite(35, 66, self.width, self.height),\r\n                            self.game.character_spritesheet.get_sprite(68, 66, self.width, self.height)]\r\n        \r\n    def update(self):\r\n        self.movement()\r\n        self.animate()\r\n        self.collide_player()\r\n        self.x += self.x_change\r\n        self.y += self.y_change\r\n        self.rect.x += self.x_change\r\n        self.rect.y += self.y_change\r\n        self.x_change = 0\r\n        self.y_change = 0\r\n        self.attackedTime -= 1\r\n        if self.attackedTime <= 0:\r\n            self.attackedTime = 0\r\n        self.attackDuration -= 1\r\n        if self.attackDuration <= 0:\r\n            self.attackDuration = 0\r\n        \r\n        \r\n    def movement(self):\r\n        if self.facing == 'left':\r\n            self.x_change -= ENEMY_SPEED\r\n            self.movement_loop -= 1\r\n            if self.movement_loop <= -self.max_travel:\r\n                self.facing = 'right'\r\n        \r\n        if self.facing == 'right':\r\n            self.x_change += ENEMY_SPEED\r\n            self.movement_loop += 1\r\n            if self.movement_loop >= self.max_travel:\r\n                self.facing = 'left'\r\n                \r\n    def animate(self):\r\n\r\n        \r\n        if self.facing == 'left':\r\n            if self.x_change == 0:   \r\n                self.image = self.game.character_spritesheet.get_sprite( 3, 98, self.width, self.height )\r\n            else :\r\n                self.image = self.left_animations[math.floor(self.animation_loop)]\r\n                self.animation_loop += 0.1\r\n                if self.animation_loop >= 3:\r\n                    self.animation_loop = 1\r\n                    \r\n        if self.facing == 'right':\r\n            if self.x_change == 0:   \r\n                self.image = self.game.character_spritesheet.get_sprite( 3, 66, self.width, self.height )\r\n            else :\r\n                self.image = self.right_animations[math.floor(self.animation_loop)]\r\n                self.animation_loop += 0.1\r\n                if self.animation_loop >= 3:\r\n                    self.animation_loop = 1\r\n\r\n    def collide_player(self):\r\n        hits = pygame.sprite.spritecollide(self, self.game.playerSprite, False)\r\n        if hits and self.attackedTime <= 0:\r\n            self.attackedTime = FPS\r\n            self.game.player.attacked(self.level)\r\n    \r\nclass BeeEnemy(Enemy):\r\n    def __init__(self, game, x, y, level = 1):\r\n        self.attackedTime = 0\r\n        self.exp = level*2\r\n        self.level = level\r\n        self.hp = level*10\r\n        self.atk = None\r\n        self.game = game\r\n        self._layer = ENEMY_LAYER\r\n        self.groups = self.game.all_sprites, self.game.enemies\r\n        pygame.sprite.Sprite.__init__(self, self.groups)\r\n        \r\n        self.x = x * TILESIZE\r\n        self.y = y * TILESIZE\r\n        self.width = 16 #24\r\n        self.height = 30\r\n        \r\n        self.attackDuration = 0\r\n        self.hp = 10\r\n        self.x_change = 0\r\n        self.y_change = 0\r\n        \r\n        self.facing = 'left'\r\n        self.animation_loop = 1\r\n        self.movement_loop = 0\r\n        self.max_travel = 30\r\n\r\n        self.bee_spritesheet = Spritesheet(\"./img/bee.png\")\r\n        self.image = self.bee_spritesheet.get_sprite(0, 0, self.width, self.height )\r\n        \r\n        self.rect = self.image.get_rect()\r\n        self.rect.x = self.x\r\n        self.rect.y = self.y\r\n        \r\n        self.speed = 1\r\n        self.posx = x\r\n        self.posy = y\r\n        self.distance = 150\r\n        \r\n        self.left_animations = [self.bee_spritesheet.get_sprite(10, 34, 16, self.height),\r\n                           self.bee_spritesheet.get_sprite(42, 34, 16, self.height),\r\n                           self.bee_spritesheet.get_sprite(74, 34, 16, self.height)]\r\n\r\n        self.right_animations = [self.bee_spritesheet.get_sprite(7, 98, 16, self.height),\r\n                            self.bee_spritesheet.get_sprite(40, 98, 16, self.height),\r\n                            self.bee_spritesheet.get_sprite(72, 98, 16, self.height)]\r\n    \r\n        # self.up_animations = [self.game.bee_spritesheet.get_sprite(4, 1, 24, self.height),\r\n        #                    self.game.bee_spritesheet.get_sprite(37, 1, 24, self.height),\r\n        #                    self.game.bee_spritesheet.get_sprite(70, 1, 24, self.height)]\r\n        \r\n        # self.up_animations = [self.game.bee_spritesheet.get_sprite(4, 65, 24, self.height),\r\n        #                    self.game.bee_spritesheet.get_sprite(37, 65, 24, self.height),\r\n        #                    self.game.bee_spritesheet.get_sprite(70, 65, 24, self.height)]\r\n    def animate(self):\r\n        if self.facing == 'left':\r\n            self.image = self.left_animations[math.floor(self.animation_loop)]\r\n            self.animation_loop += 0.1\r\n            if self.animation_loop >= 3:\r\n                self.animation_loop = 1\r\n                    \r\n        elif self.facing == 'right':\r\n            self.image = self.right_animations[math.floor(self.animation_loop)]\r\n            self.animation_loop += 0.1\r\n            if self.animation_loop >= 3:\r\n                self.animation_loop = 1\r\n        \r\n                    \r\n    def movement(self):\r\n        if pygame.math.Vector2(self.x, self.y).distance_to((self.game.player.x, self.game.player.y)) < self.distance and self.attackedTime <= 0:\r\n            vectorX = self.game.player.x - self.x\r\n            vectorY = self.game.player.y - self.y\r\n            vectorX, vectorY = vectorX/(math.sqrt(vectorX*vectorX+vectorY*vectorY))*self.speed, vectorY/(math.sqrt(vectorX*vectorX+vectorY*vectorY))*self.speed\r\n            self.x_change = vectorX\r\n            if self.x_change > 0:\r\n                self.facing = 'right'\r\n            elif self.x_change < 0:\r\n                self.facing = 'left' \r\n            self.y_change = vectorY\r\n        return\r\n\r\n\r\n\r\n\r\n\r\nclass RangeEnemy(Enemy):\r\n    def attack(self):\r\n        self.attackDuration = FPS*2\r\n        if self.atk:\r\n            self.atk = None\r\n            self.attackedTime = FPS\r\n        else:\r\n            self.atk = MagicEnemyAttack(self.game,self,ENEMY_LAYER)\r\n        \r\n        \r\n    def update(self):\r\n        super().update()\r\n        if self.attackDuration == 0:\r\n            dist = pygame.math.Vector2(self.x, self.y).distance_to((self.game.player.x, self.game.player.y))\r\n            if dist < 150:\r\n                self.attack()\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Enemy.py b/Enemy.py
+--- a/Enemy.py	(revision 63cfda67f2ea3220f563ec551c0bf1908db26a9b)
++++ b/Enemy.py	(date 1679690191179)
+@@ -3,7 +3,8 @@
+ from Utils import *
+ import math
+ import random
+-
++from Item import *
++from pygame import mixer
+ class MagicEnemyAttack(pygame.sprite.Sprite):
+     
+     def __init__(self, game,enemy, layer = ENEMY_LAYER):
+@@ -187,7 +188,9 @@
+         self._layer = ENEMY_LAYER
+         self.groups = self.game.all_sprites, self.game.enemies
+         pygame.sprite.Sprite.__init__(self, self.groups)
+-        
++        self.sound = pygame.mixer.Sound('./audio/bee.mp3')
++        self.sound.set_volume(0.1)
++
+         self.x = x * TILESIZE
+         self.y = y * TILESIZE
+         self.width = 16 #24
+@@ -255,6 +258,7 @@
+             elif self.x_change < 0:
+                 self.facing = 'left' 
+             self.y_change = vectorY
++
+         return
+ 
+ 
+@@ -277,3 +281,22 @@
+             dist = pygame.math.Vector2(self.x, self.y).distance_to((self.game.player.x, self.game.player.y))
+             if dist < 150:
+                 self.attack()
++
++class Chest(pygame.sprite.Sprite):
++    def __init__(self, game, x, y, level = 1):
++        self.hp = 10
++        self.exp = 0
++        self.x = x * TILESIZE
++        self.y = y * TILESIZE
++        self.width = 32
++        self.height = 32
++        self.game = game
++        self._layer = ENEMY_LAYER
++        self.groups = self.game.all_sprites, self.game.chest
++        pygame.sprite.Sprite.__init__(self, self.groups)
++
++        self.image = pygame.image.load("./img/chest.png")
++        self.rect = self.image.get_rect()
++        self.rect.x = self.x
++        self.rect.y = self.y
++
+Index: Player.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import pygame\r\nfrom config import *\r\nfrom Sprite import *\r\nfrom Utils import *\r\nimport math\r\n\r\nclass Player(pygame.sprite.Sprite):\r\n    def __init__(self, game , x, y):\r\n        \r\n        self.game = game\r\n        self._layer = PLAYER_LAYER\r\n        self.groups = self.game.all_sprites, self.game.playerSprite\r\n        pygame.sprite.Sprite.__init__(self, self.groups)\r\n        \r\n        self.attacking = False\r\n        self.velx = 0\r\n        self.vely = 0\r\n        #----------\r\n        self.potion = 3\r\n        self.TimeNextPotion = FPS * 3\r\n        self.potionReduce = 0\r\n        self.level = 1\r\n        self.atk = 5\r\n        self.hp = 10\r\n        self.maxHp = 10\r\n        self.curentExp = 0\r\n        self.nextExp = self.level * 20\r\n        self.magicRange = 15\r\n        self.magicReduce = 16\r\n        self.magicTime = 0\r\n        #-----------\r\n        \r\n        self.x = x * TILESIZE\r\n        self.y = y * TILESIZE\r\n        self.width = TILESIZE\r\n        self.height = TILESIZE\r\n        \r\n        self.x_change = 0\r\n        self.y_change = 0\r\n        \r\n        self.facing = 'down'\r\n        self.animation_loop = 1\r\n        self.image = self.game.character_spritesheet.get_sprite( 3, 2, self.width, self.height)\r\n\r\n        self.rect = self.image.get_rect()\r\n        self.rect.x = self.x\r\n        self.rect.y = self.y\r\n        \r\n        self.animation = PlayerSprite(game,self)\r\n        \r\n        self.down_animations = self.animation.moveDown()\r\n\r\n        self.up_animations = self.animation.moveUp()\r\n\r\n        self.left_animations = self.animation.moveLeft()\r\n\r\n        self.right_animations = self.animation.moveRight()\r\n        \r\n    def update(self):\r\n        if self.potionReduce > 0:\r\n            self.potionReduce -= 1\r\n        if self.magicTime > 0 : \r\n            self.magicTime -= 1\r\n        self.movement()\r\n        self.animate()\r\n        #self.collide_enemy()\r\n        self.x += self.x_change\r\n        self.rect.x += self.x_change\r\n        self.collide_blocks('x')\r\n        self.y += self.y_change\r\n        self.rect.y += self.y_change\r\n        self.collide_blocks('y')\r\n        \r\n        self.velx = 0\r\n        self.vely = 0\r\n        self.x_change = 0\r\n        self.y_change = 0\r\n    \r\n    def usePotion(self):\r\n        if self.hp < self.maxHp and self.potion > 0 and  self.potionReduce == 0:\r\n            self.potionReduce = self.TimeNextPotion\r\n            self.potion -= 1\r\n            self.hp = self.maxHp \r\n    def movement(self):\r\n        keys = pygame.key.get_pressed()\r\n        if keys[pygame.K_LEFT]:\r\n            self.velx = -1\r\n            self.facing = 'left'\r\n        elif keys[pygame.K_RIGHT]:\r\n            self.velx = 1\r\n            self.facing = 'right'\r\n        elif keys[pygame.K_UP]:\r\n            self.vely = -1\r\n            self.facing = 'up'\r\n        elif keys[pygame.K_DOWN]:\r\n            self.vely = 1\r\n            self.facing = 'down'\r\n        if keys[pygame.K_z]:\r\n            if self.attacking == False :\r\n                self.meleeAttack()\r\n        if keys[pygame.K_x]:\r\n            if self.attacking == False and self.magicTime == 0:\r\n                self.magicAttack()\r\n        self.x_change += self.velx * PLAYER_SPEED\r\n        self.y_change += self.vely * PLAYER_SPEED\r\n    def meleeAttack(self):\r\n        MeleeAttack(self)\r\n    def magicAttack(self):\r\n        self.magicTime = self.magicReduce\r\n        MagicAttack(self)\r\n    def attacked(self, level):\r\n        self.hp -= level*2\r\n        if self.hp <= 0:\r\n            self.kill()\r\n            self.game.playing = False\r\n            \r\n        \r\n    def collide_blocks(self, direction):\r\n        if direction == 'x':\r\n            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)\r\n            if hits:\r\n                for hit in hits:\r\n                    if self.x_change > 0:\r\n                        self.x = hit.x - self.rect.width\r\n                    if self.x_change < 0:\r\n                        self.x = hit.x + hit.rect.width \r\n        if direction == 'y': \r\n            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)\r\n            if hits:\r\n                for hit in hits:\r\n                    if self.y_change > 0 :\r\n                        self.y = hit.y - self.rect.height\r\n                    if self.y_change < 0 :\r\n                        self.y = hit.y + hit.rect.height\r\n    \r\n    def animate(self):\r\n        \r\n        if self.facing == 'down':\r\n            if self.y_change == 0:   \r\n                self.image = self.animation.standDown()\r\n            else :\r\n                self.image = self.down_animations[math.floor(self.animation_loop)]\r\n                self.animation_loop += 0.1\r\n                if self.animation_loop >= 3:\r\n                    self.animation_loop = 1\r\n                    \r\n        if self.facing == 'up':\r\n            if self.y_change == 0:   \r\n                self.image = self.animation.standUp()\r\n            else :\r\n                self.image = self.up_animations[math.floor(self.animation_loop)]\r\n                self.animation_loop += 0.1\r\n                if self.animation_loop >= 3:\r\n                    self.animation_loop = 1\r\n        if self.facing == 'left':\r\n            if self.x_change == 0:   \r\n                self.image = self.animation.standLeft()\r\n            else :\r\n                self.image = self.left_animations[math.floor(self.animation_loop)]\r\n                self.animation_loop += 0.1\r\n                if self.animation_loop >= 3:\r\n                    self.animation_loop = 1\r\n                    \r\n        if self.facing == 'right':\r\n            if self.x_change == 0:   \r\n                self.image = self.animation.standRight()\r\n            else :\r\n                self.image = self.right_animations[math.floor(self.animation_loop)]\r\n                self.animation_loop += 0.1\r\n                if self.animation_loop >= 3:\r\n                    self.animation_loop = 1\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Player.py b/Player.py
+--- a/Player.py	(revision 63cfda67f2ea3220f563ec551c0bf1908db26a9b)
++++ b/Player.py	(date 1679690027515)
+@@ -3,7 +3,7 @@
+ from Sprite import *
+ from Utils import *
+ import math
+-
++from pygame import mixer
+ class Player(pygame.sprite.Sprite):
+     def __init__(self, game , x, y):
+         
+@@ -55,7 +55,8 @@
+         self.left_animations = self.animation.moveLeft()
+ 
+         self.right_animations = self.animation.moveRight()
+-        
++        self.walkSound = pygame.mixer.Sound('./audio/walk.mp3')
++        self.slashSound= pygame.mixer.Sound('./audio/slash.wav')
+     def update(self):
+         if self.potionReduce > 0:
+             self.potionReduce -= 1
+@@ -86,23 +87,29 @@
+         if keys[pygame.K_LEFT]:
+             self.velx = -1
+             self.facing = 'left'
++
+         elif keys[pygame.K_RIGHT]:
+             self.velx = 1
+             self.facing = 'right'
++
+         elif keys[pygame.K_UP]:
+             self.vely = -1
+             self.facing = 'up'
++
+         elif keys[pygame.K_DOWN]:
+             self.vely = 1
+             self.facing = 'down'
+         if keys[pygame.K_z]:
+             if self.attacking == False :
+                 self.meleeAttack()
++                self.slashSound.play()
+         if keys[pygame.K_x]:
+             if self.attacking == False and self.magicTime == 0:
+                 self.magicAttack()
+         self.x_change += self.velx * PLAYER_SPEED
+         self.y_change += self.vely * PLAYER_SPEED
++
++
+     def meleeAttack(self):
+         MeleeAttack(self)
+     def magicAttack(self):
+@@ -132,7 +139,23 @@
+                         self.y = hit.y - self.rect.height
+                     if self.y_change < 0 :
+                         self.y = hit.y + hit.rect.height
+-    
++    def collide_chest(self, direction):
++        if direction == 'x':
++            hits = pygame.sprite.spritecollide(self, self.game.chest, False)
++            if hits:
++                for hit in hits:
++                    if self.x_change > 0:
++                        self.x = hit.x - self.rect.width
++                    if self.x_change < 0:
++                        self.x = hit.x + hit.rect.width
++        if direction == 'y':
++            hits = pygame.sprite.spritecollide(self, self.game.chest, False)
++            if hits:
++                for hit in hits:
++                    if self.y_change > 0 :
++                        self.y = hit.y - self.rect.height
++                    if self.y_change < 0 :
++                        self.y = hit.y + hit.rect.height
+     def animate(self):
+         
+         if self.facing == 'down':
+Index: Utils.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import pygame\r\nfrom config import *\r\nimport math\r\nimport random\r\n\r\nclass Spritesheet:\r\n    def __init__(self, file):\r\n        self.sheet = pygame.image.load(file).convert()\r\n        \r\n    def get_sprite(self, x, y, width, height):\r\n        sprite = pygame.Surface([width, height])\r\n        sprite.blit(self.sheet , (0,0), (x, y, width, height))\r\n        sprite.set_colorkey(BLACK)\r\n        return sprite\r\n    \r\n        \r\nclass Button:\r\n    def __init__(self, x, y, width, height, fg ,bg, content, fontsize):\r\n        self.font = pygame.font.Font('arial.ttf',fontsize)\r\n        self.content = content\r\n        \r\n        self.x = x\r\n        self.y = y\r\n        self.width = width\r\n        self.height = height\r\n        \r\n        self.fg = fg\r\n        self.bg = bg\r\n        \r\n        self.image = pygame.Surface((self.width, self.height))\r\n        self.image.fill(self.bg)\r\n        self.rect = self.image.get_rect()\r\n        \r\n        self.rect.x = self.x\r\n        self.rect.y = self.y\r\n        \r\n        self.text = self.font.render(self.content, True, self.fg)\r\n        self.text_rect = self.text.get_rect(center=(self.width/2, self.height/2))\r\n        self.image.blit(self.text, self.text_rect)\r\n        \r\n    def is_pressed(self, pos, pressed):\r\n        if self.rect.collidepoint(pos):\r\n            if pressed[0]:\r\n                return True\r\n            return False\r\n        return False\r\n    \r\nclass MeleeAttack(pygame.sprite.Sprite):\r\n    \r\n    def __init__(self, player):\r\n        self.game = player.game\r\n        self.player = player\r\n        self.damge = player.atk\r\n        self.player.attacking = True\r\n        self._layer = PLAYER_LAYER\r\n        self.groups = self.game.all_sprites, self.game.attacks\r\n        pygame.sprite.Sprite.__init__(self, self.groups)\r\n        self.x_change = 0\r\n        self.y_change = 0\r\n        if self.player.facing == 'up':\r\n            x = self.player.x \r\n            y = self.player.y - TILESIZE - 5\r\n        if self.player.facing == 'down':\r\n            x = self.player.x\r\n            y = self.player.y + TILESIZE + 5\r\n        if self.player.facing == 'left':\r\n            x = self.player.x - TILESIZE - 5\r\n            y =self.player.y\r\n        if self.player.facing == 'right':\r\n            x = self.player.x + TILESIZE + 5\r\n            y = self.player.y\r\n            \r\n        self.x = x\r\n        self.y = y\r\n        self.width = TILESIZE\r\n        self.height = TILESIZE\r\n        \r\n        self.animation_loop = 0\r\n        self.spritesheet = Spritesheet(\"./img/attack.png\")\r\n        self.image = self.spritesheet.get_sprite(0, 0, self.width, self.height)\r\n        \r\n        self.rect = self.image.get_rect()\r\n        self.rect.x = self.x\r\n        self.rect.y = self.y\r\n        \r\n        self.right_animations = [self.spritesheet.get_sprite(0, 64, self.width, self.height),\r\n                            self.spritesheet.get_sprite(32, 64, self.width, self.height),\r\n                            self.spritesheet.get_sprite(64, 64, self.width, self.height),\r\n                            self.spritesheet.get_sprite(96, 64, self.width, self.height),\r\n                            self.spritesheet.get_sprite(128, 64, self.width, self.height)]\r\n\r\n        self.down_animations = [self.spritesheet.get_sprite(0, 32, self.width, self.height),\r\n                            self.spritesheet.get_sprite(32, 32, self.width, self.height),\r\n                            self.spritesheet.get_sprite(64, 32, self.width, self.height),\r\n                            self.spritesheet.get_sprite(96, 32, self.width, self.height),\r\n                            self.spritesheet.get_sprite(128, 32, self.width, self.height)]\r\n\r\n        self.left_animations = [self.spritesheet.get_sprite(0, 96, self.width, self.height),\r\n                            self.spritesheet.get_sprite(32, 96, self.width, self.height),\r\n                            self.spritesheet.get_sprite(64, 96, self.width, self.height),\r\n                            self.spritesheet.get_sprite(96, 96, self.width, self.height),\r\n                            self.spritesheet.get_sprite(128, 96, self.width, self.height)]\r\n\r\n        self.up_animations = [self.spritesheet.get_sprite(0, 0, self.width, self.height),\r\n                            self.spritesheet.get_sprite(32, 0, self.width, self.height),\r\n                            self.spritesheet.get_sprite(64, 0, self.width, self.height),\r\n                            self.spritesheet.get_sprite(96, 0, self.width, self.height),\r\n                            self.spritesheet.get_sprite(128, 0, self.width, self.height)]\r\n        \r\n    def update(self):\r\n        self.animate()\r\n        self.collide()\r\n    \r\n    def collide(self):\r\n        hits = pygame.sprite.spritecollide(self, self.game.enemies, False)\r\n        if hits:\r\n            enemy = hits[0]\r\n            enemy.x_change = 0\r\n            enemy.y_chamge = 0\r\n            enemy.hp = enemy.hp - math.floor(self.damge / 5) \r\n            if enemy.hp <= 0:\r\n                self.player.curentExp += enemy.exp\r\n                enemy.kill()\r\n     \r\n    def animate(self):\r\n        direction = self.game.player.facing\r\n        \r\n        if direction == 'up':\r\n            self.x = self.game.player.x\r\n            self.y = self.game.player.y - TILESIZE\r\n            self.image = self.up_animations[math.floor(self.animation_loop)]\r\n\r\n        \r\n        if direction == 'down':\r\n            self.x = self.game.player.x\r\n            self.y = self.game.player.y + TILESIZE\r\n            self.image = self.down_animations[math.floor(self.animation_loop)]\r\n\r\n\r\n                \r\n        if direction == 'left':\r\n            self.x = self.game.player.x - TILESIZE\r\n            self.y = self.game.player.y\r\n            self.image = self.left_animations[math.floor(self.animation_loop)]\r\n\r\n\r\n        if direction == 'right':\r\n            self.x = self.game.player.x + TILESIZE\r\n            self.y = self.game.player.y\r\n            self.image = self.right_animations[math.floor(self.animation_loop)]\r\n\r\n        self.animation_loop += 1\r\n        if self.animation_loop >= 5 :\r\n            self.player.attacking = False\r\n            self.kill()\r\n            \r\nclass MagicAttack(pygame.sprite.Sprite):\r\n    \r\n    def __init__(self, player):\r\n        #init \r\n        self.game = player.game\r\n        self.player = player\r\n        \r\n        #\r\n        self.damge = player.atk\r\n        \r\n        # groups \r\n        self._layer = PLAYER_LAYER\r\n        self.groups = self.game.all_sprites, self.game.magic_attacks\r\n        pygame.sprite.Sprite.__init__(self, self.groups)\r\n        \r\n        #position facing\r\n        if self.player.facing == 'up':\r\n            self.x_change = 0\r\n            self.y_change = - BULLET_SPD\r\n            x = self.player.x \r\n            y = self.player.y - TILESIZE\r\n        if self.player.facing == 'down':\r\n            self.x_change = 0\r\n            self.y_change = BULLET_SPD\r\n            x = self.player.x\r\n            y =self.player.y + TILESIZE\r\n        if self.player.facing == 'left':\r\n            self.x_change = - BULLET_SPD\r\n            self.y_change = 0\r\n            x = self.player.x - TILESIZE\r\n            y =self.player.y\r\n        if self.player.facing == 'right':\r\n            self.x_change = BULLET_SPD\r\n            self.y_change = 0\r\n            x = self.player.x + TILESIZE\r\n            y = self.player.y\r\n            \r\n        self.x = x\r\n        self.y = y\r\n        self.width = 28\r\n        self.height = 28\r\n        \r\n        self.animation_loop = 0\r\n        \r\n        self.image = self.game.attack_spritesheet.get_sprite(0, 0, self.width, self.height)\r\n        self.rect = self.image.get_rect()\r\n        self.rect.x = self.x\r\n        self.rect.y = self.y\r\n        \r\n        self.right_animations = self.game.attack_spritesheet.get_sprite(64, 64, self.width, self.height)\r\n\r\n        self.down_animations = self.game.attack_spritesheet.get_sprite(64, 32, self.width, self.height)\r\n\r\n        self.left_animations = self.game.attack_spritesheet.get_sprite(64, 96, self.width, self.height)\r\n\r\n        self.up_animations = self.game.attack_spritesheet.get_sprite(64, 0, self.width, self.height)\r\n        direction = self.player.facing\r\n        \r\n        if direction == 'up':\r\n            self.image = self.up_animations\r\n\r\n        \r\n        if direction == 'down':\r\n            self.image = self.down_animations\r\n\r\n\r\n                \r\n        if direction == 'left':\r\n            self.image = self.left_animations\r\n\r\n\r\n        if direction == 'right':\r\n            self.image = self.right_animations\r\n        \r\n    def update(self):\r\n        self.x += self.x_change\r\n        self.y += self.y_change\r\n        self.animate()\r\n        self.collide()\r\n    \r\n    def collide(self):\r\n        hits = pygame.sprite.spritecollide(self, self.game.enemies, False)\r\n        if hits:\r\n            hits[0].hp = hits[0].hp - self.damge\r\n            if hits[0].hp <= 0:\r\n                hits[0].kill()\r\n                self.player.curentExp += hits[0].exp\r\n            self.kill()\r\n     \r\n    def animate(self):\r\n        #self.image = self.game.magic_attack.get_sprite(0, 0, self.width, self.height)\r\n\r\n        self.animation_loop += 1\r\n        if self.animation_loop >= self.player.magicRange :\r\n            self.kill()
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Utils.py b/Utils.py
+--- a/Utils.py	(revision 63cfda67f2ea3220f563ec551c0bf1908db26a9b)
++++ b/Utils.py	(date 1679698517516)
+@@ -2,7 +2,8 @@
+ from config import *
+ import math
+ import random
+-
++from Item import *
++from pygame import mixer
+ class Spritesheet:
+     def __init__(self, file):
+         self.sheet = pygame.image.load(file).convert()
+@@ -82,7 +83,11 @@
+         self.rect = self.image.get_rect()
+         self.rect.x = self.x
+         self.rect.y = self.y
+-        
++
++        self.killSound = pygame.mixer.Sound('./audio/enemyDead.wav')
++        self.chestopenSound = pygame.mixer.Sound('./audio/chestBreak.mp3')
++        self.killSound.set_volume(0.15)
++        self.chestopenSound.set_volume(0.15)
+         self.right_animations = [self.spritesheet.get_sprite(0, 64, self.width, self.height),
+                             self.spritesheet.get_sprite(32, 64, self.width, self.height),
+                             self.spritesheet.get_sprite(64, 64, self.width, self.height),
+@@ -110,6 +115,7 @@
+     def update(self):
+         self.animate()
+         self.collide()
++        self.collide_chest()
+     
+     def collide(self):
+         hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
+@@ -119,9 +125,19 @@
+             enemy.y_chamge = 0
+             enemy.hp = enemy.hp - math.floor(self.damge / 5) 
+             if enemy.hp <= 0:
++                self.killSound.play()
+                 self.player.curentExp += enemy.exp
+                 enemy.kill()
+-     
++
++    def collide_chest(self):
++        hits = pygame.sprite.spritecollide(self, self.game.chest, False)
++        if hits:
++            enemy = hits[0]
++            enemy.hp = enemy.hp - math.floor(self.damge / 5)
++            if enemy.hp <= 0:
++                coin(self.game, self.x, self.y)
++                self.chestopenSound.play()
++                enemy.kill()
+     def animate(self):
+         direction = self.game.player.facing
+         
+@@ -234,7 +250,7 @@
+         self.animate()
+         self.collide()
+     
+-    def collide(self):
++    def collide_enemy(self):
+         hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
+         if hits:
+             hits[0].hp = hits[0].hp - self.damge
+@@ -242,10 +258,119 @@
+                 hits[0].kill()
+                 self.player.curentExp += hits[0].exp
+             self.kill()
+-     
++
++
+     def animate(self):
+         #self.image = self.game.magic_attack.get_sprite(0, 0, self.width, self.height)
+ 
+         self.animation_loop += 1
+         if self.animation_loop >= self.player.magicRange :
+-            self.kill()
+\ No newline at end of file
++            self.kill()
++class startButton:
++    def __init__(self, x, y, width, height):
++        self.image = pygame.image.load('./img/playBtn.png')
++
++        self.x = x
++        self.y = y
++
++        self.rect = self.image.get_rect()
++        self.rect.x = self.x
++        self.rect.y = self.y
++
++        self.height = height
++        self.width = width
++    def draw(self,screen):
++        screen.blit(self.image, (self.x, self.y), (self.width, self.height))
++
++    def is_pressed(self, pos, pressed):
++        if self.rect.collidepoint(pos):
++            if pressed[0]:
++                return True
++            return False
++        return False
++class quittButton:
++    def __init__(self, x, y, width, height):
++        self.image = pygame.image.load('./img/exitBtn.png')
++
++        self.x = x
++        self.y = y
++
++        self.rect = self.image.get_rect()
++        self.rect.x = self.x
++        self.rect.y = self.y
++
++        self.height = height
++        self.width = width
++    def draw(self,screen):
++        screen.blit(self.image, (self.x, self.y), (self.width, self.height))
++
++    def is_pressed(self, pos, pressed):
++        if self.rect.collidepoint(pos):
++            if pressed[0]:
++                return True
++            return False
++        return False
++class optionButton:
++    def __init__(self, x, y, width, height):
++        self.image = pygame.image.load('./img/optionBtn.png')
++
++        self.x = x
++        self.y = y
++
++        self.rect = self.image.get_rect()
++        self.rect.x = self.x
++        self.rect.y = self.y
++
++        self.height = height
++        self.width = width
++    def draw(self,screen):
++        screen.blit(self.image, (self.x, self.y), (self.width, self.height))
++
++    def is_pressed(self, pos, pressed):
++        if self.rect.collidepoint(pos):
++            if pressed[0]:
++                return True
++            return False
++        return False
++
++class soundButton:
++    def __init__(self, x, y, image):
++        self.image = image;
++
++        self.x = x
++        self.y = y
++
++        self.rect = self.image.get_rect()
++        self.rect.x = self.x
++        self.rect.y = self.y
++
++
++    def draw(self, screen):
++        screen.blit(self.image, (self.x, self.y), (self.width, self.height))
++
++    def is_pressed(self, pos, pressed):
++        if self.rect.collidepoint(pos):
++            if pressed[0]:
++                return True
++            return False
++        return False
++class backButton:
++    def __init__(self, x, y):
++        self.image = pygame.image.load('./img/backBtn.png')
++
++        self.x = x
++        self.y = y
++
++        self.rect = self.image.get_rect()
++        self.rect.x = self.x
++        self.rect.y = self.y
++
++    def draw(self, screen):
++        screen.blit(self.image, (self.x, self.y), (self.width, self.height))
++
++    def is_pressed(self, pos, pressed):
++        if self.rect.collidepoint(pos):
++            if pressed[0]:
++                return True
++            return False
++        return False
+\ No newline at end of file
+Index: config.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>WIN_WIDTH = 640\r\nWIN_HEIGHT = 480\r\nTILESIZE = 32\r\nRED = (255,0,0)\r\nBLACK = (0,0,0)\r\nWHITE = (255,255,255)\r\nBLUE  = (0, 0, 255)\r\nFPS = 30\r\nPLAYER_LAYER = 4\r\nENEMY_LAYER = 3\r\nBLOCK_LAYER = 2\r\nGROUND_LAYER = 1\r\nMAP_HEIGHT = 30 * 32\r\nMAP_WIDTH = 80 *32\r\n\r\nBULLET_SPD = 16\r\nPLAYER_SPEED = 6\r\nENEMY_SPEED = 2\r\nFONTSIZE = 16\r\ntilemap = [\r\n    '....................................................................................................',\r\n    '....................................................................................................',\r\n    '....................................................................................................',\r\n    '....................................................................................................',\r\n    '....................................................................................................',\r\n    '....................................................................................................',\r\n    '....................................................................................................',\r\n    '....................................................................................................',\r\n    '..........                                                                                ..........',\r\n    '..........                                                                                ..........',\r\n    '..........                                                                                ..........',\r\n    '..........                                                                                ..........',\r\n    '..........                                                                                ..........',\r\n    '..........                               GGGGGGGGGGGGGGGGGGGGGGGGGGG                      ..........',\r\n    '..........                               GGGGGGGGGGGGGGGGGGGGGGGGGGG                      ..........',\r\n    '..........                                                   B                            ..........',\r\n    '..........                                                   B                            ..........',\r\n    '..........                                                   B                            ..........',\r\n    '..........                                                                                ..........',\r\n    '..........                                                                                ..........',\r\n    '..........                                                                                ..........',\r\n    '..........                                                                                ..........',\r\n    '..........                                                                                ..........',\r\n    '..........                                                                                ..........',\r\n    '..........                                                                                ..........',\r\n    '..........                                                                                ..........',\r\n    '..........BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB    ..........',\r\n    '..........BBBBBBBBBBBBBBB                       B                                    B    ..........',\r\n    '..........     R        B                       B                                    B    ..........',\r\n    '..........              B            B          B                                    B    ..........',\r\n    '..........BBB    BBB    B            B          B                                    B    ..........',\r\n    '..........         B    B            B     BBBBBBBBBBBBBBBBBBBBBBBBBBBB              B    ..........',\r\n    '..........         B    B            B                                               B    ..........',\r\n    '..........     E   B    BBBBBBBBBB   B                                               B    ..........',\r\n    '..........         BGGGGGGGGGGGGGG   B                                                    ..........',\r\n    '..........         BGGGGGGGGGGGGGG   B                                                    ..........',\r\n    '....................................................................................................',\r\n    '....................................................................................................',\r\n    '....................................................................................................',\r\n    '....................................................................................................',\r\n    '....................................................................................................',\r\n    '....................................................................................................',\r\n    '....................................................................................................',\r\n    '....................................................................................................',\r\n]
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/config.py b/config.py
+--- a/config.py	(revision 63cfda67f2ea3220f563ec551c0bf1908db26a9b)
++++ b/config.py	(date 1679690359002)
+@@ -1,5 +1,5 @@
+-WIN_WIDTH = 640
+-WIN_HEIGHT = 480
++WIN_WIDTH = 1280
++WIN_HEIGHT = 720
+ TILESIZE = 32
+ RED = (255,0,0)
+ BLACK = (0,0,0)
+@@ -8,6 +8,7 @@
+ FPS = 30
+ PLAYER_LAYER = 4
+ ENEMY_LAYER = 3
++ITEM_LAYER = 3
+ BLOCK_LAYER = 2
+ GROUND_LAYER = 1
+ MAP_HEIGHT = 30 * 32
+@@ -46,12 +47,12 @@
+     '..........                                                                                ..........',
+     '..........BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB    ..........',
+     '..........BBBBBBBBBBBBBBB                       B                                    B    ..........',
+-    '..........     R        B                       B                                    B    ..........',
++    '..........     C        B                       B                                    B    ..........',
+     '..........              B            B          B                                    B    ..........',
+-    '..........BBB    BBB    B            B          B                                    B    ..........',
+-    '..........         B    B            B     BBBBBBBBBBBBBBBBBBBBBBBBBBBB              B    ..........',
+-    '..........         B    B            B                                               B    ..........',
+-    '..........     E   B    BBBBBBBBBB   B                                               B    ..........',
++    '..........BBB    BBB    B  R         B          B                                    B    ..........',
++    '..........   C E   B    B            B     BBBBBBBBBBBBBBBBBBBBBBBBBBBB              B    ..........',
++    '..........  E      B    B   E        B                                               B    ..........',
++    '..........     c   B    BBBBBBBBBB   B                                               B    ..........',
+     '..........         BGGGGGGGGGGGGGG   B                                                    ..........',
+     '..........         BGGGGGGGGGGGGGG   B                                                    ..........',
+     '....................................................................................................',
+Index: main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import pygame\r\nfrom sprites import *\r\nfrom config import *\r\nfrom Utils import *\r\nfrom Ground import *\r\nfrom Player import *\r\nfrom Camera import *\r\nfrom Enemy import *\r\nfrom Sprite import *\r\n\r\nimport sys\r\nIMG_DIR = './img/'\r\n\r\n\r\nclass Game:\r\n\tdef __init__(self):\r\n\t\tpygame.init()\r\n\t\tself.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))\r\n\t\tself.clock = pygame.time.Clock()\r\n\t\tself.running = True\r\n  \r\n\t\tself.camera = Camera(self,0,0)\r\n  \r\n\t\tself.font = pygame.font.Font('arial.ttf',16)\r\n\t\tself.character_spritesheet = Spritesheet(f\"{IMG_DIR}character.png\")\r\n\t\tself.terrain_spritesheet = Spritesheet(f\"{IMG_DIR}terrain.png\")\r\n\t\tself.enemy_spritesheet = Spritesheet(f\"{IMG_DIR}enemy.png\")\r\n\t\tself.intro_background = pygame.image.load(f\"{IMG_DIR}introbackground.png\")\r\n\t\tself.go_background = pygame.image.load(f\"{IMG_DIR}gameover.png\")\r\n\t\tself.attack_spritesheet = Spritesheet(f\"{IMG_DIR}attack.png\")\r\n\t\tself.explosion0_sprite = Spritesheet(f\"{IMG_DIR}explosion0.png\")\r\n\t\tself.explosion1_sprite = Spritesheet(f\"{IMG_DIR}explosion1.png\")\r\n\t\tself.heart_spritesheet = Spritesheet(f\"{IMG_DIR}LifePot.png\")\r\n\t\tself.magic_attack = Spritesheet(f\"{IMG_DIR}magic.png\")\r\n \r\n\tdef createTilemap(self):\r\n\t\tself.player = Player(self, 11 , 35)\r\n\t\tHeartItem(self)\r\n\t\tfor i, row in enumerate(tilemap):\r\n\t\t\tfor j,column in enumerate(row):\r\n\t\t\t\tGrass(self, 2,j, i)\r\n\t\t\t\tif column == \"B\":\r\n\t\t\t\t\tBlock(self, j , i)\r\n\t\t\t\tif column == \".\":\r\n\t\t\t\t\tWall(self, j , i)\r\n\t\t\t\tif column == \"G\":\r\n\t\t\t\t\tGrass(self,0, j , i)\r\n\t\t\t\tif column == \"E\":\r\n\t\t\t\t\tBeeEnemy(self, j , i)\r\n\t\t\t\tif column == \"R\":\r\n\t\t\t\t\tRangeEnemy(self, j , i)\r\n     \r\n\t\t\t\t\t\r\n\t\tdeltax  = self.player.x - WIN_WIDTH/2\r\n\t\tdeltay = self.player.y - WIN_HEIGHT /2\r\n\t\tfor sprite in self.all_sprites:\r\n\t\t\tsprite.rect.x -= deltax\r\n\t\t\tsprite.rect.y -= deltay\r\n\r\n\r\n\tdef new(self):\r\n\t\tself.playing = True\r\n  \r\n\t\tself.all_sprites = pygame.sprite.LayeredUpdates()\r\n\r\n\t\tself.blocks = pygame.sprite.LayeredUpdates()\r\n    \r\n\t\tself.enemies = pygame.sprite.LayeredUpdates()\r\n\r\n\t\tself.items = pygame.sprite.LayeredUpdates()\r\n  \r\n\t\tself.icons = pygame.sprite.LayeredUpdates()\r\n  \r\n\t\tself.attacks = pygame.sprite.LayeredUpdates()\r\n\r\n\t\tself.playerSprite = pygame.sprite.LayeredUpdates()\r\n\r\n  \r\n\t\tself.magic_attacks = pygame.sprite.LayeredUpdates()\r\n  \r\n\t\tself.createTilemap()\r\n\r\n  \r\n\r\n\tdef events(self):\r\n\t\tfor event in pygame.event.get():\r\n\t\t\tif event.type == pygame.QUIT:\r\n\t\t\t\tself.playing = False\r\n\t\t\t\tself.running = False\r\n\t\tkeys = pygame.key.get_pressed()\r\n\t\tif keys[pygame.K_c]:\r\n\t\t\tself.player.usePotion()\r\n   \r\n\tdef update(self):\r\n\t\tself.all_sprites.update()\r\n\t\tself.camera.update()\r\n\t\tself.icons.update()\r\n\r\n\tdef draw(self):\r\n\t\tself.screen.fill(BLACK)\r\n\t\tself.all_sprites.draw(self.screen)\r\n\t\tself.icons.draw(self.screen)\r\n\t\tself.clock.tick(FPS)\r\n  \r\n\t\tpostion_text = self.font.render(f'x: {self.player.x}, y: {self.player.y}', True, WHITE)\r\n\t\tHp_text = self.font.render(f'HP: {self.player.hp}/{self.player.maxHp}', True, WHITE)\r\n\t\tAtk_text = self.font.render(f'ATK: {self.player.atk}', True, WHITE)\r\n\t\texp_text = self.font.render(f'Exp: {self.player.curentExp}/{self.player.nextExp}', True, WHITE)\r\n\t\tpot_text = self.font.render(f'{self.player.potion}', True, WHITE)\r\n\t\tself.screen.blit(postion_text, (10 , 5))\r\n\t\tself.screen.blit(Hp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*3))\r\n\t\tself.screen.blit(Atk_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*2))\r\n\t\tself.screen.blit(exp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)))\r\n\t\tself.screen.blit(pot_text, (WIN_WIDTH - 50, WIN_HEIGHT - 25))\r\n\t\tpygame.display.update()\r\n\r\n\tdef main(self):\r\n\t\t# game loop\r\n\t\twhile self.playing:\r\n\t\t\tself.events()\r\n\t\t\tself.update()\r\n\t\t\tself.draw()\r\n\r\n\tdef gameOver(self):\r\n\t\ttext = self.font.render('Game Over', True, WHITE)\r\n\t\ttext_rect = text.get_rect(center=(WIN_WIDTH/2, WIN_HEIGHT/2))\r\n\r\n\t\trestart_button = Button(10, WIN_HEIGHT - 60, 120, 50, WHITE, BLACK, 'Restart', 32)\r\n        \r\n\t\tfor sprite in self.all_sprites:\r\n\t\t\tsprite.kill()\r\n\r\n\t\twhile self.running:\r\n\t\t\tfor event in pygame.event.get():\r\n\t\t\t\tif event.type == pygame.QUIT:\r\n\t\t\t\t\tself.running = False\r\n\r\n\t\t\tmouse_pos = pygame.mouse.get_pos()\r\n\t\t\tmouse_pressed = pygame.mouse.get_pressed()\r\n\r\n\t\t\tif restart_button.is_pressed(mouse_pos, mouse_pressed):\r\n\t\t\t\tself.new()\r\n\t\t\t\tself.main()\r\n    \r\n\t\t\tself.screen.blit(self.go_background, (0, 0))\r\n\t\t\tself.screen.blit(text, text_rect)\r\n\t\t\tself.screen.blit(restart_button.image, restart_button.rect)\r\n\t\t\tself.clock.tick(FPS)\r\n\t\t\tpygame.display.update()\r\n        \r\n\tdef introScreen(self):\r\n\t\tintro = True\r\n  \r\n\t\ttitle = self.font.render('Awesome Game', True, BLACK)\r\n\t\ttitle_rect = title.get_rect(x=10, y=10)\r\n  \r\n\t\tplay_button = Button(10, 50, 100, 50, WHITE, BLACK, 'play',32)\r\n\t\twhile intro:\r\n\t\t\tfor event in pygame.event.get():\r\n\t\t\t\tif event.type == pygame.QUIT:\r\n\t\t\t\t\tintro = False\r\n\t\t\t\t\tself.running = False\r\n\t\t\tmouse_pos = pygame.mouse.get_pos()\r\n\t\t\tmouse_pressed = pygame.mouse.get_pressed()\r\n\r\n\t\t\tif play_button.is_pressed(mouse_pos, mouse_pressed):\r\n\t\t\t\tintro = False\r\n\r\n\t\t\tself.screen.blit(self.intro_background, (0, 0))\r\n\t\t\tself.screen.blit(title, title_rect)\r\n\t\t\tself.screen.blit(play_button.image, play_button.rect)\r\n\t\t\tself.clock.tick(FPS)\r\n\t\t\tpygame.display.update()\r\n \r\ng = Game()\r\ng.introScreen()\r\ng.new()\r\nwhile g.running:\r\n\tg.main()\r\n\tg.gameOver()\r\npygame.quit()\r\nsys.exit()
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main.py b/main.py
+--- a/main.py	(revision 63cfda67f2ea3220f563ec551c0bf1908db26a9b)
++++ b/main.py	(date 1679698872405)
+@@ -1,5 +1,5 @@
+ import pygame
+-from sprites import *
++from Sprite import *
+ from config import *
+ from Utils import *
+ from Ground import *
+@@ -7,7 +7,9 @@
+ from Camera import *
+ from Enemy import *
+ from Sprite import *
++from Item import *
+ 
++from pygame import mixer
+ import sys
+ IMG_DIR = './img/'
+ 
+@@ -15,6 +17,9 @@
+ class Game:
+ 	def __init__(self):
+ 		pygame.init()
++		mixer.init()
++		themeSong = pygame.mixer.Sound("./audio/bgrTheme.mp3")
++		themeSong.play(loops=-1)
+ 		self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
+ 		self.clock = pygame.time.Clock()
+ 		self.running = True
+@@ -32,6 +37,7 @@
+ 		self.explosion1_sprite = Spritesheet(f"{IMG_DIR}explosion1.png")
+ 		self.heart_spritesheet = Spritesheet(f"{IMG_DIR}LifePot.png")
+ 		self.magic_attack = Spritesheet(f"{IMG_DIR}magic.png")
++
+  
+ 	def createTilemap(self):
+ 		self.player = Player(self, 11 , 35)
+@@ -49,6 +55,10 @@
+ 					BeeEnemy(self, j , i)
+ 				if column == "R":
+ 					RangeEnemy(self, j , i)
++				if column == "C":
++					Chest(self, j, i)
++				if column == "c":
++					coin(self, j, i)
+      
+ 					
+ 		deltax  = self.player.x - WIN_WIDTH/2
+@@ -77,6 +87,8 @@
+ 
+   
+ 		self.magic_attacks = pygame.sprite.LayeredUpdates()
++
++		self.chest = pygame.sprite.LayeredUpdates()
+   
+ 		self.createTilemap()
+ 
+@@ -117,6 +129,8 @@
+ 	def main(self):
+ 		# game loop
+ 		while self.playing:
++			pygame.mixer.music.load("./audio/bgrTheme.mp3")
++			pygame.mixer.music.play
+ 			self.events()
+ 			self.update()
+ 			self.draw()
+@@ -147,14 +161,30 @@
+ 			self.screen.blit(restart_button.image, restart_button.rect)
+ 			self.clock.tick(FPS)
+ 			pygame.display.update()
+-        
++
++	def optionScreen(self):
++		option = True
++
++		soundOn_button = soundButton(700, 300, pygame.image.load('./img/soundOn.png'))
++		soundOff_button = soundButton(900, 300, pygame.image.load('./img/soundOn.png'))
++		back_button = backButton(WIN_WIDTH/2, 400)
++		while option:
++			mouse_pos = pygame.mouse.get_pos()
++			mouse_pressed = pygame.mouse.get_pressed()
++			if back_button.is_pressed(mouse_pos, mouse_pressed):
++				self.introScreen()
++			self.screen.blit(self.intro_background, (0, 0))
++			self.screen.blit(soundOn_button.image, soundOn_button.rect)
++			self.screen.blit(soundOff_button.image, soundOff_button.rect)
++			self.screen.blit(back_button.image, back_button.rect)
++			self.clock.tick(FPS)
++			pygame.display.update()
+ 	def introScreen(self):
+ 		intro = True
+-  
+-		title = self.font.render('Awesome Game', True, BLACK)
+-		title_rect = title.get_rect(x=10, y=10)
+-  
+-		play_button = Button(10, 50, 100, 50, WHITE, BLACK, 'play',32)
++		self.screen.fill(BLACK)
++		play_button = startButton(WIN_WIDTH/2, 200, 100,400)
++		quit_button = quittButton(WIN_WIDTH/2, 400, 100,400)
++		option_button = optionButton(WIN_WIDTH/2, 300, 100,400)
+ 		while intro:
+ 			for event in pygame.event.get():
+ 				if event.type == pygame.QUIT:
+@@ -165,13 +195,19 @@
+ 
+ 			if play_button.is_pressed(mouse_pos, mouse_pressed):
+ 				intro = False
+-
++			if quit_button.is_pressed(mouse_pos, mouse_pressed):
++				pygame.quit()
++				sys.exit()
++			if option_button.is_pressed(mouse_pos, mouse_pressed):
++					self.optionScreen()
+ 			self.screen.blit(self.intro_background, (0, 0))
+-			self.screen.blit(title, title_rect)
+-			self.screen.blit(play_button.image, play_button.rect)
++			self.screen.blit(play_button.image,  play_button.rect)
++			self.screen.blit(quit_button.image, quit_button.rect)
++			self.screen.blit(option_button.image, option_button.rect)
+ 			self.clock.tick(FPS)
+ 			pygame.display.update()
+- 
++
++
+ g = Game()
+ g.introScreen()
+ g.new()
+Index: Item.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Item.py b/Item.py
+new file mode 100644
+--- /dev/null	(date 1679690316423)
++++ b/Item.py	(date 1679690316423)
+@@ -0,0 +1,34 @@
++import pygame
++from config import *
++from Utils import *
++from Sprite import *
++from pygame import mixer
++class coin(pygame.sprite.Sprite):
++    def __init__(self, game, x, y):
++        self.x = x * TILESIZE
++        self.y = y * TILESIZE
++        self.width = 32
++        self.height = 32
++        self.exp = 30
++        self.game = game
++        self._layer = ITEM_LAYER
++        self.groups = self.game.all_sprites, self.game.items
++        pygame.sprite.Sprite.__init__(self, self.groups)
++
++        self.image = pygame.image.load("./img/coin.png")
++        self.rect = self.image.get_rect()
++        self.rect.x = self.x
++        self.rect.y = self.y
++        self.pickupSound = pygame.mixer.Sound('./audio/lvlUp.wav')
++        self.pickupSound.set_volume(0.1)
++    def render(self, x, y):
++        self.game.screen.blit(self.image, (x, y), self.rect)
++    def collide_player(self):
++        hits = pygame.sprite.spritecollide(self, self.game.playerSprite, False)
++        if hits:
++            self.pickupSound.play()
++            self.kill()
++            self.game.player.curentExp += self.exp
++    def update(self):
++        self.collide_player()
++
