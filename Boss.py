@@ -6,17 +6,21 @@ class Boss(pygame.sprite.Sprite):
     FACING_LEFT = 1
     FACING_RIGHT = 2
 
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, lvl):
         self.game = game
+        self.level = lvl
+        self.posx = x
+        self.posy = y
         self._layer = ENEMY_LAYER
         self.groups = self.game.all_sprites, self.game.enemies
         pygame.sprite.Sprite.__init__(self, self.groups)
-        self.hp = 400
+        self.hp = 2000
+        self.maxHp = 2000
         self.stage = 1
         self.width = [85,122,87]
         self.height = [94,110,110]
-        self.x = x * TILESIZE - (self.width[self.stage] - TILESIZE)//2
-        self.y = y * TILESIZE - self.height[self.stage] + TILESIZE
+        self.x = x
+        self.y = y
         self.velx = 0 
         self.vely = 0
         self.tick = 0
@@ -51,7 +55,14 @@ class Boss(pygame.sprite.Sprite):
 
         self.speed = 3
         self.cooldown = 200
-    
+        
+    def respawn(self):
+        self.x = self.posx
+        self.y = self.posy
+        self.hp = self.maxHp
+        self.dead = False
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        
     def update(self):
         self.animate()
         self.movement()
@@ -173,6 +184,6 @@ class BossBullet(pygame.sprite.Sprite):
     def collide(self):
         hits = pygame.sprite.spritecollide(self, self.game.playerSprite, False)
         if hits:
-            self.game.player.attacked(2)
+            self.game.player.attacked(20)
             self.d = self.distance
 
