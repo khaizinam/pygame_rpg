@@ -32,7 +32,7 @@ tilemap = [
     '.                 B                                 B                            .',
     '.                 B                                 B                            .',
     '.                 B                                 B                            .',
-    '.          BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB           .',
+    '.          BBBBBBBBBBBBBBBBBBBBBBB       BBBBBBBBBBBBBBBBBBBBBBBBBBBBB           .',
     '.                                                                                .',
     '.                                                                                .',
     '.                                                                                .',
@@ -45,7 +45,7 @@ tilemap = [
     '.         B    B            B     BBBBBBBBBBBBBBBBBBBBBBBBBBBB              B    .',
     '.         B    B            B                                               B    .',
     '.         B    BBBBBBBBBBGGGB                                               B    .',
-    '.         BGGGGGGGGGGGGGGGGGB                                               C    .',
-    '.         BGGGGGGGGGGGGGGGGGB                                               C    .',
+    '.         BGGGGGGGGGGGGGGGGGB                                                    .',
+    '.         BGGGGGGGGGGGGGGGGGB                                                    .',
     '..................................................................................',
 ]

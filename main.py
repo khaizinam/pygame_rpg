@@ -27,7 +27,6 @@ class Game:
  
 	def createTilemap(self):
 		HeartItem(self)
-		self.gate1 = []
 		for i, row in enumerate(tilemap):
 			for j,column in enumerate(row):
 				Grass(self, 2,j, i)
@@ -37,19 +36,18 @@ class Game:
 					Wall(self, j , i)
 				if column == "G":
 					Grass(self,0, j , i)
-				if column == "C":
-					self.gate1.append(Block(self, j , i))
      
 
 	def initEntity(self):
 		self.player = Player(self, 60 , 860)
 		self.playerhpbar = PlayerHealthBar(self, self.player)
-		deltax  = self.player.x - WIN_WIDTH/2
-		deltay = self.player.y - WIN_HEIGHT /2
-		for sprite in self.all_sprites:
-			sprite.rect.x -= deltax
-			sprite.rect.y -= deltay
-		self.minionList = [
+		
+		self.createList = [
+			CreateChest('',self,282,814,FPS*60*3),
+   			CreateChest('',self,1354,680,FPS*60*3),
+			CreateChest('',self,1746,260,FPS*60*3),
+			CreateChest('',self,1746,32,FPS*60*3),
+			CreateChest('',self,1926,134,FPS*60*3),
       		CreateMinion('bee', self, 276, 884, 1, FPS*30),
 			CreateMinion('bat', self, 270, 776, 1, FPS*30),
 			CreateMinion('bee', self, 448, 854, 2, FPS*30),
@@ -79,13 +77,14 @@ class Game:
 			CreateMinion('bat', self, 2414, 290, 4, FPS*120),
 			CreateMinion('bee', self, 2414, 236, 5, FPS*120),
         ]
-		for minion in self.minionList:
+		for minion in self.createList:
 			minion.create()
 
 	def new(self):
 		self.playing = True
 
 		self.all_sprites = pygame.sprite.LayeredUpdates()
+  
 		self.blocks = pygame.sprite.LayeredUpdates()
 		self.enemies = pygame.sprite.LayeredUpdates()
 		self.items = pygame.sprite.LayeredUpdates()
@@ -93,9 +92,9 @@ class Game:
 		self.health_bar = pygame.sprite.LayeredUpdates()
 		self.attacks = pygame.sprite.LayeredUpdates()
 		self.playerSprite = pygame.sprite.LayeredUpdates()
-  
+		self.potions = pygame.sprite.LayeredUpdates()
 		self.magic_attacks = pygame.sprite.LayeredUpdates()
-
+		self.chests = pygame.sprite.LayeredUpdates()
 		self.createTilemap()
 		self.initEntity()
 
@@ -113,7 +112,7 @@ class Game:
 	def update(self):
 		self.all_sprites.update()
 		self.icons.update()
-		for minion in self.minionList:
+		for minion in self.createList:
 			minion.update()
 		self.camera.update()
 
@@ -124,15 +123,22 @@ class Game:
 		self.clock.tick(FPS)
   
 		postion_text = self.font.render(f'x: {self.player.x}, y: {self.player.y}', True, WHITE)
-		Hp_text = self.font.render(f'HP: {self.player.hp}/{self.player.maxHp}', True, WHITE)
-		Atk_text = self.font.render(f'ATK: {self.player.atk}', True, WHITE)
-		exp_text = self.font.render(f'Exp: {self.player.curentExp}/{self.player.nextExp}', True, WHITE)
+		lvl_text = self.font.render(f'level: {self.player.level}', True, WHITE)
+		Hp_text = self.font.render(f'hp: {self.player.hp}/{self.player.maxHp}', True, WHITE)
+		Atk_text = self.font.render(f'atk: {self.player.atk}', True, WHITE)
+		exp_text = self.font.render(f'exp: {self.player.curentExp}/{self.player.nextExp}', True, WHITE)
 		pot_text = self.font.render(f'{self.player.potion}', True, WHITE)
+		atk_spd_text = self.font.render(f'atk spd: { round(FPS / self.player.magicReduce, 2)}', True, WHITE)
+		atk_range_text = self.font.render(f'atk range: { math.floor(self.player.magicRange ) * BULLET_SPD}', True, WHITE)
 		self.screen.blit(postion_text, (10 , 5))
+		self.screen.blit(lvl_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*7))
+		self.screen.blit(atk_spd_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*6))
+		self.screen.blit(atk_range_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*5))
 		self.screen.blit(Hp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*4))
 		self.screen.blit(Atk_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*2))
 		self.screen.blit(exp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)))
 		self.screen.blit(pot_text, (WIN_WIDTH - 50, WIN_HEIGHT - 25))
+
 		pygame.display.update()
 
 	def main(self):
