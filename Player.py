@@ -100,32 +100,35 @@ class Player(pygame.sprite.Sprite):
         if self.hp < self.maxHp and self.potion > 0 and  self.potionReduce == 0:
             self.potionReduce = self.TimeNextPotion
             self.potion -= 1
-            self.hp = self.maxHp 
+            self.hp += 30
+            if self.hp > self.maxHp:
+                self.hp = self.maxHp  
             
     def movement(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            self.velx = -1
-            self.facing = 'left'
-        elif keys[pygame.K_RIGHT]:
-            self.velx = 1
-            self.facing = 'right'
-        elif keys[pygame.K_UP]:
-            self.vely = -1
-            self.facing = 'up'
-        elif keys[pygame.K_DOWN]:
-            self.vely = 1
-            self.facing = 'down'
-        if keys[pygame.K_j]:
-            if self.attacking == False :
+        if self.attacking == False:
+            if keys[pygame.K_LEFT]:
+                self.velx = -1
+                self.facing = 'left'
+            elif keys[pygame.K_RIGHT]:
+                self.velx = 1
+                self.facing = 'right'
+            elif keys[pygame.K_UP]:
+                self.vely = -1
+                self.facing = 'up'
+            elif keys[pygame.K_DOWN]:
+                self.vely = 1
+                self.facing = 'down'
+            if keys[pygame.K_j]:
                 self.meleeAttack()
-        if keys[pygame.K_k]:
-            if self.attacking == False and self.magicTime == 0:
-                self.magicAttack()
+            if keys[pygame.K_k]:
+                if self.magicTime == 0:
+                    self.magicAttack()
         self.x_change += self.velx * PLAYER_SPEED
         self.y_change += self.vely * PLAYER_SPEED
         
     def meleeAttack(self):
+        self.attacking = True
         MeleeAttack(self)
         
     def magicAttack(self):
@@ -133,11 +136,11 @@ class Player(pygame.sprite.Sprite):
         MagicAttack(self)
         
     def attacked(self, damge):
-        pass
-        # self.hp -= damge
-        # if self.hp <= 0:
-        #     self.kill()
-        #     self.game.playing = False
+        #pass
+        self.hp -= damge
+        if self.hp <= 0:
+            self.kill()
+            self.game.playing = False
             
         
     def collide_blocks(self, direction):

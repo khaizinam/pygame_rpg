@@ -88,26 +88,30 @@ class MeleeAttack(pygame.sprite.Sprite):
         direction = self.game.player.facing
         
         if direction == 'up':
+            self.game.player.y -= 1
             self.x = self.game.player.x
-            self.y = self.game.player.y - TILESIZE
+            self.y = self.game.player.y - TILESIZE + 2
             self.image = self.up_animations[math.floor(self.animation_loop)]
 
         
         if direction == 'down':
+            self.game.player.y += 1
             self.x = self.game.player.x
-            self.y = self.game.player.y + TILESIZE
+            self.y = self.game.player.y + TILESIZE - 2
             self.image = self.down_animations[math.floor(self.animation_loop)]
 
 
                 
         if direction == 'left':
-            self.x = self.game.player.x - TILESIZE
+            self.game.player.x -= 1
+            self.x = self.game.player.x - TILESIZE + 2
             self.y = self.game.player.y
             self.image = self.left_animations[math.floor(self.animation_loop)]
 
 
         if direction == 'right':
-            self.x = self.game.player.x + TILESIZE
+            self.game.player.x += 1
+            self.x = self.game.player.x + TILESIZE -2
             self.y = self.game.player.y
             self.image = self.right_animations[math.floor(self.animation_loop)]
 
