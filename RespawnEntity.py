@@ -47,7 +47,7 @@ class CreateChest:
         self.typechest = typechest
     def create(self):
         self.main = Chest(self.game, self.x, self.y)
-        
+        self.potion = PotionItem(self.game, self.x + 8,self.y + 8)
             
     def update(self):
         if self.main.time_attacked <= 0 and self.isdead == False:
@@ -59,6 +59,6 @@ class CreateChest:
                 self.RespawnTime = 0
                 self.isdead = False
                 self.main.reset()          
-
+                self.potion.reset()
 
                 

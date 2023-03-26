@@ -20,14 +20,14 @@ class Player(pygame.sprite.Sprite):
         self.potion = 3
         self.TimeNextPotion = FPS * 3
         self.potionReduce = 0
-        self.level = 1
+        self.level = 7
         self.atk = 5 + 5 * self.level
         self.maxHp = 15 + 20 * self.level
         self.hp = self.maxHp
         self.curentExp = 0
         self.nextExp = self.curentExp + self.level * 20
-        self.magicRange = 5
-        self.magicReduce = 16
+        self.magicRange = 5 + 0.5 * self.level
+        self.magicReduce = 16 + 0.5 * self.level
         self.magicTime = 0
         #-----------
         
@@ -79,22 +79,28 @@ class Player(pygame.sprite.Sprite):
         self.x_change = 0
         self.y_change = 0
         
+    def magicTimeAttackUp(self, bonus):
+        if self.magicReduce >= 6:
+            self.magicReduce -= bonus
+    def magicRangeUp(self, bonus):
+        if self.magicRange <= 40:
+            self.magicRange += bonus
     def levelUp(self):
         self.level += 1
         self.maxHp += 20
         self.hp = self.maxHp
         self.atk += 5
-        if self.magicReduce >= 6:
-            self.magicReduce -= 0.5
-        if self.magicRange <= 15:
-            self.magicRange += 0.5
+        self.magicTimeAttackUp(0.5)
+        self.magicRangeUp(0.5)
 
         self.nextExp = self.curentExp + self.level * 20
+        
     def usePotion(self):
         if self.hp < self.maxHp and self.potion > 0 and  self.potionReduce == 0:
             self.potionReduce = self.TimeNextPotion
             self.potion -= 1
             self.hp = self.maxHp 
+            
     def movement(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:

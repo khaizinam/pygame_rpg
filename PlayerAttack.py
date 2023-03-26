@@ -79,7 +79,7 @@ class MeleeAttack(pygame.sprite.Sprite):
             if self.player.facing == 'down':
                 hits[0].y += 1
         detroy_magic_attack_enemies = pygame.sprite.spritecollide(self, self.game.magic_attacks, True)
-        detroy_chest = pygame.sprite.spritecollide(self, self.game.items, False)
+        detroy_chest = pygame.sprite.spritecollide(self, self.game.chests, False)
         if detroy_chest:
             detroy_chest[0].time_attacked -= 1
     
