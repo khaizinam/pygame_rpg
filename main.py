@@ -7,6 +7,7 @@ from Player import *
 from Camera import *
 from Enemy import *
 from Sprite import *
+from Boss import *
 
 import sys
 IMG_DIR = './img/'
@@ -25,6 +26,10 @@ class Game:
 		self.character_spritesheet = Spritesheet(f"{IMG_DIR}character.png")
 		self.terrain_spritesheet = Spritesheet(f"{IMG_DIR}terrain.png")
 		self.enemy_spritesheet = Spritesheet(f"{IMG_DIR}enemy.png")
+		self.boss1_spritesheet = Spritesheet(f"{IMG_DIR}boss1.png")
+		self.boss2_spritesheet = Spritesheet(f"{IMG_DIR}boss2.png")
+		self.boss_bullet_spritesheet = Spritesheet(f"{IMG_DIR}boss_bullet.png")
+		# self.boss3_spritesheet = Spritesheet(f"{IMG_DIR}boss1.png")
 		self.intro_background = pygame.image.load(f"{IMG_DIR}introbackground.png")
 		self.go_background = pygame.image.load(f"{IMG_DIR}gameover.png")
 		self.attack_spritesheet = Spritesheet(f"{IMG_DIR}attack.png")
@@ -49,6 +54,10 @@ class Game:
 					BeeEnemy(self, j , i)
 				if column == "R":
 					RangeEnemy(self, j , i)
+				if column == 'F':
+					Boss(self, j, i)
+					# BossBullet(self, j, i, 1, 0)
+
      
 					
 		deltax  = self.player.x - WIN_WIDTH/2
