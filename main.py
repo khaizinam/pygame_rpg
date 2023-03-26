@@ -40,6 +40,9 @@ class Game:
 					Wall(self, j , i)
 				if column == "G":
 					Grass(self,0, j , i)
+				if column == 'F':
+					Boss(self, j, i)
+					# BossBullet(self, j, i, 1, 0)
      
 
 	def initEntity(self):
@@ -47,13 +50,11 @@ class Game:
 		self.playerhpbar = PlayerHealthBar(self, self.player)
 		
 		self.createList = [
-			
 			CreateChest('potion',self,282,814,FPS*60*3),
    			CreateChest('potion',self,1354,680,FPS*60*3),
 			CreateChest('atk_spd',self,1746,260,FPS*60*3),
 			CreateChest('atk_spd',self,1746,32,FPS*60*3),
 			CreateChest('exp',self,1926,134,FPS*60*3),
-   			CreateMinion('boss', self, 1124, 122, 60, FPS*60*4),
       		CreateMinion('bee', self, 276, 884, 1, FPS*30),
 			CreateMinion('bat', self, 270, 776, 1, FPS*30),
 			CreateMinion('bee', self, 448, 854, 2, FPS*30),

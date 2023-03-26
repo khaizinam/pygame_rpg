@@ -2,7 +2,6 @@ from pygame import *
 from HealthBar import *
 from Enemy import *
 from Chest import *
-from Boss import *
 class CreateMinion:
     def __init__(self, enemyType, game ,x , y, level, timeRespawn):
         self.x = x
@@ -24,11 +23,7 @@ class CreateMinion:
             leng = self.minion.width
         elif self.enemyType == 'mage':
             self.minion = MageEnemy(self.game,self.x, self.y, self.level)
-            leng = self.minion.width
-        elif self.enemyType == 'boss':
-            self.minion = Boss(self.game,self.x, self.y, self.level)
-            leng = 122
-        self.bar = HealthBar(self.game, self.minion,leng)
+        self.bar = HealthBar(self.game, self.minion)
         self.lvl = lvlBar(self.game, self.minion)
             
     def update(self):
