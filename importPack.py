@@ -8,6 +8,7 @@ from Camera import *
 from Enemy import *
 from PlayerAttack import *
 from Sprite import *
-from RespawnMinion import *
 from Boss import *
+from RespawnEntity import *
+from Chest import *
 import math
