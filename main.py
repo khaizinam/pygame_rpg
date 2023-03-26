@@ -43,11 +43,11 @@ class Game:
 		self.playerhpbar = PlayerHealthBar(self, self.player)
 		
 		self.createList = [
-			CreateChest('',self,282,814,FPS*60*3),
-   			CreateChest('',self,1354,680,FPS*60*3),
-			CreateChest('',self,1746,260,FPS*60*3),
-			CreateChest('',self,1746,32,FPS*60*3),
-			CreateChest('',self,1926,134,FPS*60*3),
+			CreateChest('potion',self,282,814,FPS*60*3),
+   			CreateChest('potion',self,1354,680,FPS*60*3),
+			CreateChest('atk_spd',self,1746,260,FPS*60*3),
+			CreateChest('atk_spd',self,1746,32,FPS*60*3),
+			CreateChest('exp',self,1926,134,FPS*60*3),
       		CreateMinion('bee', self, 276, 884, 1, FPS*30),
 			CreateMinion('bat', self, 270, 776, 1, FPS*30),
 			CreateMinion('bee', self, 448, 854, 2, FPS*30),
