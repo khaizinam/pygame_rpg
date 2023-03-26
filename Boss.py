@@ -9,13 +9,16 @@ class Boss(pygame.sprite.Sprite):
     def __init__(self, game, x, y, lvl):
         self.game = game
         self.level = lvl
+        self.stunByAttackTime = FPS * 2
+        self.stunByAttackCount = 0
         self.posx = x
         self.posy = y
+        self.distance = 400
         self._layer = ENEMY_LAYER
         self.groups = self.game.all_sprites, self.game.enemies
         pygame.sprite.Sprite.__init__(self, self.groups)
-        self.hp = 2000
-        self.maxHp = 2000
+        self.hp = 700
+        self.maxHp = 700
         self.stage = 1
         self.width = [85,122,87]
         self.height = [94,110,110]
@@ -25,7 +28,7 @@ class Boss(pygame.sprite.Sprite):
         self.vely = 0
         self.tick = 0
         self.facing = self.FACING_LEFT
-
+        self.stand = True
         self.animation = [
             [self.game.boss1_spritesheet.get_sprite(0, 0, self.width[0], self.height[0] ),
             self.game.boss1_spritesheet.get_sprite(85, 0, self.width[0], self.height[0] ),
@@ -50,10 +53,10 @@ class Boss(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
-        self.actionCycle = 100
+        self.actionCycle = FPS*5
         self.countDown = 0
 
-        self.speed = 3
+        self.speed = 1
         self.cooldown = 200
         
     def respawn(self):
@@ -71,25 +74,51 @@ class Boss(pygame.sprite.Sprite):
             self.rangeActack()
             self.countDown = 0
         self.countDown += 1
-
+        if self.stunByAttackCount > 0 : 
+                self.stunByAttackCount -= 1
+                self.velx = 0 
+                self.vely = 0
         self.x += self.velx
         self.y += self.vely
     def attacked(self,damge):
+        self.stunByAttackCount = self.stunByAttackTime
         self.hp -= math.floor(damge/5)
         if self.hp <= 0:
             self.dead = True
             self.game.player.curentExp += 100
             self.kill()
+    def moveto(self,x,y): 
+        vectorX = x - self.x
+        vectorY = y - self.y
+        if vectorX != 0:
+            vectorX = vectorX/(math.sqrt(vectorX*vectorX+vectorY*vectorY))*self.speed
+        if vectorY != 0:
+            vectorY = vectorY/(math.sqrt(vectorX*vectorX+vectorY*vectorY))*self.speed
+        self.velx = vectorX
+        self.vely = vectorY
+    
+    def distanceTo(self, x, y):
+        return pygame.math.Vector2(self.x, self.y).distance_to((x, y))  
+    # def movement(self):
+    #     player = self.game.player
+    #     px, py = player.getCenter()
+    #     bx, by = self.getCenter()
+    #     vx = px - bx
+    #     vy = py - by
+    #     d = math.sqrt(vx*vx + vy*vy)
+    #     if (d != 0):
+    #         self.velx = self.speed*float(vx/d)
+    #         self.vely = self.speed*float(vy/d)
+    
     def movement(self):
-        player = self.game.player
-        px, py = player.getCenter()
-        bx, by = self.getCenter()
-        vx = px - bx
-        vy = py - by
-        d = math.sqrt(vx*vx + vy*vy)
-        if (d != 0):
-            self.velx = self.speed*float(vx/d)
-            self.vely = self.speed*float(vy/d)
+        if self.distanceTo(self.game.player.x, self.game.player.y) <= self.distance:
+            self.stand = False
+            self.moveto(self.game.player.x - 45, self.game.player.y - 78) 
+        if self.distanceTo(self.game.player.x- 45, self.game.player.y- 78) > self.distance and self.stand == False:
+            self.moveto(self.posx, self.posy)
+        if self.x >=  self.posx - 10 and self.x <=  self.posx + 10 and self.y >= self.posy - 10 and self.y <= self.posy + 10 and self.stand == False:
+            self.stand = True
+        return
             
 
     def animate(self):
@@ -130,7 +159,7 @@ class BossBullet(pygame.sprite.Sprite):
     def __init__(self, game, host, vx, vy):
         self.game = game
         self._layer = ENEMY_LAYER
-        self.groups = self.game.all_sprites, self.game.enemies
+        self.groups = self.game.all_sprites, self.game.enemies, self.game.magic_attacks
         pygame.sprite.Sprite.__init__(self, self.groups)
         
         self.width = 13*3
