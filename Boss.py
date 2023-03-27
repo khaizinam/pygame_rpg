@@ -1,5 +1,5 @@
 import pygame, math, random
-from Enemy import Enemy, BatEnemy
+from Enemy import Enemy, Bat2Enemy
 from RespawnEntity import HealthBar, lvlBar
 from config import *
 
@@ -207,7 +207,7 @@ class Boss(Enemy):
         for i in range(nMinion):
             dx = math.cos(i*2*math.pi/nMinion)*50
             dy = math.sin(i*2*math.pi/nMinion)*50
-            bat = BatEnemy(self.game, x+dx, y+dy, 10)
+            bat = Bat2Enemy(self.game, x+dx, y+dy, 10)
             HealthBar(self.game, bat,bat.width)
             lvlBar(self.game, bat)
 
