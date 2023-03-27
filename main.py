@@ -48,7 +48,7 @@ class Game:
 
 	def initEntity(self):
 		self.player = Player(self, 44 , 884)
-		PlayerHealthBar(self, self.player)
+		self.barrHp =PlayerHealthBar(self, self.player)
 		PlayerHealthBar_layer(self, self.player)
 		self.createList = [
 			#CHEST
@@ -150,6 +150,8 @@ class Game:
 			if event.type == pygame.QUIT:
 				self.playing = False
 				self.running = False
+				pygame.quit()
+				sys.exit()
 		keys = pygame.key.get_pressed()
 		if keys[pygame.K_l]:
 			self.player.usePotion()
