@@ -22,11 +22,11 @@ FONTSIZE = 16
 tilemap = [
     '..................................................................................',
     '.                 .                                 .                            .',
-    '.             H   .              BB  BB              .      H                     .',
+    '.             H   .              BB  BB              .                           .',
     '.                 .                                 ..                           .',
     '.                 .         .GGGGGGGGGGGGG.         ...                          .',
     '.                 .         .GGGGGGGGGGGGG          ....                         .',
-    '.                 .          GGGGGGGGGGGGG          ...                C         .',
+    '.                 .          GGGGGGGGGGGGG          ...                          .',
     '.      C         ..          GGGGGGGGGGGGG.         ..                           .',
     '.               ...         .GGGGGGGGGGGGG.         .                            .',
     '.....BBBB      ....                 GGG             ...................     ......',

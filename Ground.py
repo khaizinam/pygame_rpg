@@ -180,9 +180,12 @@ class Gate(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+        self.isOpen = False
 
     def update(self):
-        if self.checkPuzzle():
+        if self.isOpen == False and self.checkPuzzle():
+            self.isOpen == True
+            self.game.camera.set(self.x + self.width//2, self.y + self.height//2)
             self.kill()
     
     def checkPuzzle(self):

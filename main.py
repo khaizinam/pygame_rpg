@@ -49,8 +49,8 @@ class Game:
 					Cube(self, j , i)
 				if column == "H":
 					Hole(self, j , i)
-				# if column == "T":
-				# 	Gate(self, j , i)
+				if column == "T":
+					Gate(self, j , i)
 
      
 
