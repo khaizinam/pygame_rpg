@@ -389,13 +389,108 @@ class BatEnemy(Enemy):
         self.posy = self.y
         self.distance = 150
         
-        self.left_animations = [self.bee_spritesheet.get_sprite(0, 38, 20, 29),
-                           self.bee_spritesheet.get_sprite(40, 40, 18, 24),
+        self.left_animations = [self.bee_spritesheet.get_sprite(8, 38, 20, 27),
+                           self.bee_spritesheet.get_sprite(40, 40, 18, 23),
                            self.bee_spritesheet.get_sprite(72, 36, 13, 27)]
 
-        self.right_animations = [self.bee_spritesheet.get_sprite(4, 102, 20, 26),
-                            self.bee_spritesheet.get_sprite(38, 104, 18, 24),
-                            self.bee_spritesheet.get_sprite(75, 100, 14, 28)]
+        self.right_animations = [self.bee_spritesheet.get_sprite(4, 102, 20, 27),
+                            self.bee_spritesheet.get_sprite(38, 104, 18, 23),
+                            self.bee_spritesheet.get_sprite(75, 100, 13, 27)]
+    
+        # self.up_animations = [self.game.bee_spritesheet.get_sprite(4, 1, 24, self.height),
+        #                    self.game.bee_spritesheet.get_sprite(37, 1, 24, self.height),
+        #                    self.game.bee_spritesheet.get_sprite(70, 1, 24, self.height)]
+        
+        # self.up_animations = [self.game.bee_spritesheet.get_sprite(4, 65, 24, self.height),
+        #                    self.game.bee_spritesheet.get_sprite(37, 65, 24, self.height),
+        #                    self.game.bee_spritesheet.get_sprite(70, 65, 24, self.height)]
+    def animate(self):
+        if self.facing == 'left':
+            self.image = self.left_animations[math.floor(self.animation_loop)]
+            self.animation_loop += 0.1
+            if self.animation_loop >= 3:
+                self.animation_loop = 1
+                    
+        elif self.facing == 'right':
+            self.image = self.right_animations[math.floor(self.animation_loop)]
+            self.animation_loop += 0.1
+            if self.animation_loop >= 3:
+                self.animation_loop = 1
+    def movement(self):
+        if self.distanceTo(self.game.player.x, self.game.player.y) <= self.distance and self.attackedTime <= 0:
+            self.stand = False
+            self.moveto(self.game.player.x, self.game.player.y) 
+        if self.distanceTo(self.game.player.x, self.game.player.y) > self.distance and self.stand == False:
+            self.moveto(self.posx, self.posy)
+        if self.x >=  self.posx - 10 and self.x <=  self.posx + 10 and self.y >= self.posy - 10 and self.y <= self.posy + 10 and self.stand == False:
+            self.stand = True
+        if self.x_change > 0:
+            self.facing = 'right'
+        elif self.x_change < 0:
+            self.facing = 'left'
+        return
+
+class Bat2Enemy(Enemy):
+    def __init__(self, game, x, y, level):
+
+        # status----
+        self.exp = level*2
+        self.damge = 2*level
+        self.level = level
+        self.HPperLvl = 4
+        self.hp = 10 + self.level * self.HPperLvl
+        self.maxHp = 10 + self.level * self.HPperLvl
+        # Respaw Minion after dead --
+        self.respawnX = x
+        self.respawnY = y
+        self.dead = False
+        
+       
+        
+        #
+        self.attackedTime = 0
+        self.stunByAttackTime = FPS * 1
+        self.stunByAttackCount = 0
+        self.atk = None
+        self.stand = False
+        #--------------------
+        self.game = game
+        self._layer = ENEMY_LAYER
+        self.groups = self.game.all_sprites, self.game.enemies
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.x = x
+        self.y = y
+        self.width = 29 #24
+        self.height = 26
+        
+        self.attackDuration = 0
+        self.x_change = 0
+        self.y_change = 0
+        
+        self.facing = 'left'
+        self.animation_loop = 1
+        self.movement_loop = 0
+        self.max_travel = 30
+
+        self.bee_spritesheet = Spritesheet("./img/bat.png")
+        self.image = self.bee_spritesheet.get_sprite(0, 0, self.width, self.height )
+        
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+        
+        self.speed = 1
+        self.posx = self.x
+        self.posy = self.y
+        self.distance = 400
+        
+        self.left_animations = [self.bee_spritesheet.get_sprite(8, 38, 20, 27),
+                           self.bee_spritesheet.get_sprite(40, 40, 18, 23),
+                           self.bee_spritesheet.get_sprite(72, 36, 13, 27)]
+
+        self.right_animations = [self.bee_spritesheet.get_sprite(4, 102, 20, 27),
+                            self.bee_spritesheet.get_sprite(38, 104, 18, 23),
+                            self.bee_spritesheet.get_sprite(75, 100, 13, 27)]
     
         # self.up_animations = [self.game.bee_spritesheet.get_sprite(4, 1, 24, self.height),
         #                    self.game.bee_spritesheet.get_sprite(37, 1, 24, self.height),

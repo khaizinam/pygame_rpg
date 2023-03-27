@@ -5,6 +5,8 @@ RED = (255,0,0)
 BLACK = (0,0,0)
 WHITE = (255,255,255)
 BLUE  = (0, 0, 255)
+BLUE  = (0, 0, 255)
+GREEN = (0, 255, 0)
 FPS = 30
 PLAYER_LAYER = 4
 ENEMY_LAYER = 3
@@ -19,33 +21,33 @@ ENEMY_SPEED = 2
 FONTSIZE = 16
 tilemap = [
     '..................................................................................',
-    '.                 B                                 B                            .',
-    '.                 B                                 B                            .',
-    '.                 B                F                B                            .',
-    '.                 B          GGGGGGGGGGGGG          B                            .',
-    '.                 B          GGGGGGGGGGGGG          B                            .',
-    '.                 B          GGGGGGGGGGGGG          B                            .',
-    '.                 B          GGGGGGGGGGGGG          B                            .',
-    '.                 B          GGGGGGGGGGGGG          B                            .',
-    '.BBBBBBBB         B                                 BBBBBBBBBBBBBBBBBBBB         .',
-    '.                 B                                 B                            .',
-    '.                 B                                 B                            .',
-    '.                 B                                 B                            .',
-    '.                 B                                 B                            .',
-    '.          BBBBBBBBBBBBBBBBBBBBBBB       BBBBBBBBBBBBBBBBBBBBBBBBBBBBB           .',
+    '.                 .                                 .                            .',
+    '.                 .              BB  BB              .                            .',
+    '.                 .                                 ..                           .',
+    '.                 .         .GGGGGGGGGGGGG.         ...                          .',
+    '.                 .         .GGGGGGGGGGGGG          ....                         .',
+    '.                 .          GGGGGGGGGGGGG          ...                          .',
+    '.                ..          GGGGGGGGGGGGG.         ..                           .',
+    '.               ...         .GGGGGGGGGGGGG.         .                            .',
+    '.....BBBB      ....                 GGG             ...................     ......',
+    '.              ....                GGGGG            ...                          .',
+    '.               ...               GGGGGGG           ...                          .',
+    '.                ..             GGGGGGGGGGG         ...                          .',
+    '.                ..           GGGGGGGGGGGGGGG       ...                          .',
+    '.                 ................GGGGGGG..............                          .',
+    '.                 ................GGGGGGG..............          BBBBBBB         .',
+    '.                 ................GGGGGGG..............                          .',
+    '.                 ................GGGGGGG..............                          .',
+    '.                 ................GGGGGGG.............                           .',
     '.                                                                                .',
     '.                                                                                .',
-    '.                                                                                .',
-    '.                                                                                .',
-    '.BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB    .',
-    '.              B                       B                                    B    .',
-    '.              B                       B                                    B    .',
-    '.       B      B            B          B                                    B    .',
-    '.BBB    BBB    B            B          B                                    B    .',
-    '.         B    B            B     BBBBBBBBBBBBBBBBBBBBBBBBBBBB              B    .',
-    '.         B    B            B                                               B    .',
-    '.         B    BBBBBBBBBBGGGB                                               B    .',
-    '.         BGGGGGGGGGGGGGGGGGB                                                    .',
-    '.         BGGGGGGGGGGGGGGGGGB                                                    .',
+    '.       BBBBBBBBBBBB        .                 . BBBBBBBBBBBBBBBBB                .',
+    '.                           .                 .                                  .',
+    '.                           .                 .                                  .',
+    '.                           .                 .                                  .',
+    '.                           .                 .                                  .',
+    '.                           .                 .                                  .',
+    '.                           .                 .                                  .',
+    '.                           .                 .                                  .',
     '..................................................................................',
 ]

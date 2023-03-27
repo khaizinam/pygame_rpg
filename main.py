@@ -9,10 +9,11 @@ IMG_DIR = './img/'
 class Game:
 	def __init__(self):
 		pygame.init()
+		mixer.init()
 		self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
 		self.clock = pygame.time.Clock()
 		self.running = True
-  
+  		self.themeSong = pygame.mixer.Sound('./audio/bgrTheme.mp3')
 		self.camera = Camera(self,0,0)
   
 		self.font = pygame.font.Font('arial.ttf',16)
@@ -46,9 +47,9 @@ class Game:
      
 
 	def initEntity(self):
-		self.player = Player(self, 60 , 450)
-		self.playerhpbar = PlayerHealthBar(self, self.player)
-		
+		self.player = Player(self, 44 , 884)
+		PlayerHealthBar(self, self.player)
+		PlayerHealthBar_layer(self, self.player)
 		self.createList = [
 			CreateChest('potion',self,282,814,FPS*60*3),
    			CreateChest('potion',self,1354,680,FPS*60*3),
@@ -58,10 +59,28 @@ class Game:
       		CreateMinion('bee', self, 276, 884, 1, FPS*30),
 			CreateMinion('bat', self, 270, 776, 1, FPS*30),
 			CreateMinion('bee', self, 448, 854, 2, FPS*30),
-			CreateMinion('mage', self, 372, 660, 1, FPS*30),
-			CreateMinion('bat', self, 448, 764, 1, FPS*30),
-			CreateMinion('bat', self, 354, 776, 1, FPS*30),
-			CreateMinion('mage', self, 668, 880, 1, FPS*30),
+			CreateMinion('bee', self,134,518, 3, FPS*30),
+			CreateMinion('bat', self, 92, 470, 2, FPS * 30),
+			CreateMinion('bat', self, 134, 482, 2, FPS * 30),
+			CreateMinion('bat', self, 164, 500, 2, FPS * 30),
+			CreateMinion('mage', self, 368, 260, 5, FPS * 30),
+			CreateMinion('mage', self, 446, 590, 5, FPS * 30),
+			CreateMinion('bat', self, 416, 428, 3, FPS * 30),
+			CreateMinion('bat', self, 416, 464, 3, FPS * 30),
+			CreateMinion('bat', self, 448, 764, 3, FPS*30),
+			CreateMinion('bat', self, 354, 776, 3, FPS*30),
+			CreateMinion('mage', self, 668, 880, 3, FPS*30),
+			CreateChest('potion',self, 122, 352, FPS*60*3),
+			CreateChest('exp', self, 578, 620, FPS * 60 * 3),
+			CreateChest('exp', self, 464, 106, FPS * 60 * 3),
+			CreateChest('exp', self, 512, 106, FPS * 60 * 3),
+			CreateChest('atk_spd', self, 134, 124, FPS * 60 * 3),
+			CreateMinion('bee', self, 68, 94, 5, FPS * 30),
+			CreateMinion('bee', self, 176, 94, 5, FPS * 30),
+			CreateMinion('bee', self, 176, 178, 5, FPS * 30),
+			CreateMinion('bee', self, 68, 178, 5, FPS * 30),
+
+
 			CreateMinion('bat', self, 648, 668, 2, FPS*120),
 			CreateMinion('bat', self, 688, 668, 2, FPS*120),
 			CreateMinion('bat', self, 648, 730, 2, FPS*120),
@@ -83,6 +102,21 @@ class Game:
 			CreateMinion('bat', self, 2468, 290, 4, FPS*120),
 			CreateMinion('bat', self, 2414, 290, 4, FPS*120),
 			CreateMinion('bee', self, 2414, 236, 5, FPS*120),
+			CreateChest('potion', self, 2488, 808, FPS*60*30),
+			CreateChest('potion', self, 1724, 838, FPS * 60 * 30),
+			CreateChest('exp', self, 2180, 512, FPS * 60 * 30),
+			CreateChest('exp', self, 1922, 410, FPS * 60 * 30),
+			CreateMinion('bee', self, 2144, 536, 5, FPS * 120),
+			CreateMinion('bee', self, 1880, 470, 5, FPS * 120),
+			CreateMinion('bee', self, 2228, 536, 5, FPS * 120),
+			CreateMinion('bee', self, 2420, 584, 6, FPS * 120),
+			CreateMinion('bat', self, 2378, 560, 5, FPS * 120),
+			CreateMinion('bat', self, 2414, 536, 5, FPS * 120),
+			CreateMinion('bat', self, 2450, 554, 5, FPS * 120),
+			CreateMinion('mage', self, 2432, 68, 10, FPS * 120),
+			CreateMinion('mage', self, 1844, 80, 10, FPS * 120),
+			CreateMinion('mage', self, 1844, 218, 10, FPS * 120),
+
 
 
 			CreateMinion('boss', self, 1124, 122, 60, FPS * 60 * 4),
@@ -133,23 +167,32 @@ class Game:
 		self.all_sprites.draw(self.screen)
 		self.icons.draw(self.screen)
 		self.clock.tick(FPS)
-  
-		postion_text = self.font.render(f'x: {self.player.x}, y: {self.player.y}', True, WHITE)
-		lvl_text = self.font.render(f'level: {self.player.level}', True, WHITE)
-		Hp_text = self.font.render(f'hp: {self.player.hp}/{self.player.maxHp}', True, WHITE)
-		Atk_text = self.font.render(f'atk: {self.player.atk}', True, WHITE)
-		exp_text = self.font.render(f'exp: {self.player.curentExp}/{self.player.nextExp}', True, WHITE)
-		pot_text = self.font.render(f'{self.player.potion}', True, WHITE)
-		atk_spd_text = self.font.render(f'atk spd: { round(FPS / self.player.magicReduce, 2)}', True, WHITE)
-		atk_range_text = self.font.render(f'atk range: { math.floor(self.player.magicRange ) * BULLET_SPD}', True, WHITE)
+		fontsize = 12
+		newfont = pygame.font.Font('arial.ttf',fontsize)
+		postion_text = newfont.render(f'x: {self.player.x}, y: {self.player.y}', True, WHITE)
+		lvl_text = newfont.render(f'level: {self.player.level}', True, WHITE)
+		Hp_text = newfont.render(f'hp: {self.player.hp}|{self.player.maxHp}', True, WHITE)
+		Atk_text = newfont.render(f'atk: {self.player.atk}', True, WHITE)
+		exp_text = newfont.render(f'exp: {self.player.curentExp}|{self.player.nextExp}', True, WHITE)
+		pot_text = pygame.font.Font('arial.ttf',12).render(f'{self.player.potion}', True, WHITE)
+		atk_spd_text = newfont.render(f'atk spd: { round(FPS / self.player.magicReduce, 2)}', True, WHITE)
+		atk_range_text = newfont.render(f'atk range: { math.floor(self.player.magicRange ) * BULLET_SPD}', True, WHITE)
+		
+  		#Top Left content
 		self.screen.blit(postion_text, (10 , 5))
-		self.screen.blit(lvl_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*7))
-		self.screen.blit(atk_spd_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*6))
-		self.screen.blit(atk_range_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*5))
-		self.screen.blit(Hp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*4))
-		self.screen.blit(Atk_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*2))
-		self.screen.blit(exp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)))
-		self.screen.blit(pot_text, (WIN_WIDTH - 50, WIN_HEIGHT - 25))
+  
+  		#LeftContent
+		self.screen.blit(lvl_text, (10, WIN_HEIGHT - (fontsize + 5)*4))
+		self.screen.blit(Atk_text, (10, WIN_HEIGHT - (fontsize + 5)*3))
+		self.screen.blit(atk_spd_text, (10, WIN_HEIGHT - (fontsize + 5)*2))
+		self.screen.blit(atk_range_text, (10, WIN_HEIGHT - (fontsize + 5)*1))
+
+		#Center content
+		self.screen.blit(Hp_text, (WIN_WIDTH/2 - 100, WIN_HEIGHT - (fontsize + 5)*3))
+		self.screen.blit(exp_text, (WIN_WIDTH/2 - 100, WIN_HEIGHT - (fontsize + 5)))
+  
+		# Right Content
+		self.screen.blit(pot_text, (WIN_WIDTH /2 + 80, WIN_HEIGHT - 20))
 
 		pygame.display.update()
 
@@ -185,12 +228,12 @@ class Game:
 			pygame.display.update()
 	def pause(self):
 		pause = True
-		resume_button = Button(WIN_WIDTH/2 - 80, 80, pygame.image.load('./img/resumeBtn.png'))
-		back_button = Button(WIN_WIDTH/2 - 80, 200, pygame.image.load('./img/backBtn.png'))
+		resume_button = Button(WIN_WIDTH/2 - 100, 80, pygame.image.load('./img/resumeBtn.png'))
+		back_button = Button(WIN_WIDTH/2 - 100, 200, pygame.image.load('./img/backBtn.png'))
 		while pause:
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
-					option = False
+					pause = False
 					self.running = False
 			mouse_pos = pygame.mouse.get_pos()
 			mouse_pressed = pygame.mouse.get_pressed()
@@ -198,7 +241,7 @@ class Game:
 				pause = False
 			if back_button.is_pressed(mouse_pos, mouse_pressed):
 				self.new()
-				self.main()
+				self.introScreen()
 			self.screen.blit(pygame.image.load('./img/MenuContainer.png'), (40, 20))
 			self.screen.blit(resume_button.image, resume_button.rect)
 			self.screen.blit(back_button.image, back_button.rect)
@@ -216,12 +259,9 @@ class Game:
 					self.running = False
 			mouse_pos = pygame.mouse.get_pos()
 			mouse_pressed = pygame.mouse.get_pressed()
-
 			if back_button.is_pressed(mouse_pos, mouse_pressed):
 				option = False
 				self.introScreen()
-
-			
 			self.screen.blit(self.intro_background, (0, 0))
 			self.screen.blit(soundOn_button.image, soundOn_button.rect)
 			self.screen.blit(soundOff_button.image, soundOff_button.rect)
@@ -243,6 +283,8 @@ class Game:
 
 			if play_button.is_pressed(mouse_pos, mouse_pressed):
 				intro = False
+				self.new()
+				self.main()
 			if option_button.is_pressed(mouse_pos, mouse_pressed):
 				intro = False
 				self.optionScreen()
@@ -257,8 +299,9 @@ class Game:
 			pygame.display.update()
  
 g = Game()
+g.themeSong.play()
 g.introScreen()
-g.new()
+
 while g.running:
 	g.main()
 	g.gameOver()

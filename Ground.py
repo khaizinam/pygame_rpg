@@ -68,8 +68,8 @@ class Grass(pygame.sprite.Sprite):
 class HeartItem(pygame.sprite.Sprite):
     def __init__(self, game):
         self.game = game
-        self.x = WIN_WIDTH - 70
-        self.y = WIN_HEIGHT - 20
+        self.x = WIN_WIDTH /2 + 60
+        self.y = WIN_HEIGHT - 25
         self.width = 16
         self.height = 16
         self._layer = 5

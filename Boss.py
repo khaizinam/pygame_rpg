@@ -1,5 +1,5 @@
 import pygame, math, random
-from Enemy import Enemy, BatEnemy
+from Enemy import Enemy, Bat2Enemy
 from HealthBar import HealthBar, lvlBar
 from config import *
 
@@ -19,7 +19,7 @@ class Boss(Enemy):
 
     def __init__(self, game, x, y, x1, x2, y1, y2, lvl):
         self.game = game
-        self.level = lvl
+        self.level = 6
         self.stunByAttackTime = FPS * 2
         self.stunByAttackCount = 0
         self.distance = 400
@@ -39,8 +39,9 @@ class Boss(Enemy):
         self.velx = 0
         self.vely = 0
         self.tick = 0
+        self.facing = self.FACING_LEFT
 
-        self.maxHp = 1000
+        self.maxHp = 2000
         self.hp = self.maxHp
 
         self.animation = [
@@ -62,6 +63,8 @@ class Boss(Enemy):
              self.game.boss2_spritesheet.get_sprite(366, 110, self.widthStage[1], self.heightStage[1]), ]
         ]
 
+        self.info = [HealthBar(self.game, self,85)]
+
         self.image = self.animation[self.stage][0]
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -75,7 +78,7 @@ class Boss(Enemy):
 
         self.attackStage = [
             [self.TRIPLET_SHOOT, self.STAR_SHOOT, self.TRIPLET_SHOOT, self.STAR_SHOOT, self.ULTIMATE],
-            [self.CHASE, self.CHASE, self.SPAWN_MINION],
+            [self.CHASE, self.SPAWN_MINION,self.SPAWN_MINION],
         ]
 
         self.isChasing = False
@@ -217,7 +220,7 @@ class Boss(Enemy):
             lvlBar(self.game, bat)
 
     def attacked(self, damge):
-        self.hp -= damge
+        self.hp -= math.floor(damge/5) 
         if (self.hp <= 0):
             self.kill()
         elif (self.hp <= self.maxHp // 2):
@@ -272,7 +275,7 @@ class BossBullet(pygame.sprite.Sprite):
     def __init__(self, game, host, vx, vy):
         self.game = game
         self._layer = ENEMY_LAYER
-        self.groups = self.game.all_sprites, self.game.enemies
+        self.groups = self.game.all_sprites, self.game.magic_attacks
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.width = 13 * 3
