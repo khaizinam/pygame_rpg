@@ -166,7 +166,6 @@ class Boss(Enemy):
         self.timmer = 25
 
     def idle(self):
-        print('IDLE')
         self.isChasing = False
         self.melee = False
         self.timmer = 50
@@ -262,7 +261,6 @@ class Boss(Enemy):
         px, py = self.game.player.getCenter()
         x, y = self.getCenter()
         a = math.atan2((py - y), (px - x))
-        print((px - x), (py - y), a)
         self._shootBullet(a, 5)
         self._shootBullet(a - 0.2618, 5.1764)
         self._shootBullet(a + 0.2618, 5.1764)
