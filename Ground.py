@@ -102,7 +102,6 @@ class Cube(pygame.sprite.Sprite):
         self.posY = y*TILESIZE
         self.x = self.posX
         self.y = self.posY
-        print(self.x, self.y)
         self.width =  34
         self.height = 48
         self.image = self.game.terrain_spritesheet.get_sprite( 96, 400, self.width , self.height)
