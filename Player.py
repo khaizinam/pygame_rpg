@@ -60,6 +60,7 @@ class Player(pygame.sprite.Sprite):
         self.slashSound = pygame.mixer.Sound('./audio/slash.mp3')
         self.magicSound = pygame.mixer.Sound('./audio/magic.mp3')
         self.healSound = pygame.mixer.Sound('./audio/healing.mp3')
+        self.lvUpSound = pygame.mixer.Sound('./audio/lvlUp.mp3')
         self.healSound.set_volume(0.2)
         self.magicSound.set_volume(0.15)
         self.slashSound.set_volume(0.15)
@@ -93,6 +94,7 @@ class Player(pygame.sprite.Sprite):
         if self.magicRange <= 40:
             self.magicRange += bonus
     def levelUp(self):
+        self.lvUpSound.play()
         self.level += 1
         self.maxHp += 20
         self.hp = self.maxHp

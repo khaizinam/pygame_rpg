@@ -125,6 +125,9 @@ class Enemy(pygame.sprite.Sprite):
         self.right_animations = [self.game.character_spritesheet.get_sprite(3, 66, self.width, self.height),
                             self.game.character_spritesheet.get_sprite(35, 66, self.width, self.height),
                             self.game.character_spritesheet.get_sprite(68, 66, self.width, self.height)]
+
+        self.deadSound = pygame.mixer.Sound('./audio/enemyDead.mp3')
+        self.deadSound.set_volume(0.13)
     
     def update(self):
         if self.dead == False:
@@ -183,6 +186,7 @@ class Enemy(pygame.sprite.Sprite):
         self.hp = self.hp - math.floor(damge / 5) 
         if self.hp <= 0:
             self.dead = True
+            self.deadSound.play()
             self.game.player.curentExp += self.exp
             self.kill()
 
@@ -254,8 +258,9 @@ class BeeEnemy(Enemy):
         self.respawnX = x
         self.respawnY = y
         self.dead = False
-        
-        
+
+        self.deadSound = pygame.mixer.Sound('./audio/enemyDead.mp3')
+        self.deadSound.set_volume(0.13)
         
         #
         self.stunByAttackTime = FPS * 1
@@ -349,8 +354,9 @@ class BatEnemy(Enemy):
         self.respawnX = x
         self.respawnY = y
         self.dead = False
-        
-       
+
+        self.deadSound = pygame.mixer.Sound('./audio/enemyDead.mp3')
+        self.deadSound.set_volume(0.13)
         
         #
         self.attackedTime = 0
@@ -444,8 +450,9 @@ class Bat2Enemy(Enemy):
         self.respawnX = x
         self.respawnY = y
         self.dead = False
-        
-       
+
+        self.deadSound = pygame.mixer.Sound('./audio/enemyDead.mp3')
+        self.deadSound.set_volume(0.13)
         
         #
         self.attackedTime = 0

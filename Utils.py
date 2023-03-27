@@ -27,9 +27,9 @@ class Button:
         self.clickSound = pygame.mixer.Sound('./audio/button-124476.mp3')
         
     def is_pressed(self, pos, pressed):
-        self.clickSound.play()
         if self.rect.collidepoint(pos):
             if pressed[0]:
+                self.clickSound.play()
                 return True
             return False
         return False
