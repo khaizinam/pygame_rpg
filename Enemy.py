@@ -389,13 +389,13 @@ class BatEnemy(Enemy):
         self.posy = self.y
         self.distance = 150
         
-        self.left_animations = [self.bee_spritesheet.get_sprite(0, 38, 20, 29),
-                           self.bee_spritesheet.get_sprite(40, 40, 18, 24),
+        self.left_animations = [self.bee_spritesheet.get_sprite(8, 38, 20, 27),
+                           self.bee_spritesheet.get_sprite(40, 40, 18, 23),
                            self.bee_spritesheet.get_sprite(72, 36, 13, 27)]
 
-        self.right_animations = [self.bee_spritesheet.get_sprite(4, 102, 20, 26),
-                            self.bee_spritesheet.get_sprite(38, 104, 18, 24),
-                            self.bee_spritesheet.get_sprite(75, 100, 14, 28)]
+        self.right_animations = [self.bee_spritesheet.get_sprite(4, 102, 20, 27),
+                            self.bee_spritesheet.get_sprite(38, 104, 18, 23),
+                            self.bee_spritesheet.get_sprite(75, 100, 13, 27)]
     
         # self.up_animations = [self.game.bee_spritesheet.get_sprite(4, 1, 24, self.height),
         #                    self.game.bee_spritesheet.get_sprite(37, 1, 24, self.height),
@@ -484,13 +484,13 @@ class Bat2Enemy(Enemy):
         self.posy = self.y
         self.distance = 400
         
-        self.left_animations = [self.bee_spritesheet.get_sprite(0, 38, 20, 29),
-                           self.bee_spritesheet.get_sprite(40, 40, 18, 24),
+        self.left_animations = [self.bee_spritesheet.get_sprite(8, 38, 20, 27),
+                           self.bee_spritesheet.get_sprite(40, 40, 18, 23),
                            self.bee_spritesheet.get_sprite(72, 36, 13, 27)]
 
-        self.right_animations = [self.bee_spritesheet.get_sprite(4, 102, 20, 26),
-                            self.bee_spritesheet.get_sprite(38, 104, 18, 24),
-                            self.bee_spritesheet.get_sprite(75, 100, 14, 28)]
+        self.right_animations = [self.bee_spritesheet.get_sprite(4, 102, 20, 27),
+                            self.bee_spritesheet.get_sprite(38, 104, 18, 23),
+                            self.bee_spritesheet.get_sprite(75, 100, 13, 27)]
     
         # self.up_animations = [self.game.bee_spritesheet.get_sprite(4, 1, 24, self.height),
         #                    self.game.bee_spritesheet.get_sprite(37, 1, 24, self.height),
