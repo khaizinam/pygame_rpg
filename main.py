@@ -45,6 +45,12 @@ class Game:
 					Wall(self, j , i)
 				if column == "G":
 					Grass(self,0, j , i)
+				if column == "C":
+					Cube(self, j , i)
+				if column == "H":
+					Hole(self, j , i)
+				# if column == "T":
+				# 	Gate(self, j , i)
 
      
 
@@ -52,6 +58,7 @@ class Game:
 		self.player = Player(self, 44 , 884)
 		self.barrHp =PlayerHealthBar(self, self.player)
 		PlayerHealthBar_layer(self, self.player)
+		
 		self.createList = [
 			#CHEST
 			CreateChest('hp',self,446,704,FPS*60*2),
@@ -75,8 +82,6 @@ class Game:
 			CreateMinion('mage', self, 668, 880, 3, FPS*30),
 			CreateChest('potion',self, 122, 352, FPS*60*3),
 			CreateChest('exp', self, 578, 620, FPS * 60 * 3),
-			CreateChest('exp', self, 464, 106, FPS * 60 * 3),
-			CreateChest('exp', self, 512, 106, FPS * 60 * 3),
 			CreateChest('atk_spd', self, 134, 124, FPS * 60 * 3),
 			CreateMinion('bee', self, 68, 94, 5, FPS * 30),
 			CreateMinion('bee', self, 176, 94, 5, FPS * 30),
@@ -119,9 +124,6 @@ class Game:
 			CreateMinion('mage', self, 2432, 68, 10, FPS * 120),
 			CreateMinion('mage', self, 1844, 80, 10, FPS * 120),
 			CreateMinion('mage', self, 1844, 218, 10, FPS * 120),
-
-
-
 			CreateMinion('boss', self, 1124, 122, 60, FPS * 60 * 4),
         ]
 		for minion in self.createList:
@@ -142,6 +144,7 @@ class Game:
 		self.potions = pygame.sprite.LayeredUpdates()
 		self.magic_attacks = pygame.sprite.LayeredUpdates()
 		self.chests = pygame.sprite.LayeredUpdates()
+		self.puzzle = pygame.sprite.LayeredUpdates()
 		self.createTilemap()
 		self.initEntity()
 

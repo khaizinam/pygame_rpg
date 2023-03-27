@@ -166,6 +166,7 @@ class Boss(Enemy):
         self.timmer = 25
 
     def idle(self):
+        print('IDLE')
         self.isChasing = False
         self.melee = False
         self.timmer = 50
@@ -238,7 +239,7 @@ class Boss(Enemy):
             self.height = self.heightStage[1]
 
     def bulletHell(self):
-        self.nBullet = 100
+        self.nBullet = 50
         self.useBulletHell = True
         self.bulletTimmer = 0
         x1, x2, y1, y2 = self.zone
