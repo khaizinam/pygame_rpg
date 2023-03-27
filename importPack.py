@@ -12,4 +12,3 @@ from Boss import *
 from RespawnEntity import *
 from Chest import *
 import math
-from pygame import mixer

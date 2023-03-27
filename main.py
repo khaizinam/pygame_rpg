@@ -1,7 +1,7 @@
 import pygame.image
 
 from importPack import *
-
+from pygame import mixer
 import sys
 IMG_DIR = './img/'
 
@@ -13,7 +13,7 @@ class Game:
 		self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
 		self.clock = pygame.time.Clock()
 		self.running = True
-  		self.themeSong = pygame.mixer.Sound('./audio/bgrTheme.mp3')
+		self.themeSong = pygame.mixer.Sound('./audio/bgrTheme.mp3')
 		self.camera = Camera(self,0,0)
   
 		self.font = pygame.font.Font('arial.ttf',16)
@@ -262,6 +262,10 @@ class Game:
 			if back_button.is_pressed(mouse_pos, mouse_pressed):
 				option = False
 				self.introScreen()
+			if soundOff_button.is_pressed(mouse_pos, mouse_pressed):
+				pygame.mixer.pause()
+			if soundOn_button.is_pressed(mouse_pos, mouse_pressed):
+				pygame.mixer.unpause()
 			self.screen.blit(self.intro_background, (0, 0))
 			self.screen.blit(soundOn_button.image, soundOn_button.rect)
 			self.screen.blit(soundOff_button.image, soundOff_button.rect)
