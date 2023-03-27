@@ -31,6 +31,8 @@ class Game:
 		self.explosion1_sprite = Spritesheet(f"{IMG_DIR}explosion1.png")
 		self.heart_spritesheet = Spritesheet(f"{IMG_DIR}LifePot.png")
 		self.magic_attack = Spritesheet(f"{IMG_DIR}magic.png")
+		self.intro = True
+		self.option = False
  
 	def createTilemap(self):
 		HeartItem(self)
@@ -250,25 +252,40 @@ class Game:
 			self.screen.blit(back_button.image, back_button.rect)
 			self.clock.tick(FPS)
 			pygame.display.update()
+
+	def menuScreen(self):
+		self.timmer = 30
+		menu = True
+		while menu:
+			if self.intro:
+				self.introScreen()
+			elif self.option:
+				self.optionScreen()
+			else:
+				menu = False
+	
 	def optionScreen(self):
-		option = True
+		self.option = True
 		soundOn_button = Button(WIN_WIDTH/2-100, 100, pygame.image.load('./img/soundOn.png'))
 		soundOff_button = Button(WIN_WIDTH / 2 + 20, 100, pygame.image.load('./img/soundOff.png'))
 		back_button = Button(WIN_WIDTH/2 - 80, 200, pygame.image.load('./img/backBtn.png'))
-		while option:
+		while self.option:
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
-					option = False
+					self.option = False
 					self.running = False
 			mouse_pos = pygame.mouse.get_pos()
 			mouse_pressed = pygame.mouse.get_pressed()
 			if back_button.is_pressed(mouse_pos, mouse_pressed):
-				option = False
-				self.introScreen()
+				if self.timmer <= 0:
+					self.timmer = 30
+					self.option = False
+					self.intro = True
 			if soundOff_button.is_pressed(mouse_pos, mouse_pressed):
 				pygame.mixer.pause()
 			if soundOn_button.is_pressed(mouse_pos, mouse_pressed):
 				pygame.mixer.unpause()
+			self.timmer -= 1 if self.timmer > 0 else 0
 			self.screen.blit(self.intro_background, (0, 0))
 			self.screen.blit(soundOn_button.image, soundOn_button.rect)
 			self.screen.blit(soundOff_button.image, soundOff_button.rect)
@@ -276,28 +293,33 @@ class Game:
 			self.clock.tick(FPS)
 			pygame.display.update()
 	def introScreen(self):
-		intro = True
+		self.intro = True
 		play_button = Button(WIN_WIDTH/2-100, 100, pygame.image.load('./img/playBtn.png'))
 		option_button = Button(WIN_WIDTH / 2 - 100, 200, pygame.image.load('./img/optionBtn.png'))
 		exit_button = Button(WIN_WIDTH / 2 - 100, 300, pygame.image.load('./img/exitBtn.png'))
-		while intro:
+		while self.intro:
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
-					intro = False
+					self.intro = False
 					self.running = False
+					pygame.quit()
+					sys.exit()
 			mouse_pos = pygame.mouse.get_pos()
 			mouse_pressed = pygame.mouse.get_pressed()
 
 			if play_button.is_pressed(mouse_pos, mouse_pressed):
-				intro = False
+				self.intro = False
 				self.new()
 				self.main()
 			if option_button.is_pressed(mouse_pos, mouse_pressed):
-				intro = False
-				self.optionScreen()
+				if self.timmer <= 0:
+					self.timmer = 30
+					self.intro = False
+					self.option = True				
 			if exit_button.is_pressed(mouse_pos, mouse_pressed):
 				pygame.quit()
 				sys.exit()
+			self.timmer -= 1 if self.timmer > 0 else 0
 			self.screen.blit(self.intro_background, (0, 0))
 			self.screen.blit(play_button.image, play_button.rect)
 			self.screen.blit(option_button.image, option_button.rect)
@@ -307,7 +329,7 @@ class Game:
  
 g = Game()
 g.themeSong.play()
-g.introScreen()
+g.menuScreen()
 
 while g.running:
 	g.main()

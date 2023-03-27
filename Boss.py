@@ -22,6 +22,7 @@ class Boss(Enemy):
         self.level = 6
         self.stunByAttackTime = FPS * 2
         self.stunByAttackCount = 0
+        self.attackedTime = 0
         self.distance = 400
         self._layer = ENEMY_LAYER
         self.groups = self.game.all_sprites, self.game.enemies
@@ -40,6 +41,7 @@ class Boss(Enemy):
         self.vely = 0
         self.tick = 0
         self.facing = self.FACING_LEFT
+        self.damge = 10
 
         self.maxHp = 2000
         self.hp = self.maxHp
@@ -78,11 +80,12 @@ class Boss(Enemy):
 
         self.attackStage = [
             [self.TRIPLET_SHOOT, self.STAR_SHOOT, self.TRIPLET_SHOOT, self.STAR_SHOOT, self.ULTIMATE],
-            [self.CHASE, self.SPAWN_MINION,self.SPAWN_MINION],
+            [self.CHASE, self.SPAWN_MINION],
         ]
 
         self.isChasing = False
-        self.speed = 5
+        self.speed = 3
+        self.melee = False
         self.cooldown = 200
 
         self.useBulletHell = False
@@ -120,6 +123,9 @@ class Boss(Enemy):
                 self.movement()
             if self.useBulletHell:
                 self.bulletHellTriggered()
+            if self.melee:
+                self.collide_player()
+                self.attackedTime -= 1 if self.attackedTime > 0 else 0
 
             self.timmer -= 1
             self.x += self.velx
@@ -161,10 +167,12 @@ class Boss(Enemy):
 
     def idle(self):
         self.isChasing = False
-        self.timmer = 100
+        self.melee = False
+        self.timmer = 50
 
     def chase(self):
         self.isChasing = True
+        self.melee = True
         self.timmer = 100
 
     def validatePos(self, x, y):
@@ -215,8 +223,8 @@ class Boss(Enemy):
         for i in range(nMinion):
             dx = math.cos(i * 2 * math.pi / nMinion) * 50
             dy = math.sin(i * 2 * math.pi / nMinion) * 50
-            bat = BatEnemy(self.game, x + dx, y + dy, 1)
-            HealthBar(self.game, bat)
+            bat = Bat2Enemy(self.game, x + dx, y + dy, 1)
+            HealthBar(self.game, bat, bat.width)
             lvlBar(self.game, bat)
 
     def attacked(self, damge):
@@ -225,7 +233,7 @@ class Boss(Enemy):
             self.kill()
         elif (self.hp <= self.maxHp // 2):
             self.stage = 1
-            self.actionIndex = 0
+            self.actionIndex = 1
             self.width = self.widthStage[1]
             self.height = self.heightStage[1]
 
@@ -262,6 +270,12 @@ class Boss(Enemy):
         vx = math.cos(a) * s
         vy = math.sin(a) * s
         BossBullet(self.game, self, vx, vy)
+
+    def collide_player(self):
+        hits = pygame.sprite.spritecollide(self, self.game.playerSprite, False)
+        if hits and self.attackedTime <= 0:
+            self.attackedTime = FPS
+            self.game.player.attacked(self.damge)
 
 
 class BossBullet(pygame.sprite.Sprite):
