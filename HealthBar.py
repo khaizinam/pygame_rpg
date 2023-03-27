@@ -41,22 +41,39 @@ class PlayerHealthBar(pygame.sprite.Sprite):
         self._layer = 10
         self.groups = self.game.icons
         pygame.sprite.Sprite.__init__(self, self.groups)
-        self.image = pygame.Surface([100,10])
+        self.image = pygame.Surface([100,15])
         self.image.fill(RED)
         self.rect = self.image.get_rect()
-        self.x = 10
-        self.y = WIN_HEIGHT - (12 + 5)*3
+        self.x = WIN_WIDTH/2 - 100
+        self.y = WIN_HEIGHT - (12 + 5)*2
         self.rect.x = self.x
         self.rect.y = self.y
     def update(self):
         width = math.floor((self.o.hp / self.o.maxHp) * 100)
         if width <= 0:
             width = 1
-        self.image = pygame.Surface([width,10])
+        self.image = pygame.Surface([width,15])
         self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+class PlayerHealthBar_layer(pygame.sprite.Sprite):
+    def __init__(self, game ,o):
+        
+        self.game = game
+        self.o = o
+        self._layer = 9
+        self.groups = self.game.icons
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.image = pygame.Surface([100,15])
+        self.image.fill(WHITE)
+        self.rect = self.image.get_rect()
+        self.x = WIN_WIDTH/2 - 100
+        self.y = WIN_HEIGHT - (12 + 5)*2
+        self.rect.x = self.x
+        self.rect.y = self.y
+    def update(self):
+        pass
 
     def reset(self):
         pygame.sprite.Sprite.__init__(self, self.groups)
