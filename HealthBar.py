@@ -13,6 +13,8 @@ class HealthBar(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.image = pygame.Surface([self.lenghBar,5])
         self.image.fill(RED)
+        self.x = self.o.x + self.o.width//2 - 16
+        self.y = self.o.y - 7
         self.rect = self.image.get_rect()
         self.rect.x = self.o.x
         self.rect.y = self.o.y - 7

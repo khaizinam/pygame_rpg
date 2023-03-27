@@ -43,9 +43,9 @@ class Game:
      
 
 	def initEntity(self):
-		self.player = Player(self, 60 , 860)
+		self.player = Player(self, 60 , 512)
 		self.playerhpbar = PlayerHealthBar(self, self.player)
-		
+		#self.boss = Boss(self, 608,1664, 32,448)
 		self.createList = [
 			
 			CreateChest('potion',self,282,814,FPS*60*3),
@@ -120,6 +120,8 @@ class Game:
 		self.icons.update()
 		for minion in self.createList:
 			minion.update()
+		if (608 < self.player.x < 1664 and 32 < self.player.y < 448):
+			self.boss.awakened = True
 		self.camera.update()
 
 	def draw(self):
