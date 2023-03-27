@@ -40,7 +40,7 @@ class Boss(Enemy):
         self.vely = 0
         self.tick = 0
 
-        self.maxHp = 1000
+        self.maxHp = 2000
         self.hp = self.maxHp
 
         self.animation = [
@@ -218,7 +218,7 @@ class Boss(Enemy):
             lvlBar(self.game, bat)
 
     def attacked(self, damge):
-        self.hp -= damge
+        self.hp -= math.floor(damge/5)
         if (self.hp <= 0):
             self.kill()
         elif (self.hp <= self.maxHp//2):
