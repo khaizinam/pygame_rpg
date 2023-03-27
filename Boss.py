@@ -1,5 +1,5 @@
 import pygame, math, random
-from Enemy import Enemy, BatEnemy
+from Enemy import Enemy, Bat2Enemy
 from HealthBar import HealthBar, lvlBar
 from config import *
 
@@ -19,7 +19,7 @@ class Boss(Enemy):
 
     def __init__(self, game, x, y, x1, x2, y1, y2, lvl):
         self.game = game
-        self.level = lvl
+        self.level = 6
         self.stunByAttackTime = FPS * 2
         self.stunByAttackCount = 0
         self.distance = 400
@@ -32,13 +32,15 @@ class Boss(Enemy):
         self.heightStage = [94,110,110]
         self.width = self.widthStage[self.stage]
         self.height = self.heightStage[self.stage]
-        self.posx = x - (self.width - TILESIZE)//2
-        self.posy = y - self.height + TILESIZE
-        self.x = self.posx
-        self.y = self.posy
+        self.x = (x1 + x2)//2 - (self.width - TILESIZE)//2
+        self.y = (y1 + y2)//2 - self.height + TILESIZE
+        self.respawnX =  self.x 
+        self.respawnY =  self.y
+        print(x1, x2, y1, y2, self.x, self.y)
         self.velx = 0 
         self.vely = 0
         self.tick = 0
+        self.facing = self.FACING_LEFT
 
         self.maxHp = 2000
         self.hp = self.maxHp
@@ -62,6 +64,8 @@ class Boss(Enemy):
             self.game.boss2_spritesheet.get_sprite(366, 110, self.widthStage[1], self.heightStage[1] ),]
         ]
 
+        self.info = [HealthBar(self.game, self,85)]
+
         self.image = self.animation[self.stage][0]
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -75,7 +79,7 @@ class Boss(Enemy):
 
         self.attackStage = [
             [self.TRIPLET_SHOOT, self.STAR_SHOOT, self.TRIPLET_SHOOT, self.STAR_SHOOT, self.ULTIMATE],
-            [self.CHASE, self.CHASE, self.SPAWN_MINION],
+            [self.CHASE, self.SPAWN_MINION,self.SPAWN_MINION],
         ]
 
         self.isChasing = False
@@ -134,6 +138,7 @@ class Boss(Enemy):
         if (d != 0):
             self.velx = self.speed*float(vx/d)
             self.vely = self.speed*float(vy/d)
+                
             
 
     def animate(self):
@@ -213,12 +218,12 @@ class Boss(Enemy):
         for i in range(nMinion):
             dx = math.cos(i*2*math.pi/nMinion)*50
             dy = math.sin(i*2*math.pi/nMinion)*50
-            bat = BatEnemy(self.game, x+dx, y+dy, 1)
-            HealthBar(self.game, bat)
+            bat = Bat2Enemy(self.game, x+dx, y+dy, 10)
+            HealthBar(self.game, bat,bat.width)
             lvlBar(self.game, bat)
 
     def attacked(self, damge):
-        self.hp -= math.floor(damge/5)
+        self.hp -= math.floor(damge/5) 
         if (self.hp <= 0):
             self.kill()
         elif (self.hp <= self.maxHp//2):
@@ -273,7 +278,7 @@ class BossBullet(pygame.sprite.Sprite):
     def __init__(self, game, host, vx, vy):
         self.game = game
         self._layer = ENEMY_LAYER
-        self.groups = self.game.all_sprites, self.game.enemies
+        self.groups = self.game.all_sprites, self.game.magic_attacks
         pygame.sprite.Sprite.__init__(self, self.groups)
         
         self.width = 13*3
@@ -314,6 +319,7 @@ class BossBullet(pygame.sprite.Sprite):
             self.d = (self.x - self.x0)**2 + (self.y - self.y0)**2
         else:
             self.kill()
+            del self
         
 
 

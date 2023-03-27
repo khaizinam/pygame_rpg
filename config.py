@@ -21,7 +21,7 @@ tilemap = [
     '..................................................................................',
     '.                 B                                 B                            .',
     '.                 B                                 B                            .',
-    '.                 B                F                B                            .',
+    '.                 B                                 B                            .',
     '.                 B          GGGGGGGGGGGGG          B                            .',
     '.                 B          GGGGGGGGGGGGG          B                            .',
     '.                 B          GGGGGGGGGGGGG          B                            .',
