@@ -51,10 +51,11 @@ class Game:
 		PlayerHealthBar(self, self.player)
 		PlayerHealthBar_layer(self, self.player)
 		self.createList = [
-			CreateChest('potion',self,282,814,FPS*60*3),
-   			CreateChest('potion',self,1354,680,FPS*60*3),
-			CreateChest('atk_spd',self,1746,260,FPS*60*3),
-			CreateChest('atk_spd',self,1746,32,FPS*60*3),
+			#CHEST
+			CreateChest('hp',self,446,704,FPS*60*2),
+   			CreateChest('atk',self,860,788,FPS*60*2),
+			CreateChest('hp',self,860,878,FPS*60*2),
+			CreateChest('hp',self,1746,32,FPS*60*3),
 			CreateChest('exp',self,1926,134,FPS*60*3),
       		CreateMinion('bee', self, 276, 884, 1, FPS*30),
 			CreateMinion('bat', self, 270, 776, 1, FPS*30),
