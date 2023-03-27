@@ -57,6 +57,12 @@ class Player(pygame.sprite.Sprite):
         self.left_animations = self.animation.moveLeft()
 
         self.right_animations = self.animation.moveRight()
+        self.slashSound = pygame.mixer.Sound('./audio/slash.mp3')
+        self.magicSound = pygame.mixer.Sound('./audio/magic.mp3')
+        self.healSound = pygame.mixer.Sound('./audio/healing.mp3')
+        self.healSound.set_volume(0.2)
+        self.magicSound.set_volume(0.15)
+        self.slashSound.set_volume(0.15)
         
     def update(self):
         if self.potionReduce > 0:
@@ -97,6 +103,7 @@ class Player(pygame.sprite.Sprite):
         self.nextExp = self.curentExp + self.level * 20
         
     def usePotion(self):
+        self.healSound.play()
         if self.hp < self.maxHp and self.potion > 0 and  self.potionReduce == 0:
             self.potionReduce = self.TimeNextPotion
             self.potion -= 1
@@ -129,10 +136,12 @@ class Player(pygame.sprite.Sprite):
         
     def meleeAttack(self):
         self.attacking = True
+        self.slashSound.play()
         MeleeAttack(self)
         
     def magicAttack(self):
-        self.magicTime = math.ceil(self.magicReduce) 
+        self.magicTime = math.ceil(self.magicReduce)
+        self.magicSound.play()
         MagicAttack(self)
         
     def attacked(self, damge):

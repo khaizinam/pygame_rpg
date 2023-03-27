@@ -61,7 +61,8 @@ class MeleeAttack(pygame.sprite.Sprite):
                             self.spritesheet.get_sprite(32, 0, self.width, self.height),
                             self.spritesheet.get_sprite(64, 0, self.width, self.height),
                             self.spritesheet.get_sprite(96, 0, self.width, self.height),
-                            self.spritesheet.get_sprite(128, 0, self.width, self.height)] 
+                            self.spritesheet.get_sprite(128, 0, self.width, self.height)]
+
     def update(self):
         self.animate()
         self.collide()
@@ -69,6 +70,7 @@ class MeleeAttack(pygame.sprite.Sprite):
     def collide(self):
         hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
         if hits:
+
             hits[0].attacked(self.damge)
             if self.player.facing == 'left':
                 hits[0].x -= 1
