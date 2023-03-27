@@ -48,40 +48,40 @@ class Game:
 		
 		self.createList = [
 			
-			CreateChest('potion',self,282,814,FPS*60*3),
-   			CreateChest('potion',self,1354,680,FPS*60*3),
-			CreateChest('atk_spd',self,1746,260,FPS*60*3),
-			CreateChest('atk_spd',self,1746,32,FPS*60*3),
+			CreateChest('hp',self,282,814,FPS*60*3),
+   			CreateChest('atk',self,1354,680,FPS*60*3),
+			CreateChest('atk',self,1746,260,FPS*60*3),
+			CreateChest('hp',self,1746,32,FPS*60*3),
 			CreateChest('exp',self,1926,134,FPS*60*3),
    			CreateMinion('boss', self, 1124, 122, 60, FPS*60*4),
-      		CreateMinion('bee', self, 276, 884, 1, FPS*30),
-			CreateMinion('bat', self, 270, 776, 1, FPS*30),
-			CreateMinion('bee', self, 448, 854, 2, FPS*30),
-			CreateMinion('mage', self, 372, 660, 1, FPS*30),
-			CreateMinion('bat', self, 448, 764, 1, FPS*30),
-			CreateMinion('bat', self, 354, 776, 1, FPS*30),
-			CreateMinion('mage', self, 668, 880, 1, FPS*30),
-			CreateMinion('bat', self, 648, 668, 2, FPS*120),
-			CreateMinion('bat', self, 688, 668, 2, FPS*120),
-			CreateMinion('bat', self, 648, 730, 2, FPS*120),
-			CreateMinion('bat', self, 688, 730, 3, FPS*120),
-			CreateMinion('bee', self, 890, 658, 3, FPS*120),
-			CreateMinion('mage', self, 1088, 688, 2, FPS*120),
-   			CreateMinion('bat', self, 1064, 820, 3, FPS*120),
-			CreateMinion('bat', self, 1142, 820, 3, FPS*120),
-			CreateMinion('bat', self, 1064, 874, 3, FPS*120),
-			CreateMinion('bat', self, 1142, 874, 3, FPS*120),
-			CreateMinion('bee', self, 1460, 844, 4, FPS*120),
-			CreateMinion('bee', self, 1610, 808, 3, FPS*120),
-			CreateMinion('bee', self, 1610, 886, 3, FPS*120),
-			CreateMinion('mage', self, 2132, 766, 2, FPS*120),
-			CreateMinion('mage', self, 2132, 862, 2, FPS*120),
-   			CreateMinion('mage', self, 1664, 688, 3, FPS*120),
-      		CreateMinion('mage', self, 2216, 365, 3, FPS*120),
-			CreateMinion('bat', self, 2300, 290, 4, FPS*120),
-			CreateMinion('bat', self, 2468, 290, 4, FPS*120),
-			CreateMinion('bat', self, 2414, 290, 4, FPS*120),
-			CreateMinion('bee', self, 2414, 236, 5, FPS*120),
+      		CreateMinion('bee', self, 276, 884, 4, FPS*30),
+			CreateMinion('bat', self, 270, 776, 4, FPS*30),
+			CreateMinion('bee', self, 448, 854, 5, FPS*30),
+			CreateMinion('mage', self, 372, 660, 5, FPS*30),
+			CreateMinion('bat', self, 448, 764, 5, FPS*30),
+			CreateMinion('bat', self, 354, 776, 5, FPS*30),
+			CreateMinion('mage', self, 668, 880, 5, FPS*30),
+			CreateMinion('bat', self, 648, 668, 5, FPS*120),
+			CreateMinion('bat', self, 688, 668, 6, FPS*120),
+			CreateMinion('bat', self, 648, 730, 5, FPS*120),
+			CreateMinion('bat', self, 688, 730, 5, FPS*120),
+			CreateMinion('bee', self, 890, 658, 5, FPS*120),
+			CreateMinion('mage', self, 1088, 688, 6, FPS*120),
+   			CreateMinion('bat', self, 1064, 820, 5, FPS*120),
+			CreateMinion('bat', self, 1142, 820, 5, FPS*120),
+			CreateMinion('bat', self, 1064, 874, 5, FPS*120),
+			CreateMinion('bat', self, 1142, 874, 5, FPS*120),
+			CreateMinion('bee', self, 1460, 844, 5, FPS*120),
+			CreateMinion('bee', self, 1610, 808, 7, FPS*120),
+			CreateMinion('bee', self, 1610, 886, 11, FPS*120),
+			CreateMinion('mage', self, 2132, 766, 6, FPS*120),
+			CreateMinion('mage', self, 2132, 862, 6, FPS*120),
+   			CreateMinion('mage', self, 1664, 688, 10, FPS*120),
+      		CreateMinion('mage', self, 2216, 365, 8, FPS*120),
+			CreateMinion('bat', self, 2300, 290, 8, FPS*120),
+			CreateMinion('bat', self, 2468, 290, 8, FPS*120),
+			CreateMinion('bat', self, 2414, 290, 8, FPS*120),
+			CreateMinion('bee', self, 2414, 236, 8, FPS*120),
         ]
 		for minion in self.createList:
 			minion.create()
@@ -131,10 +131,10 @@ class Game:
 		newfont = pygame.font.Font('arial.ttf',fontsize)
 		postion_text = newfont.render(f'x: {self.player.x}, y: {self.player.y}', True, WHITE)
 		lvl_text = newfont.render(f'level: {self.player.level}', True, WHITE)
-		Hp_text = newfont.render(f'hp: {self.player.hp}/{self.player.maxHp}', True, WHITE)
+		Hp_text = newfont.render(f'hp: {self.player.hp}|{self.player.maxHp}', True, WHITE)
 		Atk_text = newfont.render(f'atk: {self.player.atk}', True, WHITE)
-		exp_text = newfont.render(f'exp: {self.player.curentExp}/{self.player.nextExp}', True, WHITE)
-		pot_text = newfont.render(f'{self.player.potion}', True, WHITE)
+		exp_text = newfont.render(f'exp: {self.player.curentExp}|{self.player.nextExp}', True, WHITE)
+		pot_text = self.font.render(f'{self.player.potion}', True, WHITE)
 		atk_spd_text = newfont.render(f'atk spd: { round(FPS / self.player.magicReduce, 2)}', True, WHITE)
 		atk_range_text = newfont.render(f'atk range: { math.floor(self.player.magicRange ) * BULLET_SPD}', True, WHITE)
 		self.screen.blit(postion_text, (10 , 5))
@@ -144,7 +144,7 @@ class Game:
 		self.screen.blit(Hp_text, (10, WIN_HEIGHT - (fontsize + 5)*4))
 		self.screen.blit(Atk_text, (10, WIN_HEIGHT - (fontsize + 5)*2))
 		self.screen.blit(exp_text, (10, WIN_HEIGHT - (fontsize + 5)))
-		self.screen.blit(pot_text, (WIN_WIDTH - 50, fontsize - 25))
+		self.screen.blit(pot_text, (WIN_WIDTH - 50, WIN_HEIGHT - 20))
 
 		pygame.display.update()
 

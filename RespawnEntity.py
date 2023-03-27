@@ -59,6 +59,11 @@ class CreateChest:
             
     def update(self):
         if self.main.time_attacked <= 0 and self.isdead == False:
+            if self.typechest == 'atk':
+                self.game.player.atk +=2
+            elif self.typechest == 'hp':
+                self.game.player.maxHp += 10
+                self.game.player.hp += 10
             self.isdead = True
             self.RespawnTime  = self.RespawnConst
         if self.isdead:
