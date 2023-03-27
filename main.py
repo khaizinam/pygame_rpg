@@ -127,23 +127,24 @@ class Game:
 		self.all_sprites.draw(self.screen)
 		self.icons.draw(self.screen)
 		self.clock.tick(FPS)
-  
-		postion_text = self.font.render(f'x: {self.player.x}, y: {self.player.y}', True, WHITE)
-		lvl_text = self.font.render(f'level: {self.player.level}', True, WHITE)
-		Hp_text = self.font.render(f'hp: {self.player.hp}/{self.player.maxHp}', True, WHITE)
-		Atk_text = self.font.render(f'atk: {self.player.atk}', True, WHITE)
-		exp_text = self.font.render(f'exp: {self.player.curentExp}/{self.player.nextExp}', True, WHITE)
-		pot_text = self.font.render(f'{self.player.potion}', True, WHITE)
-		atk_spd_text = self.font.render(f'atk spd: { round(FPS / self.player.magicReduce, 2)}', True, WHITE)
-		atk_range_text = self.font.render(f'atk range: { math.floor(self.player.magicRange ) * BULLET_SPD}', True, WHITE)
+		fontsize = 12
+		newfont = pygame.font.Font('arial.ttf',fontsize)
+		postion_text = newfont.render(f'x: {self.player.x}, y: {self.player.y}', True, WHITE)
+		lvl_text = newfont.render(f'level: {self.player.level}', True, WHITE)
+		Hp_text = newfont.render(f'hp: {self.player.hp}/{self.player.maxHp}', True, WHITE)
+		Atk_text = newfont.render(f'atk: {self.player.atk}', True, WHITE)
+		exp_text = newfont.render(f'exp: {self.player.curentExp}/{self.player.nextExp}', True, WHITE)
+		pot_text = newfont.render(f'{self.player.potion}', True, WHITE)
+		atk_spd_text = newfont.render(f'atk spd: { round(FPS / self.player.magicReduce, 2)}', True, WHITE)
+		atk_range_text = newfont.render(f'atk range: { math.floor(self.player.magicRange ) * BULLET_SPD}', True, WHITE)
 		self.screen.blit(postion_text, (10 , 5))
-		self.screen.blit(lvl_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*7))
-		self.screen.blit(atk_spd_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*6))
-		self.screen.blit(atk_range_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*5))
-		self.screen.blit(Hp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*4))
-		self.screen.blit(Atk_text, (10, WIN_HEIGHT - (FONTSIZE + 5)*2))
-		self.screen.blit(exp_text, (10, WIN_HEIGHT - (FONTSIZE + 5)))
-		self.screen.blit(pot_text, (WIN_WIDTH - 50, WIN_HEIGHT - 25))
+		self.screen.blit(lvl_text, (10, WIN_HEIGHT - (fontsize + 5)*7))
+		self.screen.blit(atk_spd_text, (10, WIN_HEIGHT - (fontsize + 5)*6))
+		self.screen.blit(atk_range_text, (10, WIN_HEIGHT - (fontsize + 5)*5))
+		self.screen.blit(Hp_text, (10, WIN_HEIGHT - (fontsize + 5)*4))
+		self.screen.blit(Atk_text, (10, WIN_HEIGHT - (fontsize + 5)*2))
+		self.screen.blit(exp_text, (10, WIN_HEIGHT - (fontsize + 5)))
+		self.screen.blit(pot_text, (WIN_WIDTH - 50, fontsize - 25))
 
 		pygame.display.update()
 
@@ -183,11 +184,11 @@ class Game:
         
 	def introScreen(self):
 		intro = True
+		newfont = pygame.font.Font('arial.ttf',30)
+		title = newfont.render('Bug Code Dungoen', True, BLACK)
+		title_rect = title.get_rect(x=WIN_WIDTH/2 - 150, y=WIN_HEIGHT/2 -50)
   
-		title = self.font.render('Awesome Game', True, BLACK)
-		title_rect = title.get_rect(x=10, y=10)
-  
-		play_button = Button(10, 50, 100, 50, WHITE, BLACK, 'play',32)
+		play_button = Button(WIN_WIDTH/2 - 50, WIN_HEIGHT/2 + 5, 100, 50, WHITE, BLACK, 'play', 32)
 		while intro:
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:

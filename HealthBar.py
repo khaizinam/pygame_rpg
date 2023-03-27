@@ -45,7 +45,7 @@ class PlayerHealthBar(pygame.sprite.Sprite):
         self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.x = 10
-        self.y = WIN_HEIGHT - (16 + 5)*3
+        self.y = WIN_HEIGHT - (12 + 5)*3
         self.rect.x = self.x
         self.rect.y = self.y
     def update(self):
