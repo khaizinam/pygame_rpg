@@ -45,7 +45,7 @@ class Game:
 	def initEntity(self):
 		self.player = Player(self, 60 , 512)
 		self.playerhpbar = PlayerHealthBar(self, self.player)
-		#self.boss = Boss(self, 608,1664, 32,448)
+		self.boss = Boss(self, 608,1664, 32,448)
 		self.createList = [
 			
 			CreateChest('potion',self,282,814,FPS*60*3),
@@ -53,7 +53,7 @@ class Game:
 			CreateChest('atk_spd',self,1746,260,FPS*60*3),
 			CreateChest('atk_spd',self,1746,32,FPS*60*3),
 			CreateChest('exp',self,1926,134,FPS*60*3),
-   			CreateMinion('boss', self, 1124, 122, 60, FPS*60*4),
+   			#CreateMinion('boss', self, 1124, 122, 60, FPS*60*4),
       		CreateMinion('bee', self, 276, 884, 1, FPS*30),
 			CreateMinion('bat', self, 270, 776, 1, FPS*30),
 			CreateMinion('bee', self, 448, 854, 2, FPS*30),

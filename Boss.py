@@ -19,11 +19,9 @@ class Boss(Enemy):
 
     def __init__(self, game, x1, x2, y1, y2):
         self.game = game
-        self.level = lvl
+        self.level = 6
         self.stunByAttackTime = FPS * 2
         self.stunByAttackCount = 0
-        self.posx = x
-        self.posy = y
         self.distance = 400
         self._layer = ENEMY_LAYER
         self.groups = self.game.all_sprites, self.game.enemies
@@ -36,13 +34,15 @@ class Boss(Enemy):
         self.height = self.heightStage[self.stage]
         self.x = (x1 + x2)//2 - (self.width - TILESIZE)//2
         self.y = (y1 + y2)//2 - self.height + TILESIZE
+        self.respawnX =  self.x 
+        self.respawnY =  self.y
         print(x1, x2, y1, y2, self.x, self.y)
         self.velx = 0 
         self.vely = 0
         self.tick = 0
         self.facing = self.FACING_LEFT
 
-        self.maxHp = 1000
+        self.maxHp = 2000
         self.hp = self.maxHp
 
         self.animation = [
@@ -64,7 +64,7 @@ class Boss(Enemy):
             self.game.boss2_spritesheet.get_sprite(366, 110, self.widthStage[1], self.heightStage[1] ),]
         ]
 
-        self.info = [HealthBar(self.game, self)]
+        self.info = [HealthBar(self.game, self,85)]
 
         self.image = self.animation[self.stage][0]
         self.rect = self.image.get_rect()
@@ -79,7 +79,7 @@ class Boss(Enemy):
 
         self.attackStage = [
             [self.TRIPLET_SHOOT, self.STAR_SHOOT, self.TRIPLET_SHOOT, self.STAR_SHOOT, self.ULTIMATE],
-            [self.CHASE, self.CHASE, self.SPAWN_MINION],
+            [self.CHASE, self.SPAWN_MINION],
         ]
 
         self.isChasing = False
@@ -89,7 +89,7 @@ class Boss(Enemy):
         self.nBullet = 0
         self.bulletCooldown = 5
         self.bulletTimmer = 0
-    
+
     def update(self):
         if self.awakened:
             self.animate()
@@ -207,12 +207,12 @@ class Boss(Enemy):
         for i in range(nMinion):
             dx = math.cos(i*2*math.pi/nMinion)*50
             dy = math.sin(i*2*math.pi/nMinion)*50
-            bat = BatEnemy(self.game, x+dx, y+dy, 1)
-            HealthBar(self.game, bat)
+            bat = BatEnemy(self.game, x+dx, y+dy, 10)
+            HealthBar(self.game, bat,bat.width)
             lvlBar(self.game, bat)
 
     def attacked(self, damge):
-        self.hp -= damge
+        self.hp -= math.floor(damge/5) 
         if (self.hp <= 0):
             self.kill()
         elif (self.hp <= self.maxHp//2):
