@@ -43,7 +43,7 @@ class Game:
      
 
 	def initEntity(self):
-		self.player = Player(self, 60 , 450)
+		self.player = Player(self, 44 , 884)
 		self.playerhpbar = PlayerHealthBar(self, self.player)
 		
 		self.createList = [
