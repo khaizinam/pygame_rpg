@@ -79,7 +79,7 @@ class Boss(Enemy):
 
         self.attackStage = [
             [self.TRIPLET_SHOOT, self.STAR_SHOOT, self.TRIPLET_SHOOT, self.STAR_SHOOT, self.ULTIMATE],
-            [self.CHASE, self.SPAWN_MINION],
+            [self.CHASE, self.SPAWN_MINION,self.SPAWN_MINION],
         ]
 
         self.isChasing = False
