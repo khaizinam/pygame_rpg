@@ -27,7 +27,7 @@ class Player(pygame.sprite.Sprite):
         self.curentExp = 0
         self.nextExp = self.level * 100
         self.magicRange = 5 + 0.5 * self.level
-        self.magicReduce = 25 - 2 * self.level
+        self.magicReduce = 40 - 2 * self.level
         if self.magicReduce <= 6: self.magicReduce = 6
         self.magicTime = 0
         #-----------
