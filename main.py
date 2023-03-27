@@ -48,9 +48,9 @@ class Game:
 		PlayerHealthBar_layer(self, self.player)
 		self.createList = [
 			#CHEST
-			CreateChest('hp',self,446,722,FPS*60*2),
-   			CreateChest('atk',self,848,788,FPS*60*2),
-			CreateChest('hp',self,860,812,FPS*60*2),
+			CreateChest('hp',self,446,704,FPS*60*2),
+   			CreateChest('atk',self,860,788,FPS*60*2),
+			CreateChest('hp',self,860,878,FPS*60*2),
 			CreateChest('hp',self,1746,32,FPS*60*3),
 			CreateChest('exp',self,1926,134,FPS*60*3),
 			#BOSS
