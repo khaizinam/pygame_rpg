@@ -94,7 +94,7 @@ class Cube(pygame.sprite.Sprite):
     def __init__(self, game , x, y):
         
         self.game = game
-        self._layer = BLOCK_LAYER + 1
+        self._layer = BLOCK_LAYER
         self.groups = self.game.all_sprites, self.game.puzzle, self.game.blocks
         pygame.sprite.Sprite.__init__(self, self.groups)
         
@@ -137,7 +137,7 @@ class Hole(pygame.sprite.Sprite):
     def __init__(self, game , x, y):
         
         self.game = game
-        self._layer = BLOCK_LAYER
+        self._layer = 2
         self.groups = self.game.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
         
