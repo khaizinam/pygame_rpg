@@ -235,27 +235,6 @@ class Game:
 			self.screen.blit(restart_button.image, restart_button.rect)
 			self.clock.tick(FPS)
 			pygame.display.update()
-	def pause(self):
-		pause = True
-		resume_button = Button(WIN_WIDTH/2 - 100, 80, pygame.image.load('./img/resumeBtn.png'))
-		back_button = Button(WIN_WIDTH/2 - 100, 200, pygame.image.load('./img/backBtn.png'))
-		while pause:
-			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
-					pause = False
-					self.running = False
-			mouse_pos = pygame.mouse.get_pos()
-			mouse_pressed = pygame.mouse.get_pressed()
-			if resume_button.is_pressed(mouse_pos, mouse_pressed):
-				pause = False
-			if back_button.is_pressed(mouse_pos, mouse_pressed):
-				self.new()
-				self.introScreen()
-			self.screen.blit(pygame.image.load('./img/MenuContainer.png'), (40, 20))
-			self.screen.blit(resume_button.image, resume_button.rect)
-			self.screen.blit(back_button.image, back_button.rect)
-			self.clock.tick(FPS)
-			pygame.display.update()
 
 	def menuScreen(self):
 		self.timmer = 30
@@ -267,7 +246,31 @@ class Game:
 				self.optionScreen()
 			else:
 				menu = False
-	
+
+	def pause(self):
+		pause = True
+		resume_button = Button(WIN_WIDTH/2 - 100, 150, pygame.image.load('./img/resumeBtn.png'))
+		back_button = Button(WIN_WIDTH/2 - 100, 250, pygame.image.load('./img/backBtn.png'))
+		while pause:
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					pause = False
+					self.running = False
+			mouse_pos = pygame.mouse.get_pos()
+			mouse_pressed = pygame.mouse.get_pressed()
+			if resume_button.is_pressed(mouse_pos, mouse_pressed):
+				pause = False
+			if back_button.is_pressed(mouse_pos, mouse_pressed):
+				pause = False
+				self.new()
+				self.introScreen()
+			self.screen.blit(pygame.image.load('./img/MenuContainer.png'), (40, 20))
+			self.screen.blit(resume_button.image, resume_button.rect)
+			self.screen.blit(back_button.image, back_button.rect)
+			self.clock.tick(FPS)
+			pygame.display.update()
+
+
 	def optionScreen(self):
 		self.option = True
 		soundOn_button = Button(WIN_WIDTH/2-100, 100, pygame.image.load('./img/soundOn.png'))
@@ -319,7 +322,9 @@ class Game:
 				if self.timmer <= 0:
 					self.timmer = 30
 					self.intro = False
-					self.option = True				
+					self.option = True
+					self.optionScreen()
+
 			if exit_button.is_pressed(mouse_pos, mouse_pressed):
 				pygame.quit()
 				sys.exit()
