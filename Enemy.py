@@ -127,7 +127,7 @@ class Enemy(pygame.sprite.Sprite):
                             self.game.character_spritesheet.get_sprite(68, 66, self.width, self.height)]
     
     def update(self):
-        if self.dead == False:
+        if self.dead == False and (self.game.camera.x - WIN_WIDTH / 2 <= self.x <= self.game.camera.x + WIN_WIDTH / 2) and (self.game.camera.y - WIN_HEIGHT / 2 <= self.y <= self.game.camera.y + WIN_HEIGHT / 2):
             self.movement()
             self.animate()
             self.collide_player()

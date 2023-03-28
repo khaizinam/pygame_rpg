@@ -319,16 +319,17 @@ class BossBullet(pygame.sprite.Sprite):
         self.d = 0
 
     def update(self):
-        self.animate()
-        self.collide()
-        if (self.d < self.distance):
-            self.x += self.vx
-            self.y += self.vy
-            self.rect.x = self.x
-            self.rect.y = self.y
-            self.d = (self.x - self.x0) ** 2 + (self.y - self.y0) ** 2
-        else:
-            self.kill()
+        if (self.game.camera.x - WIN_WIDTH  <= self.x <= self.game.camera.x + WIN_WIDTH) and (self.game.camera.y - WIN_HEIGHT <= self.y <= self.game.camera.y + WIN_HEIGHT ):
+            self.animate()
+            self.collide()
+            if (self.d < self.distance):
+                self.x += self.vx
+                self.y += self.vy
+                self.rect.x = self.x
+                self.rect.y = self.y
+                self.d = (self.x - self.x0) ** 2 + (self.y - self.y0) ** 2
+            else:
+                self.kill()
 
     def animate(self):
         self.image = self.animation[math.floor(self.tick)]
