@@ -130,7 +130,7 @@ class Enemy(pygame.sprite.Sprite):
         self.deadSound.set_volume(0.13)
     
     def update(self):
-        if self.dead == False:
+        if self.dead == False and (self.game.camera.x - WIN_WIDTH / 2 <= self.x <= self.game.camera.x + WIN_WIDTH / 2) and (self.game.camera.y - WIN_HEIGHT / 2 <= self.y <= self.game.camera.y + WIN_HEIGHT / 2):
             self.movement()
             self.animate()
             self.collide_player()
@@ -145,7 +145,7 @@ class Enemy(pygame.sprite.Sprite):
             self.collide_blocks('x')
             self.y += self.y_change
             self.rect.y += self.y_change
-            self.collide_blocks('x')
+            self.collide_blocks('y')
             self.x_change = 0
             self.y_change = 0
             # time next perform attack
@@ -155,24 +155,23 @@ class Enemy(pygame.sprite.Sprite):
             self.attackDuration -= 1
             if self.attackDuration <= 0:
                 self.attackDuration = 0   
+                
     def collide_blocks(self, direction):
-        pass
-        # if direction == 'x':
-        #     hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
-        #     if hits:
-        #         for hit in hits:
-        #             if self.x_change > 0:
-        #                 self.x = hit.x - self.rect.width
-        #             if self.x_change < 0:
-        #                 self.x = hit.x + hit.rect.width 
-        # if direction == 'y': 
-        #     hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
-        #     if hits:
-        #         for hit in hits:
-        #             if self.y_change > 0 :
-        #                 self.y = hit.y - self.rect.height
-        #             if self.y_change < 0 :
-        #                 self.y = hit.y + hit.rect.height
+        hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+        if hits:
+            for hit in hits:
+                if direction == 'x':
+                    if self.x_change > 0:
+                        self.x = hit.x - self.rect.width
+                    if self.x_change < 0:
+                        self.x = hit.x + hit.rect.width 
+                if direction == 'y':
+                    if self.y_change > 0 :
+                        self.y = hit.y - self.rect.height
+                    if self.y_change < 0 :
+                        self.y = hit.y + hit.rect.height
+                self.rect.x = self.x - self.game.camera.deltaX()
+                self.rect.y = self.y - self.game.camera.deltaY()
     def respawn(self):
         self.x = self.respawnX 
         self.y = self.respawnY 

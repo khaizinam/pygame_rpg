@@ -22,12 +22,12 @@ class Player(pygame.sprite.Sprite):
         self.potionReduce = 0
         self.level = 7
         self.atk = 5 + 5 * self.level
-        self.maxHp = 15000 + 20 * self.level
+        self.maxHp = 20 + 20 * self.level
         self.hp = self.maxHp
         self.curentExp = 0
         self.nextExp = self.level * 100
         self.magicRange = 5 + 0.5 * self.level
-        self.magicReduce = 60 - 2 * self.level
+        self.magicReduce = 30 - 2 * self.level
         if self.magicReduce <= 6: self.magicReduce = 6
         self.magicTime = 0
         #-----------
@@ -47,7 +47,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
-        
+        self.hitbox = self.rect.inflate(0, -10)
         self.animation = PlayerSprite(game,self)
         
         self.down_animations = self.animation.moveDown()
@@ -109,7 +109,7 @@ class Player(pygame.sprite.Sprite):
         if self.hp < self.maxHp and self.potion > 0 and  self.potionReduce == 0:
             self.potionReduce = self.TimeNextPotion
             self.potion -= 1
-            self.hp += 30
+            self.hp += 80
             if self.hp > self.maxHp:
                 self.hp = self.maxHp  
             
@@ -119,13 +119,13 @@ class Player(pygame.sprite.Sprite):
             if keys[pygame.K_LEFT]:
                 self.velx = -1
                 self.facing = 'left'
-            elif keys[pygame.K_RIGHT]:
+            if keys[pygame.K_RIGHT]:
                 self.velx = 1
                 self.facing = 'right'
-            elif keys[pygame.K_UP]:
+            if keys[pygame.K_UP]:
                 self.vely = -1
                 self.facing = 'up'
-            elif keys[pygame.K_DOWN]:
+            if keys[pygame.K_DOWN]:
                 self.vely = 1
                 self.facing = 'down'
             if keys[pygame.K_j]:
@@ -147,31 +147,37 @@ class Player(pygame.sprite.Sprite):
         MagicAttack(self)
         
     def attacked(self, damge):
-        pass
-        # self.hp -= damge
-        # if self.hp <= 0:
-        #     self.kill()
-        #     self.game.playing = False
+        # pass
+        self.hp -= damge
+        if self.hp <= 0:
+            self.kill()
+            self.game.playing = False
             
         
     def collide_blocks(self, direction):
-        if direction == 'x':
-            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
-            if hits:
-                for hit in hits:
+        # hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+        self.hitbox = self.rect.inflate(0,-25)
+        for hit in self.game.blocks:
+            if hit.rect.colliderect(self.hitbox):
+            # if hits:
+                self.game.colliding = True
+                if direction == 'x':
                     if self.x_change > 0:
                         self.x = hit.x - self.rect.width
                     if self.x_change < 0:
                         self.x = hit.x + hit.rect.width 
-        if direction == 'y': 
-            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
-            if hits:
-                for hit in hits:
+                if direction == 'y':
                     if self.y_change > 0 :
-                        self.y = hit.y - self.rect.height
+                        self.game.all_sprites.change_layer(self, BLOCK_LAYER-1)
+                        self.y = hit.y - self.rect.height + 10
                     if self.y_change < 0 :
-                        self.y = hit.y + hit.rect.height
-    
+                        self.game.all_sprites.change_layer(self, PLAYER_LAYER)
+                        self.y = hit.y + hit.rect.height - 10
+                self.rect.x = self.x - self.game.camera.deltaX()
+                self.rect.y = self.y - self.game.camera.deltaY()
+            else : 
+                #self.game.all_sprites.change_layer(self, PLAYER_LAYER)
+                self.game.colliding = False
     def animate(self):
         
         if self.facing == 'down':

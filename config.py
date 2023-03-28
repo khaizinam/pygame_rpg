@@ -9,8 +9,8 @@ BLUE  = (0, 0, 255)
 GREEN = (0, 255, 0)
 FPS = 30
 PLAYER_LAYER = 4
-ENEMY_LAYER = 3
-BLOCK_LAYER = 2
+ENEMY_LAYER = 4
+BLOCK_LAYER = 3
 GROUND_LAYER = 1
 MAP_HEIGHT = 30 * 32
 MAP_WIDTH = 80 *32
@@ -22,23 +22,23 @@ FONTSIZE = 16
 tilemap = [
     '..................................................................................',
     '.                 .                                 .                            .',
-    '.                 .              BB  BB              .                            .',
+    '.             H   .              BB  BB              .       H                   .',
     '.                 .                                 ..                           .',
     '.                 .         .GGGGGGGGGGGGG.         ...                          .',
     '.                 .         .GGGGGGGGGGGGG          ....                         .',
     '.                 .          GGGGGGGGGGGGG          ...                          .',
-    '.                ..          GGGGGGGGGGGGG.         ..                           .',
+    '.      C         ..          GGGGGGGGGGGGG.         ..                    C      .',
     '.               ...         .GGGGGGGGGGGGG.         .                            .',
     '.....BBBB      ....                 GGG             ...................     ......',
     '.              ....                GGGGG            ...                          .',
     '.               ...               GGGGGGG           ...                          .',
     '.                ..             GGGGGGGGGGG         ...                          .',
     '.                ..           GGGGGGGGGGGGGGG       ...                          .',
-    '.                 ................GGGGGGG..............                          .',
-    '.                 ................GGGGGGG..............          BBBBBBB         .',
-    '.                 ................GGGGGGG..............                          .',
-    '.                 ................GGGGGGG..............                          .',
-    '.                 ................GGGGGGG.............                           .',
+    '.                 ................GGGGGGGG.............                          .',
+    '.                 .................GGGGGG..............          BBBBBBB         .',
+    '.                 ..................GGGG...............                          .',
+    '.                 ..................T   ...............                          .',
+    '.                 ..................GGGG..............                           .',
     '.                                                                                .',
     '.                                                                                .',
     '.       BBBBBBBBBBBB        .                 . BBBBBBBBBBBBBBBBB                .',
