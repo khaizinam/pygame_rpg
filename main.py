@@ -58,7 +58,7 @@ class Game:
 		self.player = Player(self, 44 , 884)
 		self.barrHp =PlayerHealthBar(self, self.player)
 		PlayerHealthBar_layer(self, self.player)
-		
+		self.colliding = False
 		self.createList = [
 			#CHEST
 			CreateChest('hp',self,446,704,FPS*60*2),
@@ -185,7 +185,7 @@ class Game:
 		pot_text = pygame.font.Font('arial.ttf',12).render(f'{self.player.potion}', True, WHITE)
 		atk_spd_text = newfont.render(f'atk spd: { round(FPS / self.player.magicReduce, 2)}', True, WHITE)
 		atk_range_text = newfont.render(f'atk range: { math.floor(self.player.magicRange ) * BULLET_SPD}', True, WHITE)
-		
+		collide_text = newfont.render(f'colliide: {self.colliding}', True, WHITE)
   		#Top Left content
 		self.screen.blit(postion_text, (10 , 5))
   
@@ -196,6 +196,7 @@ class Game:
 		self.screen.blit(atk_range_text, (10, WIN_HEIGHT - (fontsize + 5)*1))
 
 		#Center content
+		self.screen.blit(collide_text, (WIN_WIDTH/2 - 100, WIN_HEIGHT - (fontsize + 5)*4))
 		self.screen.blit(Hp_text, (WIN_WIDTH/2 - 100, WIN_HEIGHT - (fontsize + 5)*3))
 		self.screen.blit(exp_text, (WIN_WIDTH/2 - 100, WIN_HEIGHT - (fontsize + 5)))
   

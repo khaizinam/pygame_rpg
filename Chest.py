@@ -27,7 +27,7 @@ class Chest(pygame.sprite.Sprite):
     
     def is_detroyed(self):
         if self.time_attacked <= 0:
-            self.game.player.magicTimeAttackUp(4)
+            self.game.player.magicTimeAttackUp(2)
             self.game.player.magicRangeUp(1)
             self.kill()
             

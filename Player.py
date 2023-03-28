@@ -27,7 +27,7 @@ class Player(pygame.sprite.Sprite):
         self.curentExp = 0
         self.nextExp = self.level * 100
         self.magicRange = 5 + 0.5 * self.level
-        self.magicReduce = 40 - 2 * self.level
+        self.magicReduce = 30 - 2 * self.level
         if self.magicReduce <= 6: self.magicReduce = 6
         self.magicTime = 0
         #-----------
@@ -110,13 +110,13 @@ class Player(pygame.sprite.Sprite):
             if keys[pygame.K_LEFT]:
                 self.velx = -1
                 self.facing = 'left'
-            elif keys[pygame.K_RIGHT]:
+            if keys[pygame.K_RIGHT]:
                 self.velx = 1
                 self.facing = 'right'
-            elif keys[pygame.K_UP]:
+            if keys[pygame.K_UP]:
                 self.vely = -1
                 self.facing = 'up'
-            elif keys[pygame.K_DOWN]:
+            if keys[pygame.K_DOWN]:
                 self.vely = 1
                 self.facing = 'down'
             if keys[pygame.K_j]:
@@ -144,23 +144,23 @@ class Player(pygame.sprite.Sprite):
             
         
     def collide_blocks(self, direction):
-        if direction == 'x':
-            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
-            if hits:
-                for hit in hits:
+        hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+        if hits:
+            self.game.colliding = True
+            for hit in hits:
+                if direction == 'x':
                     if self.x_change > 0:
                         self.x = hit.x - self.rect.width
                     if self.x_change < 0:
                         self.x = hit.x + hit.rect.width 
-        if direction == 'y': 
-            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
-            if hits:
-                for hit in hits:
+                if direction == 'y':
                     if self.y_change > 0 :
                         self.y = hit.y - self.rect.height
                     if self.y_change < 0 :
                         self.y = hit.y + hit.rect.height
-    
+                self.rect.x = self.x - self.game.camera.deltaX()
+                self.rect.y = self.y - self.game.camera.deltaY()
+        else : self.game.colliding = False
     def animate(self):
         
         if self.facing == 'down':
