@@ -47,7 +47,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
-        
+        self.hitbox = self.rect.inflate(0, -10)
         self.animation = PlayerSprite(game,self)
         
         self.down_animations = self.animation.moveDown()
@@ -144,10 +144,12 @@ class Player(pygame.sprite.Sprite):
             
         
     def collide_blocks(self, direction):
-        hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
-        if hits:
-            self.game.colliding = True
-            for hit in hits:
+        # hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+        self.hitbox = self.rect.inflate(0,-25)
+        for hit in self.game.blocks:
+            if hit.rect.colliderect(self.hitbox):
+            # if hits:
+                self.game.colliding = True
                 if direction == 'x':
                     if self.x_change > 0:
                         self.x = hit.x - self.rect.width
@@ -155,12 +157,16 @@ class Player(pygame.sprite.Sprite):
                         self.x = hit.x + hit.rect.width 
                 if direction == 'y':
                     if self.y_change > 0 :
-                        self.y = hit.y - self.rect.height
+                        self.game.all_sprites.change_layer(self, BLOCK_LAYER-1)
+                        self.y = hit.y - self.rect.height + 10
                     if self.y_change < 0 :
-                        self.y = hit.y + hit.rect.height
+                        self.game.all_sprites.change_layer(self, PLAYER_LAYER)
+                        self.y = hit.y + hit.rect.height - 10
                 self.rect.x = self.x - self.game.camera.deltaX()
                 self.rect.y = self.y - self.game.camera.deltaY()
-        else : self.game.colliding = False
+            else : 
+                #self.game.all_sprites.change_layer(self, PLAYER_LAYER)
+                self.game.colliding = False
     def animate(self):
         
         if self.facing == 'down':
