@@ -1,53 +1,20 @@
-WIN_WIDTH = 640
-WIN_HEIGHT = 480
+WIN_WIDTH = 900
+WIN_HEIGHT = 580
 TILESIZE = 32
-RED = (255,0,0)
-BLACK = (0,0,0)
-WHITE = (255,255,255)
-BLUE  = (0, 0, 255)
-BLUE  = (0, 0, 255)
+# color
+RED = (255, 0, 0)
+BLACK = (0, 0, 0)
+BG_COLOR = (25, 25, 25)
+WHITE = (255, 255, 255)
+BLUE = (0, 0, 255)
 GREEN = (0, 255, 0)
 FPS = 30
+PLAYER_SPEED = 10
+GRAVITY = 16
+PLAYER_JUMP_SPD = -24
 PLAYER_LAYER = 4
 ENEMY_LAYER = 4
 BLOCK_LAYER = 3
 GROUND_LAYER = 1
 MAP_HEIGHT = 30 * 32
-MAP_WIDTH = 80 *32
-
-BULLET_SPD = 16
-PLAYER_SPEED = 6
-ENEMY_SPEED = 2
-FONTSIZE = 16
-tilemap = [
-    '..................................................................................',
-    '.                 .                                 .                            .',
-    '.             H   .              BB  BB              .       H                   .',
-    '.                 .                                 ..                           .',
-    '.                 .         .GGGGGGGGGGGGG.         ...                          .',
-    '.                 .         .GGGGGGGGGGGGG          ....                         .',
-    '.                 .          GGGGGGGGGGGGG          ...                          .',
-    '.      C         ..          GGGGGGGGGGGGG.         ..                    C      .',
-    '.               ...         .GGGGGGGGGGGGG.         .                            .',
-    '.....BBBB      ....                 GGG             ...................     ......',
-    '.              ....                GGGGG            ...                          .',
-    '.               ...               GGGGGGG           ...                          .',
-    '.                ..             GGGGGGGGGGG         ...                          .',
-    '.                ..           GGGGGGGGGGGGGGG       ...                          .',
-    '.                 ................GGGGGGGG.............                          .',
-    '.                 .................GGGGGG..............          BBBBBBB         .',
-    '.                 ..................GGGG...............                          .',
-    '.                 ..................T   ...............                          .',
-    '.                 ..................GGGG..............                           .',
-    '.                                                                                .',
-    '.                                                                                .',
-    '.       BBBBBBBBBBBB        .                 . BBBBBBBBBBBBBBBBB                .',
-    '.                           .                 .                                  .',
-    '.                           .                 .                                  .',
-    '.                           .                 .                                  .',
-    '.                           .                 .                                  .',
-    '.                           .                 .                                  .',
-    '.                           .                 .                                  .',
-    '.                           .                 .                                  .',
-    '..................................................................................',
-]
+MAP_WIDTH = 80 * 32
